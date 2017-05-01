@@ -1,0 +1,42 @@
+http://blog.sina.com.cn/s/blog_756427860100ymh6.html
+
+喜欢折腾修改Wordpress主题的朋友，肯定遇到过这样的问题，想在首页文章中显示缩略图，有插件可以实现，不过不方便操作和控制，毕竟代码是人家写的，今天与大家分享一下无插件，纯代码是怎么实现首页文章缩略图的，方法非常简单，就算你不懂代码，按步骤操作也是可以的。当然缩略图选择的是文章中的第一张图片，如果文章不包含图片，显示默认图片，所以你要置顶一个默认的图片位置。
+
+步入正题，开始添加首页缩略图，分简单3步即可实现：
+
+第一步：找到使用的主题模板的functions.php文件在<?php和?>之间添加如下代码
+
+    function thumb_img($soContent){
+    $soImages = ‘~<img [^\>]*\ />~’;
+    preg_match_all( $soImages, $soContent, $thePics );
+    $allPics = count($thePics[0]);
+    if( $allPics > 0 ){
+    echo “<span id=’thumb’>”;
+    echo $thePics[0][0];
+    echo ‘</span>’;
+    }
+    else {
+    echo “<span id=’thumb’>”;
+    echo “<img src=’”;
+    echo bloginfo(‘template_url’);
+    echo “/images/thumb.gif’></span>”;
+    }
+    }
+
+    这是一个显示缩略图的方法，自动检索文章的第一张图片，如果没有显示当前主题/images/thumb.gif  所以你要把这个thumb.gif图片准备好。
+
+    第二步：找到index.php文件即首页文件，找到the_content();或相似的代码在它之前添加如下代码：
+
+        thumb_img($post->post_content);
+
+        这样就调用了刚才的方法，实际上缩略图已经完成了。但是你看到的效果一定很意外，应为图片的大小没有控制，会很难看。好了，第三步
+
+        第三步：添加缩略图样式CSS代码：
+
+        这是浮云站使用的的缩略图样式，你可以先凑合着用，再另行修改
+
+            #thumb{margin:5px 15px 5px 5px;width:145px;height:120px;border:3px solid #eee;float:left;overflow:hidden;}
+            #thumb img{max-height:186px;max-width:186px}
+
+            好了，这样缩略图就有模有样的显示出来啦。三步搞定！
+

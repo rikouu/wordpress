@@ -1,0 +1,19 @@
+1、曾经使用过多说评论（删除了 16 行）：
+
+DELETE FROM wp_options WHERE option_name REGEXP 'duoshuo_'
+2、主题未使用小工具（删除了 25 行）：
+
+DELETE FROM wp_options WHERE option_name REGEXP 'widget_'
+3、主题缓存有关（删除了 47+5 行）：
+
+DELETE FROM wp_options WHERE option_name REGEXP '_transient_'
+DELETE FROM wp_options WHERE option_name REGEXP '_site_transient_'
+4、手动找到这个值 atyou_thatyears ，里面都是评论的名字和邮箱，删除之。一计算竟然有： 139.5KB ！！！
+
+附送：评论相关（删除了 224 行）
+
+//关闭所有文章内的  Trackbacks
+UPDATE wp_posts SET ping_status="closed";
+//删除 pingback 和 tarckback 评论
+DELETE FROM wp_comments WHERE comment_type = 'pingback';
+DELETE FROM wp_comments WHERE comment_type = 'trackback';

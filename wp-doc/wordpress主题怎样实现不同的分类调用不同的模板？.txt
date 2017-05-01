@@ -1,0 +1,20 @@
+为了让wordpress主题模板更加的炫而与众不同，作为wordpress主题的作者，我们可以让我们的wordpress主题的分类页在不同的分类下，显示不同的前端效果，也就是说，不同的分类采取不同的模板，这是完全可以实现的。在高时银博客里就已经实现了这样的效果，大家可以点击高时银博客导航的几个菜单，就可以看到效果。那么，如何让我们的wordpress主题不同的分类采用不同的分类模板呢？
+其实，很简单，我们只需要在wordpress主题的分类文件category.php中添加一个判断语句，就可以实现。代码如下：
+if ( in_category(‘7′) ) //如果分类ID是7
+{
+include(TEMPLATEPATH . ‘/category-1.php’); //调用模板category-1.php
+}
+else if ( in_category(‘12′) ) //如果分类ID是12
+{
+include(TEMPLATEPATH . ‘/category-2.php’); } //调用模板category-2.php
+}
+else if ( in_category(‘42′) ) //如果分类ID是42
+{
+include(TEMPLATEPATH . ‘/category-3.php’); } //调用模板category-3.php
+}
+else {
+include(TEMPLATEPATH . ‘/category-0.php’); //否则采用默认模板
+}
+通过上面这段代码，我们就实现了不同分类的情况下调用不同的模板。在分类ID为7的时候，wordpress主题自动调用category-1.php模板；在分类ID为12时，wordpress主题会自动调用category-2.php模板；在分类ID为42时，wordpress主题会自动调用category-3.php模板；其它分类，wordpress主题就会自动调用默认模板category-0.php。
+当然，上面的category-0.php、category-1.php、category-2.php、category-3.php这几个模板文件，需要你自行创建好。wordpress主章页也可以这样来实行。
+如果不想每次使用主题时，都要修改代码中的分类ID，而只需进wordpress后台设置分类ID的话，你可以在wordpress主题的后台设置页面时添加表单选项，在category-0.php、category-1.php、category-2.php、category-3.php这几个文件中直接调用这个表单选项的值就可以实现。这样一来，就会更加的人性化，作为一个wordpress主题的开发者，在开发主题时，如果主题不仅是自己用的话，一定要让wordpress主题更加智能化，这样，才会受到用户的喜爱。

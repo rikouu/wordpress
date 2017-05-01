@@ -1,0 +1,130 @@
+插件不但可以使用内核的内置钩子，他们也可以创建自定义的钩子供其他插件和模板使用。
+插件可以使用4个可用函数中的一个来创建自定义钩子。
+do_action()
+do_action_ref_array()
+apply_filters()
+apply_filters_ref_array()
+前两个创建自定义动作钩子，后两个创建自定义过滤器钩子。
+创建自定义钩子的优点
+自定义钩子使得你的插件更灵活，使其可以被其他插件扩展，让你可以钩到你的整个插件自己的其
+他执行过程中。
+使用自定义钩子还可以防止用户直接修改你的插件。这一点的重要性在于，当你更新你的插件时，
+用户不会失去他们修改的内容。
+自定义动作钩子实例
+在这个例子中，建立了一个插件安装函数。这个函数定义了一个可以更换的常量。别的插件也可以
+在这个钩子上执行任何代码。因为你在那一点上提供了钩子。
+<?php
+add_action( 'plugins_loaded', 'boj_myplugin_setup' );
+
+function boj_myplugin_setup() {
+/* 允许动作最先触发 */
+do_action( 'boj_myplugin_setup_pre' );
+/* 检查 root slug 是否定义 */
+if( !defined( 'BOJ_MYPLUGIN_ROOT_SLUG' ) )
+define( 'BOJ_MYPLUGIN_ROOT_SLUG', 'articles' );
+}
+?>
+复制代码
+其他插件或者模板可以钩到 boj_myplugin_setup_pre 来执行任何函数。
+比如你想把 BOJ_MYPLUGIN_ROOT_SLUG 常量从 ‘articles’ 改为 ‘papers’ ，你可以建立一个动作
+并添加到这个钩子中：
+<?php
+add_action( 'boj_myplugin_setup_pre', 'boj_define_myplugin_constants' );
+function boj_define_myplugin_constants() {
+define( 'BOJ_MYPLUGIN_ROOT_SLUG', 'papers' );
+}
+?>
+复制代码
+自定义过滤器钩子实例
+假设有一个函数显示一个具有一个特定阐述的文章列表。你也许希望其他人能够过滤那个参数或者
+过滤最终结果。
+下面的例子中，写一个函数根据收到的评论条数列取了前10的文章。这个函数让用户可以在从数据
+库获取数据前过滤这个参数，并且可以过滤最终输出的 HTML 列表。
+<?php
+function boj_posts_by_comments() {
+/* 默认参数 */
+$args = array(
+'post_type' => 'post',
+'posts_per_page' => 10,
+'order' => 'DESC',
+'oerderby' => 'comment_count'
+);
+/* 应用过滤器 */
+$args = apply_filters( 'boj_posts_by_comments_args', $args );
+/* 设置输出变量 */
+$out = '';
+/* 由给定的参数从数据库查询文章 */
+$loop = new WP_Query( $args );
+/* 检查是否返回结果 */
+if( $loop -> have_posts() ) {
+$out .= '<ul >';
+while( $loop -> have_posts() ) {
+$loop -> the_post();
+$out .= the_title( '<li>', '</li>', false );
+}
+$out .= '</ul>';
+}
+$out = apply_filters( 'boj_posts_by_comments', $out );
+echo $out;
+}
+?>
+复制代码
+要过滤参数，给 boj_posts_by_comments_args 添加一个过滤器。比如你希望把数量从默认的10变
+成15，添加下面的过滤器：
+<?php
+add_filter( 'boj_posts_by_comments_args', 'boj_change_posts_by_comments_args' );
+
+function boj_change_posts_by_comments_args( $args ) {
+$args['posts_per_page'] = 15;
+return $args;
+}
+?>
+复制代码
+要过滤最后的 HTML 输出，添加一个过滤器到 boj_posts_by_comments。比如你想把 ul 改成 ol。
+<?php
+add_filter( 'boj_posts_by_comments', 'boj_change_posts_by_comments' );
+
+function boj_change_posts_by_comments( $out ) {
+$out = str_replace( '<ul', '<ol', $out );
+$out = str_replace( '</ul>', '</ol>', $out );
+return $out;
+}
+?>
+复制代码
+上哪找钩子？
+要给出 wordpress 中所有钩子的列表几乎是不可能的。前面我们讨论了一些常用的动作和过滤器钩
+子，这一节仅仅讨论一小部分 WordPress 提供的钩子。
+WordPress 的新版本会加入新的钩子。最终查看不同版本的内核可以让你找到可以用在插件中的新
+钩子。
+在内核中搜索钩子
+作为一个插件开发这，你应该熟悉 WordPress 的内核。寻找钩子能很好的帮助你熟悉 WordPress 
+内核是如何工作的。没有更好的方法来搞明白 PHP 代码在内核中是如何工作的了。
+要寻找钩子的一个简单的方法是在编辑器中打开一个 WordPress 文件然后搜索下面的四个词:
+do_action
+do_action_ref_array
+apply_filters
+apply_filters_ref_array
+这四个函数，每一个都创建一个钩子。
+变量钩子
+在 WordPress 的内核中找钩子的时候，你会遇到变量钩子。通常钩子的名字是一个静态的字符串。
+但是变量钩子的名字跟着特定的变量而改变。
+一个很好的例子就是 load-$pagenow 动作钩子。变量 $pagenow 根据 WordPress 中当前浏览的 
+admin 页面而改变。这个钩子如下：
+<?php
+do_action( "load-$pagenow" );
+?>
+复制代码
+变量 $pagenow 会变成当前访问页面的名字。例如 new post 页面的钩子是 load-post-new.php，
+而编辑页面的是 load-post.php。这就使得插件仅仅对特定的 admin 页面执行代码。WordPress 有
+几个动作和过滤器钩子的名称里面是含有变量的。
+通常，这些钩子的名字变成给定的内容，使得插件开发者可以在特定的环境下执行代码。
+钩子参考列表
+虽然在核心里面搜索钩子有助于你增长经验，但是有时你需要一些网上的参考列表。
+WordPress 在 Codex 中有官方的钩子参考列表。
+http://codex.wordpress.org/Plugin_API/Action_Reference
+http://codex.wordpress.org/Plugin_API/Filter_Reference
+在 Part-18，开发人员工具箱，将介绍更多帮助插件开发者的工具。
+总结
+钩子是创建 WordPress 插件的最重要的一环了。每次你开始创建一个插件，你都要把你的插件钩到 
+WordPress 的动作钩子和过滤器钩子中。钩子是插件开发中必不可少的工具。在了解了钩子之后，
+就是时候开始创建插件了。

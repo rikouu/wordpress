@@ -1,0 +1,61 @@
+其实在蛮多地方都看到过这个效果了，当文章过长超过侧边栏的长度时往往侧边栏一片空白，似乎有些单调，最好是侧边栏一直东西在展示。下面介绍下如何实现wordpress侧边栏滚动固定。
+
+jquery代码
+
+如果已经加载好了jquery库，那么引入如下一段jquery代码：
+
+$(document).ready(function($){
+$.fn.smartFloat = function() {
+var position = function(element) {
+var top = element.position().top, pos = element.css("position");
+$(window).scroll(function() {
+var scrolls = $(this).scrollTop();
+if (scrolls > top) {
+if (window.XMLHttpRequest) {
+element.css({
+position: "fixed",
+top: 0
+});
+} else {
+element.css({
+top: scrolls
+});
+}
+}else {
+element.css({
+position: pos,
+top: top
+});
+}
+});
+};
+return $(this).each(function() {
+position($(this)); 
+});
+};
+ 
+//绑定
+$("#sidebar-float").smartFloat();
+ 
+});
+
+大家看上面的代码，前面是一段smartfloat函数，最后是将#sidebar-float元素与这个函数绑定，也就是说如果你想让某个模块随着页面滚动，就在这个模块加上id=“#sidebar-float”。具体向下看：
+
+html结构
+
+大家看我的右边栏，可以看到文章专题这个模块是在随着页面滚动的，它的html结构就是：
+
+<li id="sidebar-float">
+ 
+    <h3>文章专题</h3>
+    <ul>
+    <li><a href="http://www.tennfy.com/category/wordpress/wordpress-theme">wordpress主题代码实现功能</a></li>
+    </ul>
+ 
+</li>
+
+我在<li></li>标签里加上了id=“#sidebar-float”，这样这个模块就可以随着页面滚动了。
+
+总结
+
+这篇文章参考了实现WordPress博客侧边栏广告跟随固定浮动效果的方法，这个方法有个问题是：窗口不是最大化时，会靠边，最右边。有时只显示一半。但是一般人也不会看半个窗口，基本上没多大影响。

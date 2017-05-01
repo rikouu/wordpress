@@ -1,0 +1,48 @@
+不知道大家发现没有，很多知名网站在用户账户密码被修改的时候都会发送一封提醒邮件，来防止网
+站用户的密码被恶意修改。本来wordpress是属于博客程序，但是最近越来越多的wordpress网站开放
+了会员中心系统，那么这样一来就不得不考虑到用户的账户安全了，所以做一个密码修改提示邮件的
+功能就非常有必要了，小V下面给出具体代码（PS：代码都是加到functions.php文件即可）：
+
+function password_reset_mail( $user_id ) {
+        $site_name = get_bloginfo('name');
+        $site_url = get_bloginfo('wpurl');
+        $user_info = get_userdata( $user_id );
+        $to = $user_info->user_email;
+        $subject = "密码修改提示：".$site_name."";
+        $message = "您好，" .$user_info->display_name . "\n您在".$site_name."的账户密码
+	已被修改！\n\n如果不是您本人修改的，请迅速至".$site_url."确认。";
+        wp_mail( $to, $subject, $message);
+}
+add_action( 'password_reset', 'password_reset_mail', 10, 2);
+
+此段代码是参考以下代码做出修改而得来的：
+
+function user_profile_update( $user_id ) {
+        $site_url = get_bloginfo('wpurl');
+        $user_info = get_userdata( $user_id );
+        $to = $user_info->user_email;
+        $subject = "Profile Updated: ".$site_url."";
+        $message = "Hello " .$user_info->display_name . "\nYour profile has been 
+	updated!\n\nThank you for visiting\n ".$site_url."";
+        wp_mail( $to, $subject, $message);
+}
+add_action( 'profile_update', 'user_profile_update', 10, 2);
+
+第二段代码的作用是在用户更新账户信息时发出邮件提示，代码来源：
+ 
+再来一段，当wordpress用户的帐号被删除时给用户发送提示邮件的代码：
+
+function v7v3_delete_user( $user_id ) {
+    global $wpdb;
+    $site_name = get_bloginfo('name');
+    $user_obj = get_userdata( $user_id );
+    $email = $user_obj->user_email;
+    $subject = "帐号删除提示：".$site_name."";
+    $message = "您好，" .$user_obj->display_name . "\n您在".$site_name."的账户已被管理员
+    删除！\n\n如果您对本次操作有什么异议，请联系管理员反馈！";
+    wp_mail( $email, $subject, $message);
+}
+add_action( 'delete_user', 'v7v3_delete_user' );
+
+PS：有很长一段时间小V都没有怎么更新网站了，从今天起小V又开始努力的更新网站了~~欢迎大家来
+访。

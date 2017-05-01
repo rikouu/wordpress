@@ -1,0 +1,12 @@
+wordpress后台屏幕右上角有两个小工具：显示选项（Screen Options）和帮助（Help），作为定制化Dashboard的一部分，某些时候需要将这两个小东西隐藏，隐藏的方法如下。
+隐藏显示选项
+在主题的functions.php中写如下代码
+function remove_screen_options(){ return false;}
+add_filter('screen_options_show_screen', 'remove_screen_options');
+隐藏帮助选项卡
+在主题的functions.php中添加
+add_filter( 'contextual_help', 'wpse50723_remove_help', 999, 3 );
+function wpse50723_remove_help($old_help, $screen_id, $screen){
+    $screen->remove_help_tabs();
+    return $old_help;
+}

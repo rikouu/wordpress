@@ -1,0 +1,110 @@
+头部的冗余代码非常之多，也一度不知道这些代码是有什么作用、怎么来的和怎么删除。现整理相关内容如下：
+
+一、完整的wordpress头部清理代码
+
+<?php
+//remove_action( ‘wp_head’, ‘wp_enqueue_scripts’, 1 );
+remove_action( ‘wp_head’, ‘feed_links’, 2 );
+remove_action( ‘wp_head’, ‘feed_links_extra’, 3 );
+remove_action( ‘wp_head’, ‘rsd_link’ );
+remove_action( ‘wp_head’, ‘wlwmanifest_link’ );
+remove_action( ‘wp_head’, ‘index_rel_link’ );
+remove_action( ‘wp_head’, ‘parent_post_rel_link’, 10, 0 );
+remove_action( ‘wp_head’, ‘start_post_rel_link’, 10, 0 );
+remove_action( ‘wp_head’, ‘adjacent_posts_rel_link_wp_head’, 10, 0 );
+//remove_action( ‘wp_head’, ‘locale_stylesheet’ );
+remove_action( ‘publish_future_post’, ‘check_and_publish_future_post’, 10, 1 );
+//remove_action( ‘wp_head’, ‘noindex’, 1 );
+//remove_action( ‘wp_head’, ‘wp_print_styles’, 8 );
+//remove_action( ‘wp_head’, ‘wp_print_head_scripts’, 9 );
+remove_action( ‘wp_head’, ‘wp_generator’ );
+//remove_action( ‘wp_head’, ‘rel_canonical’ );
+remove_action( ‘wp_footer’, ‘wp_print_footer_scripts’ );
+remove_action( ‘wp_head’, ‘wp_shortlink_wp_head’, 10, 0 );
+remove_action( ‘template_redirect’, ‘wp_shortlink_header’, 11, 0 );
+add_action(‘widgets_init’, ‘my_remove_recent_comments_style’);
+function my_remove_recent_comments_style() {
+global $wp_widget_factory;
+remove_action(‘wp_head’, array($wp_widget_factory->widgets[‘WP_Widget_Recent_Comments’], ‘recent_comments_style’));
+}
+?>
+把这段代码插入到主题的functions.php文件下，可以清除WordPress头部大量冗余信息。如有必要，可以看看这些代码的具体意义，以免删除某些你想保留的功能。
+
+二、wp_head函数
+
+wp_head() 是wordpress的一个非常重要的函数，基本上所有的主题在header.php这个文件里都会使用到这个函数，而且很多插件为了在header上加 点东西也会用到wp_head()，比如SEO的相关插件。但是，在wp_head()出现的这个位置，会增加很多并不常用的代码。可以通过 remove_action移除这些代码。
+
+三、remove_action函数
+
+函数原型：remove_action( $tag, $function_to_add, $priority, $accepted_args );
+
+该函数移除一个附属于指定动作hook的函数。该方法可用来移除附属于特定动作hook的默认函数，并可能用其它函数取而代之。参见remove_filter(), add_action() and add_filter()。
+
+重要：添加hook时的$function_to_remove 和$priority参数要能够相匹配，这样才可以移除hook。该原则也适用于过滤器和动作。移除失败时不进行警告提示。
+
+参数
+
+$tag（字符串）（必需）将要被删除的函数所连接到的动作hook。默认值：None
+$function_to_remove（回调）（必需） 将要被删除函数的名称默认值：None
+$priority（整数）（可选）函数优先级（在函数最初连接时定义）默认值：10
+$accepted_args（整数）（必需）函数所接受参数的数量。默认值：1
+返回值
+
+（布尔值）函数是否被移除。
+
+Ttue 函数被成功移除
+False函数未被移除
+四、移除WordPress版本
+
+在head区域，可以看到如下代码：
+
+<meta name=”generator” content=”WordPress 3.1.2″ />
+这是隐性显示的WordPress版本信息，默认添加。可以被黑客利用，攻击特定版本的WordPress漏洞。清除代码：
+
+remove_action( ‘wp_head’, ‘wp_generator’ );
+五、移除离线编辑器开放接口
+
+WordPress自动添加两行离线编辑器的开放接口
+
+<link rel=”EditURI” type=”application/rsd+xml” title=”RSD” href=”http://example.com/xmlrpc.php?rsd” />
+<link rel=”wlwmanifest” type=”application/wlwmanifest+xml” href=”http://example.com/wp-includes/wlwmanifest.xml” />
+其 中RSD是一个广义的接口，wlwmanifest是针对微软Live Writer编辑器的。如果你不需要离线编辑，可移除之。即便你需要使用离线编辑器，大部分时候也不需要这两行代码。Live Writer自己知道它们。保留这两行代码可能会留有安全隐患。清除代码：
+
+remove_action( ‘wp_head’, ‘rsd_link’ );
+remove_action( ‘wp_head’, ‘wlwmanifest_link’ );
+六、移除前后文、第一篇文章、主页meta信息
+
+WordPress把前后文、第一篇文章和主页链接全放在meta中。我认为于SEO帮助不大，反使得头部信息巨大。移除代码：
+
+remove_action( ‘wp_head’, ‘index_rel_link’ ); // Removes the index link
+remove_action( ‘wp_head’, ‘parent_post_rel_link’, 10, 0 ); // Removes the prev link
+remove_action( ‘wp_head’, ‘start_post_rel_link’, 10, 0 ); // Removes the start link
+remove_action( ‘wp_head’, ‘adjacent_posts_rel_link_wp_head’, 10, 0 ); // Removes the relational links for the posts adjacent to the current post.
+七、移除Canonical标记
+
+09年2月份，Google，Yahoo及Microsoft三大搜索引擎联合推出了一个旨在减少重复内容困扰的方法，这对于广大站长来说不啻是个好事情，不用再担心因为网站上有重复的内容而影响到网站页面的权重了。
+
+造 成重复内容的原因有很多，最常见的便是多个url地址指向了同一个页面，比如：wordpress平台下的一篇日志页面，包括了文章及评论内容。每个评论 都可以有个固定的链接地址，，如果有多个评论的话，则每条评论的链接都类似于上述格式，只是commentID号有所不同，这些链接其实都是指向同一篇文 章的。蜘蛛来爬时，便会依次爬行一遍，这篇文章下如有10条评论，则爬了10次相同的页面文章，相当于做了多次重复的工作，严重影响了抓取的效率，及耗费 了带宽。
+
+重复内容造成的结果必然是蜘蛛不愿意来爬，不同的url指向同一个页面，也会影响到该页面的权重。通过canonical标签，能有效的避免这类问题。
+
+需要注意两点：
+
+允许指向不同的子域名，不允许指向其他域名
+canonical属性可以被传递
+即A页面声明B为权威链接，B声明C为权威网页，那么C就是A和B共同的首选权威版本
+如果你的WP版本在2.9之前，需要通过插件（上面已经提到）或者手工 Hack 主题的 header.php 文件来使得博客支持。
+
+<link rel=”canonical” href=”<?php get_permalink()?>” />
+在 WordPress 2.9 发布之后，WordPress 已经默认支持这一标签了，我们无需做任何动作，主题就支持这一标签。这对于文章固定链接的更改很有帮助，可以增加对搜索引擎的友好度。但是如果你觉得这个标签对你无用，也可以移除之：
+
+remove_action( ‘wp_head’, ‘rel_canonical’ );
+八、移除feed
+
+HTML 中通过<link rel=”alternate” type=”application/rss+xml” title=”feed名” href=”http://example.com/feed/” />来指定博客feed。可以被浏览器检测到，然后被读者订阅。
+
+如果你不想添加feed，或者想使用烧制的feed（如FeedSky或者Feedburner烧制的feed），可以移除之。
+
+remove_action( ‘wp_head’, ‘feed_links’, 2 );//文章和评论feed
+remove_action( ‘wp_head’, ‘feed_links_extra’, 3 ); //分类等feed
+如果用的烧制的feed，然后还可以再手动添加feed地址。

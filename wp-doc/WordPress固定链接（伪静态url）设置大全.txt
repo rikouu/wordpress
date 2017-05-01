@@ -1,0 +1,58 @@
+WordPress的固定链接有多种写法
+
+常用的写法有：
+
+样式：http://www.mydaima.com/123.html
+
+写法：/%post_id%.html
+
+样式：http://www.mydaima.com/archives/123.html
+
+写法：/archives/%post_id%.html
+
+样式：http://www.mydaima.com/2012/08/27/post-name.html
+
+写法：/%year%/%monthnum%/%day%/%postname%.html
+
+样式：http://www.mydaima.com/2012/08/post-name.html
+
+写法：/%year%/%monthnum%/%postname%.html
+
+样式：http://www.mydaima.com/category/post-name.html
+
+写法： /%category%/%postname%.html
+
+样式：http://www.mydaima.com/archives/post-name.html
+
+写法：/archive/%postname%.html
+
+样式：http://www.mydaima.com/post-name.html
+
+写法：/%postname%.html
+
+详细说明下各个符号的意义：
+
+%year% 日志发布的年，4位数字，如：2012
+
+%monthnum% 日志发布的月份，2位数字，如：08
+
+%day% 日志发布当月的第几天，2位数字，如：27
+
+%hour% 日志发布时间中的“小时”，2位数字，如：18
+
+%minute% 日志发布时间中的“分钟”，2位数字，如：09
+
+%second% 日志发布时间中的“秒”，2位数字，如：30
+
+%postname% 一串处理过的日志标题。如，日志标题为“This Is A Great Post!”，那么%postname%表
+示为“this-is-a-great-post”
+
+%post_id% 日志的唯一编号
+
+%category% 日志所在的分类
+
+%author% 日志的作
+
+这些都是可以自由组合起来使用的。
+
+比如说/%category%/%post_id%.html，这个就是/分类目录/文章标题.html

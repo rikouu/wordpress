@@ -1,0 +1,89 @@
+===============================================================================
+header.php用到的函数:
+
+001. bloginfo('url') 博客首页地址.
+002. bloginfo('name') 博客名字.
+003. bloginfo('version') 博客版本.
+004. bloginfo('stylesheet_url') style.css文件地址.
+005. bloginfo('description') 博客的描述
+===============================================================================
+index.php下文章主题所用到的函数和表达式:
+
+006. 主循环
+<?php if(have_posts()):?>
+    <?php while(have_posts()):the_post();?>
+
+    <?php endwhile;?>
+<?php endif;?>
+
+if(have_posts()) – 检查博客是否有日志.
+while(have_posts()) – 如果有日志,那么当博客有日志的时候,执行下面the_post()这个函数.
+the_post() – 调用具体的日志来显示.
+endwhile; – 这里用于关闭 while()
+endif; – 关闭 if()
+注释：并不是所有的代码都需要两部分用来打开和关闭.有些代码能够自我关闭,
+这就解释了have_posts()和the_post();这两个函数.因为the_post();在if()和while()的外面,
+只需要分号去结束或者关闭. 
+
+007. the_permalink() 是用来调用每篇日志地址的 PHP 函数
+008. the_content() 日志内容函数.
+009. the_title() 日子标题函数.
+010. the_category() 是用来调用日志的在的所有类别的 PHP 函数
+011. <?php the_author(); ?> – 它是输出当前日志作者的名字
+012. comments_popup_link()调用一个弹出的留言窗口,如果没有激活,comments_popup_link()则只是简单的显示留言列表.
+013. <?php edit_post_link(‘Edit’, ‘ | ‘, ”); ?> – 这个只有当我们以管理员或者作者身份登录的的时候才可见。 edit_post_link() 只是简单显示一个可以用来编辑当前日志的编辑链接，这样就可以让我们不必去管理界面搜寻该日志就能直接编辑。edit_post_link() 有三个参数。第一个是用来确定哪个词你将用在编辑链接的链接标题。如果你使用 Edit post，那么将显示 Edit post 而不是 Edit。第二个参数是用来显示在链接前面的字符，在这里是竖线 |，代码就是&124;。第三个参数是用于显示在编辑链接后面的字符，在这里没有使用。登录 WordPress 之后，再返回到首页就可以看到“Edit”的链接和一条竖线。
+014. the_ID() 只是调用每篇日志的 ID
+015. posts_nav_link() – 调用后一页和前一页的链接
+016. the_time()
+===============================================================================
+侧边栏sidebar.php的相关函数:
+017. <?php wp_list_cats(); ?> – 调用分类链接列表
+018. wp_list_pages()
+019. wp_get_arhives() 
+020. <?php get_links_list(); ?>
+021. wp_register()
+022. wp_loginout() 
+023. get_calendar() 
+024. wp_meta() 
+===============================================================================
+archive.php模版相关函数:
+025. the_excerpt
+===============================================================================
+page.php:
+026. php link_pages()
+===============================================================================
+single.php模版相关函数:
+027. link_pages()
+028. previous_post_link()
+029. next_post_link()
+030. comments_template()
+031. comment_text()
+===============================================================================
+searchform.php
+032. wp_specialchars()
+033. 
+034. 
+035. 
+036. 
+037. 
+038. 
+039. 
+040. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

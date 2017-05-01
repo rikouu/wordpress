@@ -1,0 +1,57 @@
+在观看一些 CMS门户网站时，我们经常看到一些比炫的的设计，如热点信息（即按用户点击文章排行），如下图所示。这样的效果，在我们的wordpress CMS主题中能不能也用上呢？在网上，我们看到的众多的wordpress热门文章，实际上是wordpress热评文章，即按评论多少来排行，这些不是我们所需要的。我们需要的是真正的热点文章，按用户点击来排行。那么，怎样为wordpress CMS主题添加热点文章呢？下面，随高时银博客来看看吧。
+第一步：添加文章流量统计。
+
+我们要为wordpress文章添加用户点击量统计。在wordpress CMS主题的functions.php文件中添加如下统计代码：
+//访问计数
+function record_visitors(){
+if (is_singular()) {global $post;
+$post_ID = $post->ID;
+if($post_ID)
+{
+$post_views = (int)get_post_meta($post_ID, 'views', true);
+if(!update_post_meta($post_ID, 'views', ($post_views+1)))
+{
+add_post_meta($post_ID, 'views', 1, true);
+}
+}
+}
+}
+add_action('wp_head', 'record_visitors');
+function post_views($before = '(点击 ', $after = ' 次)', $echo = 1)
+{
+global $post;
+$post_ID = $post->ID;
+$views = (int)get_post_meta($post_ID, 'views', true);
+if ($echo) echo $before, number_format($views), $after;
+else return $views;
+};
+上面这段代码，是用来统计文章的浏览量的。第一个函数record_visitors()是用来增加点量，用户每浏览一点，就会增加1。第二个函数 post_views()是显示浏览量函数，如果想在文章页等前台页面显示文章浏览量，可以直接调用这个函数。
+ssmay主题
+第二步：添加热点文章函数。
+
+有了文章统计量，我们就可以按文章浏览量的多少来进行排行文章，即热点文章。将下面这段代码放到wordpress主题的functions.php文件中：
+// 函数作用：取得阅读最多的文章
+function get_most_viewed_format($mode = '', $limit = 10,$term_id = 0) {
+global $wpdb, $post;
+$output = '';
+$mode = ($mode == '') ? 'post' : $mode;
+$type_sql = ($mode != 'both') ? "AND post_type='$mode'" : '';
+$term_sql = (is_array($term_id)) ? "AND $wpdb->term_taxonomy.term_id IN (" . join(',', $term_id) . ')' : ($term_id != 0 ? "AND $wpdb->term_taxonomy.term_id = $term_id" : '');
+$term_sql.= $term_id ? " AND $wpdb->term_taxonomy.taxonomy != 'link_category'" : '';
+$inr_join = $term_id ? "INNER JOIN $wpdb->term_relationships ON ($wpdb->posts.ID = $wpdb->term_relationships.object_id) INNER JOIN $wpdb->term_taxonomy ON ($wpdb->term_relationships.term_taxonomy_id = $wpdb->term_taxonomy.term_taxonomy_id)" : '';
+// database query
+$most_viewed = $wpdb->get_results("SELECT ID, post_date, post_title, (meta_value+0) AS views FROM $wpdb->posts LEFT JOIN $wpdb->postmeta ON ($wpdb->posts.ID = $wpdb->postmeta.post_id) $inr_join WHERE post_status = 'publish' AND post_password = '' $term_sql $type_sql AND meta_key = 'views' GROUP BY ID ORDER BY views DESC LIMIT $limit");
+if ($most_viewed) {
+foreach ($most_viewed as $viewed) {
+$post_ID = $viewed->ID;
+$post_views = number_format($viewed->views);
+$post_title = esc_attr($viewed->post_title);
+$get_permalink = esc_attr(get_permalink($post_ID));
+$output .= '<li> <a href='.$get_permalink.' class="title" title='.$post_title.'>'.$post_title.'</a></li>';
+}
+} else {
+$output = "<li>N/A</li>\n";
+}
+echo $output;
+}
+上面这段代码是获取wordpress网站全站的热点文章，此处不做多解。如果对PHP比较熟悉，可以研究一下。

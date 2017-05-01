@@ -1,0 +1,69 @@
+怎样实现“最近访客排行榜”？最近，看到别人的网站上有最近访客排行，觉得非常好看，所以也想弄一个，但是不太会，怎么办呢？于是，在百度里找了一下，呵呵，还真让我给解决了——找到了解决方法。下面，与大家分享一下。
+首先，把下面的代码粘贴到需要放置的地方。
+<div id="hotfriends">
+<h3>30天内最活跃的读者</h3>
+<ul>
+<?php
+/**
+* WordPress制作读者评论排行榜
+* @author: Ludou
+* @Email : zhouzb889@gmail.com
+* @Blog : http://www.ludou.org/
+*/
+global $wpdb;
+// 执行数据库查询
+$counts = $wpdb->get_results("SELECT COUNT(comment_author) AS cnt, comment_author, comment_author_url, comment_author_email
+FROM {$wpdb->prefix}comments
+WHERE comment_date > date_sub( NOW(), INTERVAL 1 MONTH )
+AND comment_approved = '1'
+AND comment_author_email != 'example@example.com'
+AND comment_author_url != ''
+AND comment_type = ''
+AND user_id = '0'
+GROUP BY comment_author_email
+ORDER BY cnt DESC
+LIMIT 15");
+$mostactive = '';
+if ( $counts ) {
+// 输出读者列表
+foreach ($counts as $count) {
+$c_url = $count->comment_author_url;
+$mostactive .= '<li>' . '<a href="'. $c_url . '" title="' . $count->comment_author .' 发表 '. $count->cnt . ' 条评论" target="_blank">' . get_avatar($count->comment_author_email, 55, '', $count->comment_author . ' 发表 ' . $count->cnt . ' 条评论') . '</a></li>';
+}
+echo $mostactive;
+}
+?>
+<div style="clear:both;"></div>
+</ul>
+</div> <!-- / hotfriends -->
+上面的代码解说：
+1、 第16行代码中 INTERVAL 1 MONTH 用于只统计最近一个月的评论，可以更改成“年”或“月”或“日”，如：3 YEAR。
+2、第17行代码 AND comment_approved = '1' 用于限定只统计已经通过审核的评论，如果你想统计未通过审核的评论，你可以将这一句代码删除。
+3、 第18行代码 AND comment_author_email != 'example@example.com' 用于排除不计入榜单的评论者，例如博主自己，将email地址改成博主的Email即可。这里我觉得使用评论者的Email作为限定条件比昵称更好，毕竟头像也是由Email决定的。如果你想排除多个评论者，可以多写几行类似的代码，Email不同即可，如：
+1
+2
+AND comment_author_email != 'example1@example.com'
+AND comment_author_email != 'exam2@exam.com'
+4、第19行代码 AND comment_author_url != '' 排除没填URL的评论者，也就是那些没有网站的评论者将无法进入你的排行榜。
+5、第20行代码 AND comment_type = '' 限定了评论的类型，这行代码排除了 trackback 和 pingback，如果你还想统计这两种评论类型，你可以将此行代码删除。
+6、第21行代码 AND user_id = '0' 使排行榜中不包含博客的注册用户(包括博主)，注册用户将无法进入你的排行榜。如果你的博客有大量的注册用户，或者你的博客只有博主这个注册用户，你可以将此行代码删除。
+7、第24行代码中 LIMIT 15 用于限定排行榜中的人数，这里限制输出15位读者，你可以根据需要做一下更改。
+8、第31行代码中的 55 限定了输出的头像大小为 55 * 55，如果你不需要这么大的尺寸，你可以将这个数值改小点。
+再把下面的CSS代码放置到CSS文件里：
+#hotfriends {
+text-align:center;
+}
+#hotfriends ul {
+padding:7px;
+}
+#hotfriends ul li {
+float:left;
+list-style:none outside none;
+margin:6px;
+padding:0;
+}
+#hotfriends h3 {
+font-size:15px;
+margin:7px 7px 0;
+}
+这样，最近访客排行就搞定了。看起来是不是很简单？不过，这也是前辈们的方法。以后，也要多多研究了。

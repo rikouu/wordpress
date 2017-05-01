@@ -1,0 +1,44 @@
+在做wordpress CMS主题时，我们一般会在首页或列表页调用文章的图片，这样才能让网页布局好看一点。但是如果文章图片比较大，而页面调用图片比较多，这时，页面打开的速度可能就会受到影响。如何解决这个问题呢？我们可以通过调用wordpress 文章缩略图来减小图片的大小，因为wordpress缩略图一般都会比原图片小很多，进而加快页面打开速度。那么，在wordpress CMS主题制作过程中如何调用文章缩略图片呢？下面一起来看看吧。
+1：给主题添加缩略图功能。
+一般情况下，wordpress都会集成这个功能。不需要我们重新添加。如果你的wordpress版本没有缩略图功能，可以在主题的functions.php文件中添加下面这句：
+add_theme_support( 'post-thumbnails' ); //激活文章和页面的缩略图功能。
+2：在主循环中调用缩略图。
+if ( have_posts()):
+while ( have_posts()):
+the_post();
+the_post_thumbnail();
+endwhile;
+endif;
+3：wordpress缩略图预置4种大小：
+Thumbnail (缩略图尺寸)
+Medium （中等尺寸）
+Large （大尺寸）
+Full （原始尺寸）
+这些尺寸可以在后台——>设置——>多媒体 对它们进行修改。如果调用缩略图，如下：
+the_post_thumbnail( 'thumbnail' ); //把缩略图名thumbnail放到函数中，其它以些类推。
+也可以自定义大小，如下：
+the_post_thumbnail(array(200,200)); // 显示200X200尺寸的缩略图
+这种方法的优点的灵活，可以随时通过代码的调用显示不同尺寸的图片，缺点是修改有点麻烦，如果你有多处这样的代码，修改起来就要把每一处代码都要修改掉。
+4、增加预置尺寸。
+wordpress为我们预置了3种可设置的尺寸，如果觉得不够，你还可以添加预置你想要的尺寸。
+if ( function_exists( 'add_image_size' ) ){
+add_image_size( 'cat-thumb', 250, 250 ); // 预置一个名为cat-thumb,大小250*250
+add_image_size( 'home-thumb', 200, 200); //预置一个名为’home-thumb’,缩略图大小200*200
+}
+这样，我们就可以在需要调用的地方调用这2个缩略图，只需调用相应的缩略图名，如下：
+the_post_thumbnail( 'home-thumb' ); //这是调用200*200 的缩略图片
+5、定义缩略图的样式。
+我们可以通过 the_post_thumbnail()函数给缩略图添加 class 属性，然后再给这处属性添加CSS样式。如下：
+the_post_thumbnail(‘home-thumb’,array('class'=>'home-thumb'));//添加了一个 class="home-thumb" 属性
+这样，我们就可以给不同的缩略图添加不同的样式。
+6、检查文章是否有缩略图。
+检查文章是否有缩略图，可以防止在没有缩略图片的情况下前台页面空白，我们可以调用其它图片。
+if ( has_post_thumbnail()):
+the_post_thumbnail( 'thumbnail');
+综合上面的介绍，我们就可以在调用缩略图片的地方，先判断文章有没有缩略图，如果有就调用缩略图片，如果没有就调用文章的第一张图片。代码如下：
+if (has_post_thumbnail()) {
+the_post_thumbnail('thumbnail' ,array( 'class' => 'home-thumb'));
+}else {
+echo '<img src="'.catch_first_image().'" />';
+}
+好了，本章就介绍到这里，希望对大家在开发wordpress主题时有所帮助。

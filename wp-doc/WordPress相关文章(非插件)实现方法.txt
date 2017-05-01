@@ -1,0 +1,24 @@
+在每篇日志的后面添加相关文章，可以实现对相关文章的深入阅读，用插件的方法，简单，但显得累赘，下面是用代码实现：
+
+<div class="related_posts"> <?php
+$backup = $post;
+$tags = wp_get_post_tags($post->ID);
+$tagIDs = array();
+if ($tags && count($tags)>1) {
+echo '<h3>相关日志</h3>';
+echo '<ul class="ul_style">';
+$tagcount = count($tags);
+for ($i = 0; $i < $tagcount; $i++) {
+$tagIDs[$i] = $tags[$i]->term_id;
+}
+$args=array(
+'tag__in' => $tagIDs,
+'post__not_in' => array($post->ID),
+'showposts'=>8,
+'caller_get_posts'=>1
+);
+$my_query = new WP_Query($args);
+if( $my_query->have_posts() ) { while ($my_query->have_posts()) : $my_query->the_post(); ?>
+<li><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php the_title(); ?>" target="_blank"> <?php the_title(); ?> </a></li>
+<?php endwhile;echo '</ul>';} else { ?> <?php }} $post = $backup;wp_reset_query();?> </div>
+加在single.php文章结尾处即可。

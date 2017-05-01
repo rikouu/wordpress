@@ -1,0 +1,19 @@
+我们在用wordpress的标签函数的时候需要给予一些扩展，那么今天这篇文章就结合了常见的详细参数及说明：
+标准的函数写法为：
+
+<?php wp_tag_cloud(”); ?>
+加入参数扩展的写法：
+
+<?php wp_tag_cloud(‘number=50&orderby=count&order=DESC&smallest=12&largest=12&unit=px’); ?>
+下面就列举这些参数的
+使用说明
+
+smallest：标签文字最小字号，默认为8pt；
+largest：标签文字最大字号，默认为22pt；
+unit：标签文字字号的单位，默认为pt，可以为px、em、pt、百分比等；
+number：调用的标签数量，默认为45个，设置为“0”则调用所有标签；
+format：调用标签的格式，可选“flat”、“list”和“array”，默认为“flat”平铺，“list”为列表方式；
+orderby：调用标签的排序，默认为“name”按名称排序，“count”则按关联的文章数量排列；
+order：排序方式，默认为“ASC”按正序，“DESC”按倒序，“RAND”按任意顺序。
+exclude：排除部分标签，输入标签ID，并以逗号分隔，如“exclude=1,3,5,7”不显示ID为1、3、5、7的标签；
+include：包含标签，与exclude用法一样，作用相反，如“include=2,4,6,8”则只显示ID为2、4、6、8的标签。

@@ -1,0 +1,59 @@
+想到部分朋友可能需要这样的一个功能，WordPress自动关键词keywords与描述description，索性的找到了。如果你现在使用的wordpress自带有这个功能请忽略，如果没有，想尝试一下的建议先备份一下主题！
+
+以下代码实现的是以标签为关键词；以摘要为描述，如果没有填写摘要，那就自动截取文章前200字为描述。
+代码实现WordPress自动关键词与描述：
+以下代码放到你的主题下funtions.php的最后一个 ?>前：
+
+//自动关键词与描述 Devework.com
+function get_cats_name() {
+$allcats=get_categories();
+foreach ($allcats as $category)
+{
+$keywords[] = $category->cat_name;
+}
+return $keywords;
+}
+// utf8 substr
+function utf8Substr($str, $from, $len) {
+return preg_replace('#^(?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$from.'}'.
+'((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$len.'}).*#s',
+'$1',$str);
+}
+// Meta SEO
+function meta_SEO() {
+global $post;
+$output = '';
+if (is_single()){//如果是文章页
+$keywords = '';
+$description = '';
+if ($post->post_excerpt) {//如果文章摘要存在就以文章摘要为描述
+$description = $post->post_excerpt;
+$description = str_replace("\r\n","",$description);
+$description = str_replace("\n","",$description);
+$description = str_replace("\"","'",$description);
+$description .= '...';
+} else {//如果文章摘要不存在就截断文章前200字为描述
+$description = utf8Substr(strip_tags($post->post_content),0,200);
+$description = str_replace("\r\n","",$description);
+$description = str_replace("\n","",$description);
+$description = str_replace("\"","'",$description);
+$description .= '...';
+}
+$tags = wp_get_post_tags($post->ID);//取文章标签
+foreach ($tags as $tag ) {
+$keywordarray[] = $tag->name;
+}
+//以文章标签为关键字
+$keywords = implode(',',array_unique((array)$keywordarray));
+} else {//如果不是文章页
+$keywords = '便宜VPS推荐,国外VPS推荐,免费VPS,美国VPS优惠,VPS优惠码,linux VPS怎么用,国外VPS评测'; //在引号间写入你博客的关键字用,断开
+$description = '老耿博客推荐优秀的美国虚拟主机、美国VPS主机,香港的优秀主机以及国外vps优惠,主机优惠码,免费空间,虚拟主机,godaddy,namecheap,域名注册转';//在引号间写入你博客的简单描述，不要过200字
+}
+//输出关键字
+$output .= '<meta name="keywords" content="' . $keywords . '" />' . "\n";
+$output .= '<meta name="description" content="' . $description . '" />' . "\n";
+//输出描述
+echo "$output\n";
+}
+add_action('wp_head', 'meta_SEO');//添加meta_SEO函数到头部信息里
+根据自己站点修改上面的内容，也就是第43行与第44行的内容需要根据你的网站进行修改。

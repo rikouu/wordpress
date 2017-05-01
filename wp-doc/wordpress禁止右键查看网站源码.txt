@@ -1,0 +1,20 @@
+有时候，为了自己小小的隐私，或者为了技术被“窥探”，需要禁止别人查看自己网页的源码，下面就给大家用js代码实现下，其实原理很简单，你可以把源码中截取关键源码到你的网站页面，wordpress在page.php和single.php里面！
+
+<html>
+<head>
+<title>让你的网页源代码不可见</title>
+<script>
+function clear(){
+Source=document.body.firstChild.data;
+document.open();
+document.close();
+document.title="没有源码";
+document.body.innerHTML=Source;
+}</script>
+</head>
+<body onload=clear()>
+<!--<marquee>很不错吧？让你的网页看不到源代码？</marquee>-->
+</body>
+</html>
+核心代码显而易见，只要粘贴复制就行！大家可以自行尝试！
+不过最好可以查看源码，这样可以自己调试网页，况且这里的“源码”又不是真正的源码，只要php编译输出的html罢了！

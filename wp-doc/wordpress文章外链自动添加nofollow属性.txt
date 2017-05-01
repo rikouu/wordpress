@@ -1,0 +1,34 @@
+做SEO的大家都知道如果文章中过多的外链会分散了该页面的权重，这样是不利于网站排名的。所以网站内页最好是尽量不要链接向外部。但是在某些情况下我们不得不链接向外部，那么该如何处理呢？其实我们可以给外部链接加上nofollow属性，对蜘蛛声明不要爬取这条链接。这样就可以有效的解决权重流失的问题。但是在编辑文章中一条链接一条链接的加nofollow属性工作量实在太大了，小V就来教大家让wordpress给文章中的外链自动添加nofollow属性。
+add_filter( 'the_content', 'v7v3_seo_wl');
+function v7v3_seo_wl( $content ) {
+    $regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>";
+    if(preg_match_all("/$regexp/siU", $content, $matches, PREG_SET_ORDER)) {
+        if( !emptyempty($matches) ) {
+            $srcUrl = get_option('siteurl');
+            for ($i=0; $i < count($matches); $i++)
+            {
+                $tag = $matches[$i][0];
+                $tag2 = $matches[$i][0];
+                $url = $matches[$i][0];
+                $noFollow = '';
+                $pattern = '/target\s*=\s*"\s*_blank\s*"/';
+                preg_match($pattern, $tag2, $match, PREG_OFFSET_CAPTURE);
+                if( count($match) < 1 )
+                    $noFollow .= ' target="_blank" ';
+                $pattern = '/rel\s*=\s*"\s*[n|d]ofollow\s*"/';
+                preg_match($pattern, $tag2, $match, PREG_OFFSET_CAPTURE);
+                if( count($match) < 1 )
+                    $noFollow .= ' rel="nofollow" ';
+                $pos = strpos($url,$srcUrl);
+                if ($pos === false) {
+                    $tag = rtrim ($tag,'>');
+                    $tag .= $noFollow.'>';
+                    $content = str_replace($tag2,$tag,$content);
+                }
+            }
+        }
+    }
+    $content = str_replace(']]>', ']]>', $content);
+    return $content;
+}
+将以上代码加入到当前主题的functions.php文件即可实现，换主题的时候记得把这段代码加到新主题里噢，不然换主题后文章中的外部链接就会变成无nofollow属性的了。

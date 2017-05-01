@@ -1,0 +1,25 @@
+在WordPress建站中，经常需要开放访客注册的网站都在想尽办法提高网站的PV，像一些之前介绍的投稿，投稿排名这样一系列的功能可以吸引到顾客参与进来，从而可以达到网站最好的效果，开放注册的博客而且可以使用邮件系统来通知注册的用户你的网站有新的文章更新了，这个也是可以很好的提高回头率，下面我们介绍一下这个方法的实现。
+
+在当前的WordPress主题目录下的functions.php中，添加以下php代码：
+
+function newPostNotify($post_ID) {
+if( wp_is_post_revision($post_ID) ) return;
+global $wpdb;
+$get_post_info = get_post($post_ID);
+if ( $get_post_info->post_status == ‘publish’ && $_POST[‘original_post_status’] != ‘publish’ ) {
+// 读数据库，获取所有用户的email
+$wp_user_email = $wpdb->get_results(“SELECT DISTINCT user_email FROM $wpdb->users”);
+// 依次给每个Email发邮件
+foreach ( $wp_user_email as $email ) {
+// 邮件标题：xx博客有新文章
+$subject = ‘xx博客有新文章’;
+// 邮件内容：新文章网址：+ URL
+$message = ‘新文章网址：’ . get_permalink($post_ID);
+// 发邮件
+wp_mail($email->user_email, $subject, $message);
+}
+}
+}
+// 钩子，一旦WordPress有新文章发布或文章被修改即刻执行newPostNotify函数
+add_action(‘publish_post’, ‘newPostNotify’);
+添加完以上代码后，保存更新就可以了，当文章更新发布的时候，就会有邮件发送给注册用户，这个方法是很多网站都会做的。

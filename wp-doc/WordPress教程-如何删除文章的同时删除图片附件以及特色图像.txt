@@ -1,0 +1,37 @@
+对于使用WordPress建站的朋友们知道，对于有些觉得过时了的文章或者自己觉得不喜欢了，想删除，但在删除文章时，一般来说文章内所上传到媒体库的图片等附件不会自动删除。这样长时间的积累，占用的资源也不少。那如何在删除文章的同时删除图片附件以及特色图像呢？以下的代码可以实现在删除文章时自动删除文章图片附件以及特色图片，这样就不用手动去媒体库寻找并删除，准确而且效率高。将代码放到当前主题functions.php文件中即可删除文章图片附件。
+
+/* 删除文章时删除图片附件
+
+/* ------------------------ */
+
+function delete_post_and_attachments($post_ID) {
+
+global $wpdb;
+
+//删除特色图片
+
+$thumbnails = $wpdb->get_results( "SELECT * FROM $wpdb->postmeta WHERE meta_key = '_thumbnail_id' AND post_id = $post_ID" );
+
+foreach ( $thumbnails as $thumbnail ) {
+
+wp_delete_attachment( $thumbnail->meta_value, true );
+
+}
+
+//删除图片附件
+
+$attachments = $wpdb->get_results( "SELECT * FROM $wpdb->posts WHERE post_parent = $post_ID AND post_type = 'attachment'" );
+
+foreach ( $attachments as $attachment ) {
+
+wp_delete_attachment( $attachment->ID, true );
+
+}
+
+$wpdb->query( "DELETE FROM $wpdb->postmeta WHERE meta_key = '_thumbnail_id' AND post_id = $post_ID" );
+
+}
+
+add_action('before_delete_post', 'delete_post_and_attachments');
+
+以上代码经过测试是可行的，如果你喜欢折腾也可以试一试哦！不过老耿在这建议最好先备份好自己原来的数据在试哦！

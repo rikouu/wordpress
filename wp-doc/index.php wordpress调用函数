@@ -1,0 +1,27 @@
+<?php the_content(); ?> 日志内容
+<?php if(have_posts()) : ?> 确认是否有日志
+<?php while(have_posts()) : the_post(); ?> 如果有，则显示全部日志
+<?php endwhile; ?> 结束PHP函数”while”
+<?php endif; ?> 结束PHP函数”if”
+<?php get_header(); ?> header.php文件的内容
+<?php get_sidebar(); ?> sidebar.php文件的内容
+<?php get_footer(); ?> footer.php文件的内容
+<?php the_time(‘m-d-y’) ?> 显示格式为”02-19-08″的日期
+<?php comments_popup_link(); ?> 显示一篇日志的留言链接
+<?php the_title(); ?> 显示一篇日志或页面的标题
+<?php the_permalink() ?> 显示一篇日志或页面的永久链接/URL地址
+<?php the_category(‘, ‘) ?> 显示一篇日志或页面的所属分类
+<?php the_author(); ?> 显示一篇日志或页面的作者
+<?php the_ID(); ?> 显示一篇日志或页面的ID
+<?php edit_post_link(); ?> 显示一篇日志或页面的编辑链接
+<?php get_links_list(); ?> 显示Blogroll中的链接
+<?php comments_template(); ?> comments.php文件的内容
+<?php wp_list_pages(); ?> 显示一份博客的页面列表
+<?php wp_list_cats(); ?> 显示一份博客的分类列表
+<?php next_post_link(‘ %link ‘) ?> 下一篇日志的URL地址
+<?php previous_post_link(‘%link’) ?> 上一篇日志的URL地址
+<?php get_calendar(); ?> 调用日历
+<?php wp_get_archives() ?> 显示一份博客的日期存档列表
+<?php posts_nav_link(); ?> 显示较新日志链接(上一页)和较旧日志链接（下一页）
+<?php bloginfo(‘description’); ?> 显示博客的描述信息
+<?php include(‘includes/social.php’); ?>调用php页面

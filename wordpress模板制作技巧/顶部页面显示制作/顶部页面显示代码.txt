@@ -1,0 +1,5 @@
+<ul>
+<li>首页</li>
+<?php if(function_exists('wp_nav_menu')) wp_nav_menu(array('container' => false, 'items_wrap' => '%3$s', 'theme_location' => 'foot-menu')); ?>
+
+</ul>

@@ -1,0 +1,53 @@
+  http://www.seoxuetang.com/jiaocheng/1000398.html
+
+   今天这篇文章为大家列举一下最全的12个seo人员日常使用频率比较高的一些seo指令。这些指令可能对普通用户来说，没有一点作用，但是对seo专业人士来说，会让你精准的查询到你所需要的数据。就不啰嗦了，下面直接讲12个seo指令。
+
+　　1、site指令
+　　查询某个特定网站的收录情况：如果结果是返回数据，则表明这个网站已经被收录，如果返回数据为空，则表明这个网站未被收录。如果说以前是有收录的，现在来查发现没收录了则是被搜索引擎从索引中删除了，也就是大家经常称呼的“被K了”
+　　用法：site:www.seoxuetang.com
+
+　　2、link指令
+　　查询外链的指令：一般在雅虎查询准确率比较高。查询某个特定网站的外部链接，这是一个主要获取排名和权重的网站PR值主要因素。雅虎提供前1000的外部网站链接的网站。Google也支持这个指令，但是唯一的缺点是link只能返回Google索引程序库中的一部分。
+　　用法：link:www.seoxuetang.com
+
+　　3、related指令
+　　查询相关网页的指令：可以用它来查询和你的网站内容相关的网站，利用related指令可以很轻松的找到和你最相关的对手。该指令现在只支持Google搜索引擎。
+　　用法：related:www.seoxuetang.com
+
+　　4、info指令
+　　info指令：能查询某个特定网站的收录信息、最近的快照情况、相似网页、站点链接、内部链接及包含域名的网页。是一个综合的指令。这个指令只支持Google搜索引擎
+　　用法：info:www.seoxuetang.com
+
+　　5、allintext/intext指令
+　　allintext指令：有效的查询某个特定关键词在特定网页的文档上出现情况。发现最相关的网页和潜在链接对象。这个指令也是只支持Google搜索引擎。intext指令和allintext指令是相似的。
+　　用法：allintext:seo学堂
+
+　　6、allinrul/inrul指令
+　　查找特定网页URL中包含特定URL关键词，这个指令即可单独使用，又可以与其他指令组合来查询特定网页的内容，这个指令也是只支持Google搜索引擎。
+　　用法：site:www.seoxuetang.com inurl:seo
+
+　　7、allintitle/intitle指令
+　　查找特定网页标题中和所输入的信息相同的文字。用于查找竞争对手还是挺不错的。这个指令只支持Google搜索引擎。
+　　用法：allintitle:www.seoxuetang.com intitle:SEO学堂
+
+　　8、allinanchor/inanchor指令
+　　可以理解为查找特定关键词的锚文本链接。有点像查找外链情况，所不同的是输入的是文本。这个指令只支持Google搜索引擎。
+　　用法：allinanchor:www.seoxuetang.com inanchor武汉seo
+
+　　9、define指令
+　　查找特定关键词非常有效的。google比百度查看的结果相对精准，但百度发范围比较广，实践中可根据自己的情况取舍。
+　　用法：define:seo学堂
+
+　　10、filetype指令
+　　搜索特定后缀的文件，如pdf、doc等
+　　用法：filetype:pdf
+
+　　11、intitle指令
+　　intitle指令是用来查询特定论坛或文章标题中出现特定的关键词
+　　用法：intitle:seo优化
+
+　　12、domain指令
+　　用domain指令可以查询到某一网站的百度相关域，即百度外链，这个指令适合于百度搜索引擎，在Google中该指令相当于一个关键词
+　　用法：domain:www.seoxuetang.com
+
+　　写了这么多，希望对大家有用，也谢谢大家的关注和支持!

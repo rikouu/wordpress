@@ -1,0 +1,24 @@
+这里有一段很实用的代码，可以自动将文章中的第一张图片设置为特色图像，如果你手动设置了特色图像，可以覆盖这段代码。将下面的代码丢到当前主题的functions.php里，以后就不用担心忘记设置特色图像了。
+
+
+function autoset_featured() {
+          global $post;
+          $already_has_thumb = has_post_thumbnail($post->ID);
+              if (!$already_has_thumb)  {
+              $attached_image = get_children( "post_parent=$post->ID&post_type=attachment&post_mime_type=image&numberposts=1" );
+                          if ($attached_image) {
+                                foreach ($attached_image as $attachment_id => $attachment) {
+                                set_post_thumbnail($post->ID, $attachment_id);
+                                }
+                           }
+                        }
+      }  //end function
+add_action('the_post', 'autoset_featured');
+add_action('save_post', 'autoset_featured');
+add_action('draft_to_publish', 'autoset_featured');
+add_action('new_to_publish', 'autoset_featured');
+add_action('pending_to_publish', 'autoset_featured');
+add_action('future_to_publish', 'autoset_featured');
+
+
+

@@ -1,0 +1,25 @@
+前面高时银博客为大家介绍过标签云及彩色标签云的实现方法，本节，小编为大家介绍wordpress标签云显示文章数量的实现方法。
+方法一：php代码实现标签云显示文章数量
+把下面的代码放到主题的functions.php文件中。
+//标签显示文章数
+function Tagno($text) {
+$text = preg_replace_callback('|<a (.+?)</a>|i', 'tagnoCallback', $text);
+return $text;
+}
+function tagnoCallback($matches) {
+$text=$matches[1];
+preg_match('|title=(.+?)style|i',$text ,$a);
+preg_match("/[0-9]+/",$a[1],$a);
+return "<a ".$text ."<span>(<em>".$a[0]."</em>)</span></a>";
+}
+add_filter('wp_tag_cloud', 'Tagno', 1);
+保存后，tag标签之后就会显示如图所示的文章数目
+方法二：jquery实现标签云显示文章数量。
+jquery只需要两行哦！在需要显示tag包含文章数目的页面模板中加入如下js代码。
+<script>
+jQuery(".tagclouds a").append("<span></span>");
+jQuery(".tagclouds a").find("span").html( function(){var s=$(this).parent().attr("title").replace(/[^0-9]/ig, "");
+return "["+parseInt(s)+"]";});
+</script>
+注意事项：使用jquery方法需要先加载jquery.js。
+jquery方法中的 tagclouds 是包含标签云wp_tag_cloud 函数的dom层的class或者id。原理是在标签后加一个文本层。并将tag的title取出，正则取所含文章数。如果你想要更多的显示效果可以自己定义了，比如延时载入，hover效果等等。

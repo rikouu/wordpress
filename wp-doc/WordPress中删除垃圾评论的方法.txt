@@ -1,0 +1,21 @@
+通过 SQL 命令删除
+如果你不喜欢折腾插件，并且你可以通过登陆PhpMyAdmin 管理MySQL数据库，那你可以通过 SQL 命令来删除
+Wordpress评论表为wo_comments，comment_approved为评论回应的字段.
+Comment_approved 为1 ：通过审核的评论Comment_approved 为0：待审核的评论Comment_approved 为trash：回收站的评论Comment_approved 为spam: 垃圾评论
+详细SQL命令执行方法如下所示，可以根据需要随时更改该语句.
+1. 删除待审核评论，垃圾评论，回收站评论
+delete
+From ‘wp_comments’
+WHERE ‘cooment_approved’ NOT LIKE ‘1’
+2. 只删除待审评论
+delete
+From ‘wp_comments’
+WHERE ‘cooment_approved’ =‘0’
+3. 只删除垃圾评论
+delete
+From ‘wp_comments’
+WHERE ‘cooment_approved’=’spam’
+4只删除回收站评论
+delete
+From ‘wp_comments’
+WHERE ‘cooment_approved’=’trash’

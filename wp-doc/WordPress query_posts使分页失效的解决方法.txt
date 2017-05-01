@@ -1,0 +1,28 @@
+帮别人做主题的时候遇到了分页失效的情况，后来在网上搜索了下发现是query_posts的问题，因为我们一般的主题没有使用query_posts，所以很少遇到该问题，下面就介绍下如何解决这个问题。
+
+
+1、在index.php中找到关于query_posts的语句，比如下句
+
+<?php query_posts('showposts=9'); ?>
+
+可以看出，上代码没有接收分页参数，所以分页失效。
+
+2、将以上代码替换为以下代码
+
+<?php
+$limit = get_option('posts_per_page');
+$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+query_posts('&showposts=' . $limit=9 . '&paged=' . $paged);
+$wp_query->is_archive = true; $wp_query->is_home = false;
+?>
+
+其中的limit后面的9是每页显示的文件数量
+
+
+
+
+
+
+
+
+

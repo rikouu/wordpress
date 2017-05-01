@@ -1,0 +1,114 @@
+一、Redis配置、安装等
+
+1、Redis介绍及优点
+
+REmote DIctionary Server(Redis) 是一个由Salvatore Sanfilippo写的key-value存储系统。Redis提供了一些丰富的数据结构，包括lists, sets, ordered sets以及 hashes ，当然还有和Memcached一样的 strings结构.Redis当然还包括了对这些数据结构的丰富操作。
+
+Redis的优点
+
+性能极高 – Redis能支持超过 100K+ 每秒的读写频率。
+丰富的数据类型 – Redis支持二进制案例的 Strings, Lists, Hashes, Sets 及 Ordered Sets 数据类型操作。
+原子 – Redis的所有操作都是原子性的，同时Redis还支持对几个操作全并后的原子性执行。
+丰富的特性 – Redis还支持 publish/subscribe, 通知, key 过期等等特性。
+
+2、VPS下的安装
+
+Debian下的安装：
+
+wget http://download.redis.io/releases/redis-2.8.9.tar.gz
+tar xvfz redis-2.8.9.tar.gz
+cd redis-2.8.9
+sudo make
+sudo make install
+
+Centros下的安装：
+
+wget http://download.redis.io/releases/redis-2.8.19.tar.gz
+tar xzf redis-2.8.19.tar.gz
+cd redis-2.8.19
+make
+
+3、复制文件
+
+把src目录下的几个可执行文件redis-benchmark,redis-check-aof,redis-check-
+dump,redis-cli,redis-sentinel,redis-server和redis.conf文件复制到你所希望的地方，比如我是复制到/usr/local/redis/bin 和/usr/local/redis/etc 下面的，命令如下：
+
+mkdir -p /usr/local/redis/{bin,etc,var}
+/bin/cp src/{redis-benchmark,redis-check-aof,redis-check-dump,redis-cli,redis-sentinel,redis-server} /usr/local/redis/bin/
+/bin/cp redis.conf /usr/local/redis/etc/
+ln -s /usr/local/redis/bin/* /usr/local/bin/
+sed -i 's@pidfile.$@pidfile /var/run/redis.pid@' /usr/local/redis/etc/redis.conf
+sed -i 's@logfile.$@logfile /usr/local/redis/var/redis.log@' /usr/local/redis/etc/redis.conf
+sed -i 's@^dir.*$@dir /usr/local/redis/var@' /usr/local/redis/etc/redis.conf
+sed -i 's@daemonize no@daemonize yes@' /usr/local/redis/etc/redis.conf
+echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
+sysctl -p
+
+4、配置开机自启动redis-server
+
+Debian下：
+wget https://github.com/ijonas/dotfiles/raw/master/etc/init.d/redis-server
+wget https://github.com/ijonas/dotfiles/raw/master/etc/redis.conf
+sudo mv redis-server /etc/init.d/redis-server
+sudo chmod +x /etc/init.d/redis-server
+sudo mv redis.conf /etc/redis.conf
+
+sudo useradd redis
+sudo mkdir -p /var/lib/redis
+sudo mkdir -p /var/log/redis
+sudo chown redis.redis /var/lib/redis
+sudo chown redis.redis /var/log/redis
+
+Centros下：
+wget https://raw.githubusercontent.com/lj2007331/lnmp/master/init/Redis-server-init-CentOS
+mv Redis-server-init-CentOS /etc/init.d/redis-server
+chmod +x /etc/init.d/redis-server
+chkconfig --add redis-server
+chkconfig redis-server
+
+5、启动redis
+Debian下：
+sudo update-rc.d redis-server defaults
+sudo /etc/init.d/redis-server start
+
+Centros下：
+service redis-server start
+
+6、测试
+
+/usr/local/redis/bin/redis-cli
+redis 127.0.0.1:6379> set name wiki8
+OK
+redis 127.0.0.1:6379> get name
+"wiki8"
+
+7、关闭redis
+
+service redis-server stop
+
+二、配置WordPress
+
+1、使wordpress支持Redis
+
+推荐predis. 加入WordPress的根目录，执行下面
+
+wget http://uploads.staticjw.com/ji/jim/predis.php
+chown www.www ./predis.php
+
+2、前端缓存的PHP脚本
+
+加入WordPress的根目录，执行下面
+
+wget https://gist.githubusercontent.com/JimWestergren/3053250/raw/d9e279e31cbee4a1520f59108a4418ae396b2dde/index-with-redis.php
+chown www.www ./index-with-redis.php
+
+根据自己需求修改index-with-redis.php，修改如下：
+
+$cf = 0; // set to 1 if you are using cloudflare
+$debug = 1; // set to 1 if you wish to see execution time and cache actions
+$display_powered_by_redis = 0; // set to 1 if you want to display a powered by redis message with execution time, see below
+
+替换index.php
+
+mv index.php index.php_bk #替换到原来的index.php，也可以改nginx伪静态规则
+mv index-with-redis.php index.php

@@ -1,0 +1,180 @@
+/*
+Theme Name: Tutorial
+Theme URI: http://www.wpdesigner.com
+Description: This is my theme for a tutorial.
+Version: 1.0
+Author: Small Potato
+Author URI: http://www.wpdesigner.com/
+*/
+body{
+    margin: 0;
+    font-family: Arial, Helvetica, Georgia, Sans-serif;
+    font-size: 12px;
+    text-align: center;
+    vertical-align: top;
+    background: #ffffff;
+    color: #000000;
+}
+body, h1, h2, h3, h4, h5, h6, address, blockquote, dd, dl, hr, p,form{
+margin: 0;
+padding: 0;
+}
+h1{
+font-family: Georgia, Sans-serif;
+font-size: 24px;
+padding: 0 0 10px 0;
+}
+a:link,a:visited{
+    text-decoration: underline;
+    color: #336699;
+}
+a:hover{
+    text-decoration: none;
+}
+p{
+padding: 10px 0 0 0;
+}
+#wrapper{
+    margin: 0 auto;
+    width: 750px;
+    text-align: left;
+}
+#header{
+    float: left;
+    width: 750px;
+    background: #414141;
+}
+#container{
+    float: left;
+    width: 500px;
+}
+.post{
+padding: 10px 0;
+}
+.post h2{
+font-family: Georgia, Sans-serif;
+font-size: 18px;
+}
+.entry{
+line-height: 18px;
+word-break:break-all;
+overflow:auto;
+}
+p.postmetadata{
+border-top: 1px dashed blue;
+margin: 10px 0 0 0;
+}
+.navigation{
+padding: 10px 0 0 0;
+font-size: 14px;
+font-weight: bold;
+line-height: 18px;
+}
+.sidebar{
+    margin: 0 0 0 10px;
+    float: left;
+    width: 240px;
+    background: #eeeeee;
+    display: inline;
+}
+.sidebar ul{
+list-style-type: none;
+margin: 0;
+padding: 0 10px 0 10px;
+}
+.sidebar ul li{
+padding: 10px 0 10px 0;
+}
+.sidebar ul li h2{
+font-family: Georgia, Sans-serif;
+font-size: 14px;
+}
+.sidebar ul ul li{
+padding: 0;
+}
+table#wp-calendar{
+width: 100%;
+}
+.comments-template{
+    margin: 10px 0 0;
+
+    border-top: 1px solid #ccc;
+
+    padding: 10px 0 0;
+
+}
+.comments-template ol{
+
+    margin: 0;
+
+    padding: 0 0 15px;
+
+    list-style: none;
+}
+.comments-template ol li{
+
+    margin: 10px 0 0;
+
+    line-height: 18px;
+
+    padding: 0 0 10px;
+
+    border-bottom: 1px solid #ccc;
+}
+.comments-template h2, .comments-template h3{
+
+    font-family: Georgia, Sans-serif;
+
+    font-size: 16px;
+
+}
+.commentmetadata{
+
+    font-size: 12px;
+
+}
+
+
+
+.comments-template p.nocomments{
+
+    padding: 0;
+
+}
+.comments-template textarea{
+
+    font-family: Arial, Helvetica, Georgia, Sans-serif;
+
+    font-size: 12px;
+}
+#footer{
+    clear: both;
+    float: left;
+    width: 750px;
+    background: #414141;
+}
+#footer p{
+    line-height: 40px;
+    text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

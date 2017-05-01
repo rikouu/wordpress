@@ -1,0 +1,5 @@
+所谓百度转码，是把互联网上普通WEB网页资源转换为适合移动终端浏览的WAP网页。目的是好的，但并不是每个站点都需要，当你的站点已提供移动浏览页面，比如通过启用Wordpress移动设备检测插件或者主题模板是响应式的设计，根本不需要百度帮忙将网页转换成千篇一律、毫无个性的WAP网页。
+我们可以将下面的代码添加到主题header.php文件中，即可告知搜索不劳烦转码。
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+注：添加到主题header.php模板其它meta标签后面

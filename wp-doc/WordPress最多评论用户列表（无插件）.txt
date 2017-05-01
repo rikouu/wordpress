@@ -1,0 +1,55 @@
+WordPress最多评论用户列表（WordPress读者墙）非插件实现方法：
+
+1，没有使用头像缓存的最多评论用户列表（WordPress读者墙），代码如下：
+
+<h2>Most Comments’s Friends</h2>
+<ul>
+<?php
+$counts = $wpdb->get_results(“SELECT COUNT(comment_author) AS cnt, comment_author, comment_author_url, comment_author_email FROM (SELECT * FROM $wpdb->comments LEFT OUTER JOIN $wpdb->posts ON ($wpdb->posts.ID=$wpdb->comments.comment_post_ID) WHERE comment_date > date_sub( NOW(), INTERVAL 1 MONTH ) AND user_id=’0′ AND comment_author != ‘wpyou’ AND post_password=” AND comment_approved=’1′ AND comment_type=”) AS tempcmt GROUP BY comment_author ORDER BY cnt DESC LIMIT 10″);
+foreach ($counts as $count) {
+$c_url = $count->comment_author_url;
+if ($c_url == ”) $c_url = ‘http://www.wpyou.com/’;
+$mostactive .= ‘<li>’ . ‘<a href=”‘. $c_url . ‘” title=”‘ . $count->comment_author . ‘ (‘. $count->cnt . ‘comments)”>’ . get_avatar($count->comment_author_email, 40) . ‘</a></li>’;
+}
+echo $mostactive;
+?>
+</ul>
+说明：
+
+里面添加了 2 个 class类：wpyou_most_active 和 mostactive，根据自己模板在 style.css 设置样式；
+里面的 http://www.wpyou.com 改为你自己网站的网址；
+代码里面“DESC LIMIT 10”的 10 是要现示的读者数量，这类默认显示评论最多的10个用户；
+代码里面的“wpyou”是指不包含网站管理员以外，替换为自己的 WP 网站管理员名称即可。
+css 样式参考：
+
+.wpyou_most_active li{
+list-style:none;
+float:left;
+border:none;
+line-height:0;
+}
+.wpyou_most_active img.avatar{
+width:38px;
+height:38px;
+border:1px solid #ddd;padding:2px;margin:0 1px 0 0;}
+2，使用简单 Gravatar 头像缓存的最多评论用户列表（WordPress读者墙），代码如下：
+
+<h2>Most Active Friends</h2>
+<ul>
+<?php
+$counts = $wpdb->get_results(“SELECT COUNT(comment_author) AS cnt, comment_author, comment_author_url, comment_author_email FROM (SELECT * FROM $wpdb->comments LEFT OUTER JOIN $wpdb->posts ON ($wpdb->posts.ID=$wpdb->comments.comment_post_ID) WHERE comment_date > date_sub( NOW(), INTERVAL 1 MONTH ) AND user_id=’0′ AND comment_author != ‘zwwooooo’ AND post_password=” AND comment_approved=’1′ AND comment_type=”) AS tempcmt GROUP BY comment_author ORDER BY cnt DESC LIMIT 10″);
+foreach ($counts as $count) {
+$a = get_bloginfo(‘wpurl’) . ‘/avatar/’ . md5(strtolower($count->comment_author_email)) . ‘.jpg’;
+$c_url = $count->comment_author_url;
+if ($c_url == ”) $c_url = ‘http://zww.me/’;
+$mostactive .= ‘<li>’ . ‘<a href=”‘. $c_url . ‘” title=”‘ . $count->comment_author . ‘ (‘. $count->cnt . ‘comments)”><img src=”‘ . $a . ‘” alt=”‘ . $count->comment_author . ‘ (‘. $count->cnt . ‘comments)” /></a></li>’;
+}
+echo $mostactive;
+?>
+</ul>
+说明：
+
+里面添加了 2 个 class类：wpyou_most_active 和 mostactive，根据自己模板在 style.css 设置样式；
+里面的 http://www.wpyou.com 改为你自己网站的网址；
+代码里面“DESC LIMIT 10”的 10 是要现示的读者数量，这类默认显示评论最多的10个用户；
+代码里面的“wpyou”是指不包含网站管理员以外，替换为自己的 WP 网站管理员名称即可。

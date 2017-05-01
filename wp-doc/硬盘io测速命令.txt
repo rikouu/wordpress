@@ -1,0 +1,16 @@
+硬盘io测速命令
+写
+time dd of=1Gb.file if=/dev/zero bs=1024 count=1000000
+读
+time dd if=/dev/zero bs=1024 count=1000000 of=1Gb.file
+
+通过这个下载命令也能测出io速度
+wget -qO- bench.sh | bash
+
+查看硬盘通电时间：
+apt-get install -y smartmontools
+smartctl -A /dev/sda
+
+文／coreki（简书作者）
+原文链接：http://www.jianshu.com/p/96183c060c4b
+著作权归作者所有，转载请联系作者获得授权，并标注“简书作者”。

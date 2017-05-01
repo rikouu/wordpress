@@ -1,0 +1,19 @@
+怎样让wordpress登录页面显示自己网站的logo？我们用wordpress做了一个网站，网站登陆界面有个Logo图标，但一直都是WORDPRESS自带的。在自己的网站摆着官方的图标，很多人看起来很不舒服，所以大家都希望更换掉这个图标，那怎样更换这个LOGO呢？这里向大家推荐两种wordpress更换图标的方法：
+方法一：只需要把其原本调用的logo图片替换为自己的logo图片即可，具体步骤如下：
+准备一张命名为logo-login.gif的背景透明的图片大小规格为310px*70px
+在wordpress根目录的wp-admin/images文件夹中找到logo-login.gif文件，用这张图片覆盖替换为自己准备好的logo-login.gif图片即可
+访问后台登陆界面，图标已更换。
+优点：简单，快捷，适合新手使用；
+缺点：更新升级版本时又得重新修改。
+方法二：在functions.php修改，具体步骤如下：
+1、在主题函数文件functions.php中，添加如下一行，以修改链接地址：
+add_filter(‘login_headerurl’, create_function(false,’return get_bloginfo(‘siteurl’);”));
+2、在主题函数文件functions.php中，添加如下一行，以修改链接地址的标题提示：
+add_filter(‘login_headertitle’, create_function(false,”return get_bloginfo(‘description’);”));
+3、在主题函数文件functions.php中，添加如下内容，以修改由CSS控制显示的链接图片：
+function nowspark_login_head() {
+echo ‘<style type=”text/css”>body.login #login h1 a {background:url(upload/2011/10/201110092017361347.gif) no-repeat 0 0 transparent;height: 31px;width: 155px;padding:0;margin:0 auto 1em;}</style>’;
+}
+add_action(“login_head”, “nowspark_login_head”);//modify the background image
+将url中链接修改为你自己的链接即可！
+优点：更新版本无需重新更改，更改图片的同时把链接地址和标题提示也同时修改掉了；（本站推荐使用方法）

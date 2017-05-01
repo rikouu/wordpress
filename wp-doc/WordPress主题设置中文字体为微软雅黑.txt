@@ -1,0 +1,25 @@
+当我们的WordPress主题使用国外主题时，经常遇到中文字体为宋体，加载速度慢，甚至打不开的问题！
+
+其实这就是因为我们电脑没有主题需要的字体，或者调用谷歌（被墙）字体的原因，
+
+我们只需要替换掉这些字体即可！下面解决方案来自网络，亲测可用
+
+
+
+在自定义CSS输入的地方，把这段代码拷贝进去即可：
+
+* {font-family: "Microsoft YaHei" !important;}
+
+
+
+如果你的主题不支持自定义CSS输入，那就把上面这句添加到你的style.css第一行
+
+但很多国外主题都采用图标字体化，添加雅黑代码后，很多字体图标不显示，影响美观及用户体验
+
+可以再自定义CSS处添加这句代码
+
+@font-face {font-family:’Open Sans’;unicode-range:U+2E80-FFFF;src: local(‘Microsoft YaHei’);}
+
+如果上述代码没用的话，可以试试下面这段代码：
+
+*:not([class*="icon"]):not(i){font-family: “Microsoft YaHei” !important;}

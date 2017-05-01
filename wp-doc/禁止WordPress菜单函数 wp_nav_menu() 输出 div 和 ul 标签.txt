@@ -1,0 +1,30 @@
+使用 wp_nav_menu() 输出菜单是非常容易的事，为了实现主题菜单的某些样式效果，也许我们并不需要输出 div 和 ul 标签，下面就分享下具体的实现方法。
+
+wp_nav_menu() 默认输出是带有 div 和 ul 标签的，比如：
+
+<div class="menu-header-container">
+	<ul id="menu-header" class="menu">
+		<li class="current-menu-item"><a href="https://www.wpdaxue.com/">大学首页</a></li>
+		<li><a href="https://www.wpdaxue.com/category/news">WordPress资讯</a></li>
+	</ul>
+</div>
+我们要实现的效果应该是这样的：
+
+1
+2
+<li class="current-menu-item"><a href="https://www.wpdaxue.com/">大学首页</a></li>
+<li><a href="https://www.wpdaxue.com/category/news">WordPress资讯</a></li>
+阅读 WordPress导航菜单函数register_nav_menus() 和 wp_nav_menu() ，了解了 wp_nav_menu() 的参数以后，我们不难发现，要去除 div 标签是非常容易的事情，只需添加 ‘container’ => false 参数即可。
+
+要去除 ul 标签（只会去除最外围的 ul，对子级 ul 不影响），我们需要用到 items_wrap 参数。items_wrap 有三个可定义选项：
+
+‘items_wrap’ => ‘<ul id="%1$s" class="%2$s">%3$s</ul>’
+
+如果你要定义 ul 的 id 和 class 属性，可以直接修改 %1$s 和 %2$s 为具体的值，如果你要移除 ul 标签，使用参数 ‘items_wrap’ => ‘%3$s’ 即可。
+
+最终示例如下：
+
+<?php if(function_exists('wp_nav_menu')) wp_nav_menu(array('container' => false, 'items_wrap' => '%3$s', 'theme_location' => 'foot-menu')); ?>
+
+
+https://www.wpdaxue.com/remove-wp_nav_menu-div-ul.html

@@ -1,0 +1,16 @@
+<ul>
+<li<?php if (is_home()) { echo ' class="current-cat"';} ?>><a title="Home" href="/">首页</a></li>
+<?php
+$currentcategory = '';
+// 以下这行代码用于在导航栏添加分类列表，
+if  (!is_page() && !is_home()) {
+$catsy = get_the_category();
+$myCat = $catsy[0]->cat_ID;
+$currentcategory = '&current_category='.$myCat;
+}
+wp_list_categories('depth=1&title_li=&show_count=0&hide_empty=0&child_of=0'.$currentcategory);
+// 以下这行代码用于在导航栏添加页面列表
+// 如果你不想添加页面到导航中，请删除下面wp_list_pages这行。
+wp_list_pages('depth=1&title_li=&sort_column=menu_order');
+?>
+</ul>

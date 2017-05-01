@@ -1,0 +1,18 @@
+wordpress优化篇之wp-config.php的妙用！完全了解wordpress的配置文件wp-config.php技巧的站长还真没多少，至少笔者认识的站长中完全了解wp-config.php文件技巧的还真没几个，大多数站长都只知道知道functions.php文件的妙用。好了接下来笔者就来说说一些关于wp-config.php文件的技巧：
+1、wordpress的定修版本功能大家一定不陌生，这是一项很实用的功能但是对于数据库来说这是一种负担，那么我们可以通过wp-config.php来定义保存次数或者关闭掉自动定修版本功能：
+define('WP_POST_REVISIONS', 3);//定义自动定修的次数，只保存最新的三个版本，必须为整数define('WP_POST_REVISIONS', false); //关闭自动定修功能
+2、wordpress为了预防博客主们写文章时突然断电断网而造成文章数据丢失设计了自动保存草稿功能，但是在更新网站时出现出现这种突发状况的可能性几乎为零，而且wordpress默认的保存间隔时间也很短，所以会对数据库造成负担，我们可以通过wp-config.php文件把间隔时间调长一点：
+define('AUTOSAVE_INTERVAL', 160);//以秒为单位本例中为160秒
+3、wordpress的回收站估计已经没多少站长使用了，毕竟这个功能设计的有点蛋疼= =。不过wordpress默认的是30天会自动清空一次回收站中的评论、文章等数据，我们可以使用wp-config.php文件来定义回收站清空数据的间隔。
+define('EMPTY_TRASH_DAYS', 7); //本例中为7天
+4、开启wordpress数据库自动修复功能。（这个没什么好多解释的，小V之前发过一篇教程。）
+define('WP_ALLOW_REPAIR', true);
+在wp-config.php文件中加入以上代码后访问“abc.com/wp-admin/maint/repair.php”即可执行wordpress自带的数据库修复优化脚本。
+5、阻止wordpress程序发出对外请求：
+define('WP_HTTP_BLOCK_EXTERNAL', true);
+6、生成错误日志：
+@ini_set('log_errors','On');
+@ini_set('display_errors','Off');
+@ini_set('error_log','/home/path/v7v3.com/logs/wp_error.log'); //生成日志的服务器绝对路径
+加上以上代码即可让你的wordpress自动生成错误日志，记录每次网站出现错误的信息。
+这是第一部分，下次继续更新wp-config.php文件的使用技巧。

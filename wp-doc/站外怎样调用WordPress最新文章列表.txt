@@ -1,0 +1,71 @@
+这个外部网站调用WordPress博客文章就不仅仅限于最新文章了，它几乎可以调用所有类型的文章，如最热文章，随机文章、最新评论等等，之前有见过秋茄树上的一篇《站外调用WordPress最新文章解决方法小结》文章。
+下面将在此基础上进一步完善，站外以HTML的形式调用wordpress文章：
+实现方法，首先在wordpress的根目录新建一个html_post.php文件，记住是需要向外调用文章的wordpress站点。html_post.php文件的代码如下：
+<?php
+define('WP_USE_THEMES', false);
+require('./wp-load.php');
+query_posts('showposts=10&orderby=new');
+?>
+/** charset=UTF-8"防止乱码 */
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<?php while (have_posts()): the_post(); ?>
+<li><a title="<?php the_title(); ?>" href="<?php the_permalink(); ?>" target="_blank"><?php the_title(); ?></a></li>
+<?php endwhile; ?>
+这样就可以调用网站中最新的10篇文章了，showposts=10这个数字可以修改成你想要调用文章的数量。下面我来给大家仔细讲解下如何来修改代码达到调用自己想要调用文章的效果。
+1、如果我想要调用某个分类的下的最新文章该如何实现呢？
+其实这点很容易实现的只需要修改下query_posts这个参数，比如我指定要调用的分类的ID是1那么代码就变成了：
+<?php
+define('WP_USE_THEMES', false);
+require('./wp-load.php');
+/** 如果想同时调用多个分类用半角符分隔如cat=1,2,3,4 */
+query_posts('showposts=10&orderby=new&cat=1');
+?>
+/** charset=UTF-8"防止乱码 */
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<?php while (have_posts()): the_post(); ?>
+<li><a title="<?php the_title(); ?>" href="<?php the_permalink(); ?>" target="_blank"><?php the_title(); ?></a></li>
+<?php endwhile; ?>
+2、如果我想调用全站站问斩但只屏蔽某个分类下的文章呢？
+<?php
+define('WP_USE_THEMES', false);
+require('./wp-load.php');
+/** 如果想同时屏蔽多个分类用半角符分隔如cat=-1,-2,-3,-4 */
+query_posts('showposts=10&orderby=new&cat=-1');
+?>
+/** charset=UTF-8"防止乱码 */
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<?php while (have_posts()): the_post(); ?>
+<li><a title="<?php the_title(); ?>" href="<?php the_permalink(); ?>" target="_blank"><?php the_title(); ?></a></li>
+<?php endwhile; ?>
+3、如果我想调用随机文章呢？
+<?php
+define('WP_USE_THEMES', false);
+require('./wp-load.php');
+/** 如果想同时屏蔽多个分类用半角符分隔如cat=-1,-2,-3,-4 */
+query_posts('showposts=10&orderby=rang');
+?>
+/** charset=UTF-8"防止乱码 */
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<?php while (have_posts()): the_post(); ?>
+<li><a title="<?php the_title(); ?>" href="<?php the_permalink(); ?>" target="_blank"><?php the_title(); ?></a></li>
+<?php endwhile; ?>
+4、如果我想输出摘要呢？
+<?php
+define('WP_USE_THEMES', false);
+require('./wp-load.php');
+/** 如果想同时屏蔽多个分类用半角符分隔如cat=-1,-2,-3,-4 */
+query_posts('showposts=10&orderby=rang');
+?>
+/** charset=UTF-8"防止乱码 */
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<?php while (have_posts()): the_post(); ?>
+<li><a title="<?php the_title(); ?>" href="<?php the_permalink(); ?>" target="_blank"><?php the_title(); ?></a>
+<?php echo mb_strimwidth(strip_tags(apply_filters('the_content', $post->post_content)), 0, 200,"..."，'utf-8'); ?></li>
+<?php endwhile; ?>
+最后，再来说说站外如何来调用~
+<?php
+//该代码放置在需要调用文章内容和列表的地方
+$url='http://你的站点地址/html_post.php';
+echo file_get_contents( $url );
+?>
+OK大功告成，调出来的文章都是纯HTML的~不是什么js噢，对seo非常友好。另外提醒一下，上面介绍的方法都必须要在调用站点支持php的情况下才可行，如果调用站点支持asp的话只要把读取html_post.php的PHP代码用ASP重写一遍，但是如果是静态空间就只能用js来调用咯。

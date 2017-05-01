@@ -1,0 +1,33 @@
+https://www.mfbuluo.com/23306.html
+最近一段时间,部落的网站经常出现连接不上的情况,不是指的用户连接不上,而是指的搜索引擎,这是一个很要命的问题,经多方检查,还是没有结果,因为担心是WordPress主题或者插件进行自动更新的检测,所以有必要部落觉得还是有必要彻底关闭主题和插件的自动更新.
+
+当然,如果您觉得有必要检查更新的话,那就还是保留的好,但以下三种情况的站长朋友:
+
+1.如果你的WordPress网站已经正式发布并且外观、功能已经定型，这时候你可以考虑关闭自动更新
+
+2.被更新导致不兼容所困扰的站长，关闭吧，反正在用的WordPress或插件不会报非常严重的漏洞
+
+3.厌倦了后台的更新提示的站长们，你可以考虑关闭.
+
+虽然部落建议大家关闭自动更新,但同样建议大家关注一下,如果有更新的主题或者版本,还是适时更新一下的好.毕竟新版本总会修复一些漏洞什么的.
+
+WordPress彻底关闭主题和插件的自动更新
+
+将下面的代码添加到主题目录下的functions.php中“?>”之前的任意位置:
+
+
+//修改后台显示更新的代码 www.mfbuluo.com
+add_filter('pre_site_transient_update_core',    create_function('$a', "return null;")); // 关闭核心提示
+add_filter('pre_site_transient_update_plugins', create_function('$a', "return null;")); // 关闭插件提示
+add_filter('pre_site_transient_update_themes',  create_function('$a', "return null;")); // 关闭主题提示
+remove_action('admin_init', '_maybe_update_core');    // 禁止 WordPress 检查更新
+remove_action('admin_init', '_maybe_update_plugins'); // 禁止 WordPress 更新插件
+remove_action('admin_init', '_maybe_update_themes');  // 禁止 WordPress 更新主题
+
+
+有的朋友,可能以为到这里就结束了,实际上还没有,我们还需要在WordPress 根目录下的 wp-config.php 加入以下代码即可:
+
+/** 关闭自动更新 */
+define( 'AUTOMATIC_UPDATER_DISABLED', true );
+
+这样你的WordPress就不会在自动提示那烦人的更新了.

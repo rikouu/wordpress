@@ -1,0 +1,21 @@
+cookie用法
+
+setcookie(cookie, “cookievalue”, time()+3600, “/forum”, “.wzh.pw”, 1);
+名称，必须 值，必须 保存时间 保存路径 保存域 https
+
+$_COOKIE[cookie];
+访问 cookie
+
+setcookie(“cookie”, “”);
+setcookie(“cookie”, “value”, time()-1 / time());
+删除cookie
+
+————————————————————————–
+session用法
+
+session_start(); //开启
+$_SESSION[name]=value; //配置
+echo $_SESSION[name]; //使用
+isset($_SESSION[name]); //判断
+unset($_SESSION[name]); //删除
+session_destroy(); //关闭

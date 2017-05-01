@@ -1,0 +1,71 @@
+WordPress 现在是非常流行的一个网页内容管理平台，维护方便，可扩展性强，并且有着强大的社区支持。但 WordPress 默认的文章和页面只支持很有限的很基本的 HTML 代码。而很多时候我们想要设计一些更加个性的页面，比如在博客上收集表单，并且使得表单页的风格与主题一致；或者针对某些特定的标签页使用主题的衍变风格来个性化我们自己的 WordPress，这些自定义的需求没有 PHP 的支持就解决不了了。但是，如果我们直接用 PHP 来做，就会与全站的主题非常不协调，这时候我们可以：1. 制作页面模板；2. 调用 WordPress 的 API. 来解决这个问题。具体实现如下：
+
+方案一：制作页面模板
+
+制作页面模板是一个最简单、方便的解决方案，但功能也有一定的局限性。要创建页面模板：
+
+在当前启用的主题文件夹（wp-content/themes/your_theme_name）下创建一个 sample-template.php 的 PHP 文件；
+将 page.php 的内容复制到刚才创建的文件中；
+增加自定义的 PHP 代码；
+在文件的最顶端增加一段注释：
+<?php
+/*
+Template Name: Sample Template
+*/
+?>
+接下来进入 WordPress 后台，新建页面后就能找到“Sample Template”这个模板来使用了，这个方法比较简单，网上能够百度谷歌的资料也很多，因此只是简略地说一下。
+
+方案二：调用 WordPress 的 API
+
+这种方法的自由度较高，并且可以创建非WordPress格式的URL，非常有用。比如我们要把 example.com/some-custom-url-request 转交给主题文件夹下的 /custom/some-custom-url-request.php 来处理，就可以用这种方式来处理。这种方法用到 template redirect 钩子，template redirect 是 WordPress 在预处理好所有参数设置之后决定调用主题模板的时候调用的。
+
+我们只需在主题的 function.php 文件的尾部加上：
+
+function loadCustomTemplate($template) {
+	global $wp_query;
+	if(!file_exists($template))return;
+	$wp_query->is_page = true;
+	$wp_query->is_single = false;
+	$wp_query->is_home = false;
+	$wp_query->comments = false;
+	// if we have a 404 status
+	if ($wp_query->is_404) {
+	// set status of 404 to false
+		unset($wp_query->query["error"]);
+		$wp_query->query_vars["error"]="";
+		$wp_query->is_404=false;
+	}
+	// change the header to 200 OK
+	header("HTTP/1.1 200 OK");
+	//load our template
+	include($template);
+	exit;
+}
+
+function templateRedirect() {
+	$basename = basename($_SERVER['REQUEST_URI'], '?' . $_SERVER['QUERY_STRING']);
+	loadCustomTemplate(TEMPLATEPATH.'/custom/'."/$basename.php");
+}
+
+add_action('template_redirect', 'templateRedirect');
+这样就实现了 WordPress 查找 /custom 文件夹下的 php 文件，并且将相匹配的 URL 请求转交给对应的 php 文件来处理的效果，与此同时，这个 php 文件还保持了对 WordPress API 的调用，因此留给我们的空间非常大。
+
+例如如果我们在 /custom 文件夹下创建一个 hello.php 的文件如下：
+
+<?php get_header();?>
+<div id="main">
+	<div id="content">
+		<div id="post-999" class="page type-page status-publish hentry">
+			<h2 class="post-title">My custom page</h2>
+			<div class="post-content">
+				<?php echo "Hello World"; ?>
+				<div class="clear"></div>
+			</div><!-- END .post-content -->
+			<div class="clear"></div>
+		</div><!-- #post-## -->
+	</div><!-- END #content -->
+	<?php get_sidebar(); ?>
+	<div class="clear"></div>
+</div><!-- END #main -->
+<?php get_footer(); ?>
+那么只要输入 example.com/hello 就能显示 Hello World，并且具有主题的框架和 CSS 样式，非常方便好用。

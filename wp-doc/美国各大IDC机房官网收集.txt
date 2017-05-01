@@ -1,0 +1,27 @@
+收集美国各大IDC机房官网，方便自己需要的时候查询，同时也供同行参考。以下排名不分先后
+
+Multacom http://www.multacom.cn/
+
+QuadraNet http://www.quadranet.com/
+
+IOFLOOD http://www.ioflood.com/
+
+EGI https://egihosting.com/
+
+Psychz https://www.psychz.net/
+
+FDCservers https://www.fdcservers.net/
+
+WebXury https://www.webxury.com/
+
+WEBNX https://www.webnx.com/
+
+HOSTSPACE http://www.hostspaces.net/
+
+QuickPacket http://www.quickpacket.com/
+
+RakSmart http://www.raksmart.com/
+
+WholeSaleinternet http://www.wholesaleinternet.com/
+
+Dacentec https://billing.dacentec.com/hostbill/

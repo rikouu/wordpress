@@ -1,0 +1,6 @@
+禁止百度转码非常简单，将下面两段meta声明放入你的网站头部即可
+具体可以找到header.php里面已有的meta标签下粘贴即可：
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+这样百度搜索到这个申明就不会把你的网站转码了。
+有的朋友在转码之后加入meta申明发现百度并没有立刻取消转码，这个应该也是比较正常的，等待一段时间，百度就不会将你的网站转码了。

@@ -1,0 +1,72 @@
+昨天把mysql的同步搞好了，今天顺便也把网站代码的同步研究一下。网上大致搜了下rsync、unison等软件都可以实现同步。看了下vps上已经装好了rsync，那就用这个好了。
+
+安装rsync的过程就忽略了，可以用yum或者apt-get进行安装，也可以在官网上面下载：
+
+http://rsync.samba.org
+现在的环境是，两台固定ip的linux服务器，要实现定时把server A的某个目录同步到server B上。所以要把A当作rsync的服务器，B作为rsync的客户端。
+
+先对A进行配置：
+
+A上面是centos，借用xinetd来运行rsync。一般来说xinetd也是系统自带的，没有就yum一下。
+
+修改xinetd中的rsync启动项文件：
+
+vi /etc/xinetd.d/rsync
+把里面的disable=yes改为disable=no，完整代码如下：
+
+# default: off
+# description: The rsync server is a good addition to an ftp server, as it \
+# allows crc checksumming etc.
+service rsync
+{
+disable = no
+flags = IPv4
+socket_type = stream
+wait = no
+user = root
+server = /usr/bin/rsync
+server_args = –daemon
+log_on_failure += USERID
+}
+接着修改rsync的配置文件，位置在 /etc/rsyncd.conf ，没有的话可以新建一个：
+
+uid = root #以root运行
+gid = root
+use chroot = no
+max connections = 5 #同时连接数
+pid file = /var/run/rsyncd.pid
+lock file = /var/run/rsyncd.lock
+log file = /var/log/rsyncd.log
+transfer logging = yes
+port = 873 #使用端口
+[www] #模块名称，随便填
+read only = yes #yes就是只读
+path = /home/www #要同步的目录（多个用空格隔开）
+comment = www #最好跟模块名称一样
+auth users = rsync #允许哪些用户进行同步（后面需要设置）
+secrets file = /etc/rsync.pas #用户配置文件（用户名+密码）
+hosts allow = 111.111.111.111 #允许进行同步的ip地址
+exclude = tmp/123/ #不同步的目录（相对路径，多个用空格隔开）
+创建存放密钥的文件，上面secrets file的位置：
+
+用户名:密码
+
+e.g.
+
+admin:admin
+启动xinetd，看下rsync能否启动，873端口是否占用。
+
+可以在server B用telnet进行测试一下是否能连通，如果配置了iptables需要开放873端口。
+
+接下来配置客户端，由于不是双向同步，所以只要把rsync装上去就好了。
+
+设置密钥文件（rsync运行时从里面读取）。我的放在/etc/rsync.pas ，内容就是上面设置的密码。
+
+下面就可以执行rsync命令进行同步了：
+
+rsync -avz –password-file=/etc/rsync.pas rsync@222.222.222.222::www /home/www
+avz这几个参数我就不解释了， rsync提供的参数好多好多。
+
+–password-file就是上面的密钥文件，@之前是服务端设置的账号，@后面是服务端的ip，::www是模块名称， 同步到本地的/home/www 目录。
+
+如果命令执行成功了，就可以把上面的命令加入到crontab里面，实现定时的文件同步了。

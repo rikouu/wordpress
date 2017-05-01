@@ -1,0 +1,79 @@
+ 和上篇文章的代码不一样，我使用的是这篇文章提供的wordpress远程图片自动本地化代码，还没测试效果如何，顺便贴出来，使用方法和上篇文章一样，将代码写入主题的functions.php文件或者是functions.php的引入文件中即可。
+
+    代码如下：
+
+
+/************自动下载外部图片开始**************/
+//多级目录创建
+function mkdirs($dir){ 
+    if(!is_dir($dir)){  
+    if(!$this->mkdirs(dirname($dir))){  
+     return false;  
+    }  
+    if(!mkdir($dir,0777, true)){
+    return false;  
+    } 
+    }
+    return true;  
+} 
+ 
+function save_post_fix($content){
+	$post_id = get_the_ID();
+	$upload_dir = wp_upload_dir();
+	$path = $upload_dir["url"];
+	$realPath = $upload_dir["path"];
+ 
+	if(!is_dir($realPath)){
+ 		mkdirs($realPath);
+	}
+    $pagelink=array();
+	$pattern_page = '/<img([\s\S]*?)src=\\\\[\"|\'](.*?)\\\\[\"|\']([\s\S]*?)>/i';
+	preg_match_all($pattern_page, $content, $pagelink[]);
+	foreach ($pagelink[0][2] as $key => $value) {
+		$pic_url = $value;
+		$url_feter = parse_url($pic_url);
+		if(stripos($url_feter["host"],"zhnytech.com")){
+			continue;
+		}else{
+			 $ch = curl_init(); // 启动一个CURL会话
+		     curl_setopt($ch,CURLOPT_HEADER,1); //不示返回的Header区域内容
+		     curl_setopt($ch, CURLOPT_NOBODY, TRUE);
+		     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		     curl_setopt($ch,CURLOPT_URL,$pic_url);
+		     $hd = curl_exec($ch);
+		     if(!empty($hd) && !(strpos($hd,'Content-Length: image/png')||strpos($hd,'Content-Length: image/jpg'))){
+		     	$fp =file_get_contents($pic_url);
+		     	$pic_name =basename($url_feter["path"]);
+		     	$savePath = $realPath.'/'.$pic_name;
+		     	$fullPath = $path.'/'.$pic_name;
+		     	if(file_exists($savePath)){
+		     		$savePath = $realPath.'/'.str_replace('.','-'.date("s").'.' ,$pic_name);
+		     		$fullPath = $path.'/'.str_replace('.','-'.date("s").'.' ,$pic_name);
+		     	}
+ 
+		        if(file_put_contents($savePath,$fp)){
+		        	$content = str_replace($pic_url, $fullPath, $content);
+		        	//插数据库生成预览图
+		        	$wp_filetype = wp_check_filetype(basename($savePath), null );
+					$wp_upload_dir = wp_upload_dir();
+					$attachment = array(
+					     'guid' => $wp_upload_dir['url'] . '/' . basename( $savePath ), 
+					     'post_mime_type' => $wp_filetype['type'],
+					     'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $savePath ) ),
+					     'post_content' => '',
+					     'post_status' => 'inherit'
+					);
+					$attach_id = wp_insert_attachment( $attachment, $savePath, $post_id );
+					require_once( ABSPATH . 'wp-admin/includes/image.php' );
+					$attach_data = wp_generate_attachment_metadata( $attach_id, $savePath );
+					wp_update_attachment_metadata( $attach_id, $attach_data );
+		        }
+		    }
+ 
+		}
+	}
+	return $content;
+}
+add_filter( 'content_save_pre', 'save_post_fix', 90, 1 );
+ 
+/************自动下载外部图片结束**************/

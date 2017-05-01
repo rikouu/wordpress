@@ -1,0 +1,24 @@
+WordPress 程序为主题开发者提供了非常多的特色功能，方便开发者来更快更好地开发出满意的主题程序作品。对于主题开发者来说同样也是希望自己开发的主题程序能更好地满足用户的需求，所以，WordPress主题开发者都会为主题添加一个主题设置模块，来方便用户设置管理主题相关的功能模块。由于每个主题开发者都有自己的开发习惯，有的会把设置模块添加到后台的【外观】菜单下做为子菜单；有的也是喜欢放在后台的菜单栏的主菜单中。所以，对于经常更换主题的用户来说就显得有些迷惑了。这里WPYOU为主题开发者提供一个“启用主题后自动跳转到主题设置页面”的教程。
+
+实现该功能的方法不只一个，这里为大家提供2个不错的方法。
+
+方法1：
+
+add_action( ‘load-themes.php’, ‘Init_theme’ );
+function Init_theme(){
+global $pagenow;
+if ( ‘themes.php’ == $pagenow && isset( $_GET[‘activated’] ) ) {
+wp_redirect( admin_url( ‘options-general.php’ ) ); // theme-options.php  即为主题的设置页面地址
+exit;
+}
+}
+方法2：
+
+add_action(‘after_switch_theme’, ‘Init_theme’);
+function Init_theme($oldthemename){
+global $pagenow;
+if ( ‘themes.php’ == $pagenow && isset( $_GET[‘activated’] ) ) {
+wp_redirect( admin_url( ‘theme-options.php’ ) );// theme-options.php  即为主题的设置页面地址
+exit;
+}
+}

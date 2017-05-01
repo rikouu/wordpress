@@ -1,0 +1,14 @@
+先给style.css添加版权信息
+/*
+Theme Name: WP百科网CMS主题
+Theme URI: http://www.wpbaike.com
+Description: 红色大气的CMS主题
+Author: xixi
+Author URI: http://www.wpbaike.com
+Version: 1.0
+Tags: red, cms, wpbaike
+*/
+
+Style.css路径调用：<?php bloginfo( 'stylesheet_url' ); ?>
+
+主题文件夹路径：<?php bloginfo('template_directory'); ?>

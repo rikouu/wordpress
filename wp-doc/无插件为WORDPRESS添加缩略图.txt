@@ -1,0 +1,42 @@
+http://www.admin122.com/239.html
+
+WordPress实现缩略图的方法在网上可以找到很多教程，你可以使用插件来实现，也可以使用代码来实现。今天WP管理员之家为大家介绍一下无插件为WORDPRESS添加缩略图实现方法。
+
+1.在functions.php中?中添加以下代码:
+
+
+//首页调用缩略图  
+if(function_exists('add_theme_support')){  
+add_theme_support( 'post-thumbnails' );  
+}  
+function post_thumbnail(){  
+if(has_post_thumbnail()){ //如果有缩略图，则显示缩略图  
+the_post_thumbnail();  
+} else {  
+global $post, $posts;  
+$post_img = '';  
+ob_start();  
+ob_end_clean();  
+$output = preg_match_all('/&lt;img.+src=[\'"]([^\'"]+)[\'"].*&gt;/i', $post-&gt;post_content, $matches); 
+$post_img_src = $matches [1][0]; 
+$post_img = '&lt;img alt="" src="'.$post_img_src.'" width="140" height="100" /&gt;'; //这里设置缩略图的大小 
+if(empty($post_img_src)){ //如果日志中没有图片，则显示images/random/里的图片 
+$random = mt_rand(1, 20); 
+$post_img = '&lt;img alt="" src="'.get_bloginfo(" /&gt;';//这里是路径和随机轮播的图片  
+}  
+echo $post_img;  
+}  
+}  
+
+2.在所需要的地方调用代码：
+
+<?php post_thumbnail();?> 
+
+
+
+
+
+
+
+
+

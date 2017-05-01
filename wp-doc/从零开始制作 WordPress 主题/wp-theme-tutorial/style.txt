@@ -1,0 +1,9 @@
+/*  
+Theme Name: Tutorial
+Theme URI: http://www.wpdesigner.com
+Description: This is my theme for a tutorial.
+Version: 1.0
+Author: Small Potato
+Author URI: http://www.wpdesigner.com/
+
+*/

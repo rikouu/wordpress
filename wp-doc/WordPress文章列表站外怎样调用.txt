@@ -1,0 +1,60 @@
+有的人安装了Discuz什么的，把wordpress安装到了二级目录，需要调用blog文章时加入
+<?php
+define('WP_USE_THEMES', false);
+require('blog/wp-blog-header.php'); //wp-blog-header文件的路径
+query_posts('showposts=2'); //设置显示文章条数
+?>
+<?php while (have_posts()): the_post(); ?>
+<li><a href="<?php the_permalink(); ?>" target="_blank"><?php the_title(); ?></a></li>
+<?php endwhile; ?>
+二、利用rss输出外部调用wordpress文章列表
+这种发放流行很久了，再者wordpress有非常好的rss输出机制...
+<?php
+//RSS源地址列表数组
+$rssfeed = array("http://yuanssi.com/feed");
+//设置编码为UTF-8
+header('Content-Type:text/html;charset= UTF-8');
+for($i=0;$i<sizeof($rssfeed);$i++){//分解开始
+$buff = "";
+$rss_str="";
+//打开rss地址，并读取，读取失败则中止
+$fp = fopen($rssfeed[$i],"r") or die("can not open $rssfeed");
+while ( !feof($fp)) {
+$buff .= fgets($fp,4096);
+}
+//关闭文件打开
+fclose($fp);
+//建立一个 XML 解析器
+$parser = xml_parser_create();
+//xml_parser_set_option -- 为指定 XML 解析进行选项设置
+xml_parser_set_option($parser,XML_OPTION_SKIP_WHITE,1);
+//xml_parse_into_struct -- 将 XML 数据解析到数组$values中
+xml_parse_into_struct($parser,$buff,$values,$idx);
+//xml_parser_free -- 释放指定的 XML 解析器
+xml_parser_free($parser);
+foreach ($values as $val) {
+$tag = $val["tag"];
+$type = $val["type"];
+$value = $val["value"];
+//标签统一转为小写
+$tag = strtolower($tag);
+if ($tag == "item" && $type == "open"){
+$is_item = 1;
+}else if ($tag == "item" && $type == "close") {
+//构造输出字符串
+$rss_str .= "<li><a href='".$link."' target=_blank>".$title."</a></li>";
+$is_item = 0;
+}
+//仅读取item标签中的内容
+if($is_item==1){
+if ($tag == "title") {$title = $value;}
+if ($tag == "link") {$link = $value;}
+}
+}
+//输出结果
+echo $rss_str."<br />";
+}
+?>
+三、JS调用
+这种方法应用简单，应用范围广泛，但是不利于SEO，这里不介绍了。
+至于具体运用，可以自己修改，自由发挥

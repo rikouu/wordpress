@@ -1,0 +1,204 @@
+WordPress很多插件可以实现相关文章的功能，插件的优点是配置简单，但是可能会对网站的速度造成一些小的影响，所以很多人还是比较喜欢用代码实现需要的功能，但是话又说回来了，代码实现也有缺点，就是配置复杂，不懂代码的人完全摸不着头脑或者只能照搬别人的代码，还不如用插件。
+
+这里我整理编写了几种用代码实现相关文章的方法，这其中会详细标明各部分代码的作用，以及如何自定义你想要的功能，希望对大家有所帮助，有什么问题可以给本文发表评论，我会及时给你回复。开始之前，说明一点，以下所有方法输出的HTML代码格式都是以下形式，你可以根据需要进行修改：
+
+<ul id=”xxx”>
+<li>* <a title=”文章标题1″ rel=”bookmark” href=”文章链接1″>文章标题1</a></li>
+<li>* <a title=”文章标题2″ rel=”bookmark” href=”文章链接2″>文章标题2</a></li>
+……
+</ul>
+方法一：标签相关
+
+首先获取文章的所有标签，接着获取这些标签下的 n 篇文章，那么这 n 篇文章就是与该文章相关的文章了。现在可以见到的WordPress相关文章插件都是使用的这个方法。下面是实现的代码：
+
+<ul id=”tags_related”>
+<?php
+global $post;
+$post_tags = wp_get_post_tags($post->ID);
+if ($post_tags) {
+foreach ($post_tags as $tag) {
+// 获取标签列表
+$tag_list[] .= $tag->term_id;
+}
+// 随机获取标签列表中的一个标签
+$post_tag = $tag_list[ mt_rand(0, count($tag_list) – 1) ];
+// 该方法使用 query_posts() 函数来调用相关文章，以下是参数列表
+$args = array(
+‘tag__in’ => array($post_tag),
+‘category__not_in’ => array(NULL),  // 不包括的分类ID
+‘post__not_in’ => array($post->ID),
+‘showposts’ => 6,                           // 显示相关文章数量
+‘caller_get_posts’ => 1
+);
+query_posts($args);
+if (have_posts()) {
+while (have_posts()) {
+the_post(); update_post_caches($posts); ?>
+<li>* <a href=”<?php the_permalink(); ?>” rel=”bookmark” title=”<?php the_title_attribute(); ?>”><?php the_title(); ?></a></li>
+<?php
+}
+}
+else {
+echo ‘<li>* 暂无相关文章</li>’;
+}
+wp_reset_query();
+}
+else {
+echo ‘<li>* 暂无相关文章</li>’;
+}
+?>
+</ul>
+使用说明：”不包括的分类ID” 指的是相关文章不显示该分类下的文章，将同行的 NULL 改成文章分类的ID即可，多个ID就用半角逗号隔开。因为这里限制只显示6篇相关文章，所以不管给 query_posts() 的参数 tag__in 赋多少个值，都是只显示一个标签下的 6 篇文章，除非第一个标签有1篇，第二个标签有2篇，第三个有3篇。。。。。。所以如果这篇文章有多个标签，那么我们采取的做法是随机获取一个标签的id，赋值给 tag__in 这个参数，获取该标签下的6篇文章。
+
+方法二：分类相关
+
+本方法是通过获取该文章的分类id，然后获取该分类下的文章，来达到获取相关文章的目的。
+
+<ul id=”cat_related”>
+<?php
+global $post;
+$cats = wp_get_post_categories($post->ID);
+if ($cats) {
+$args = array(
+‘category__in’ => array( $cats[0] ),
+‘post__not_in’ => array( $post->ID ),
+‘showposts’ => 6,
+‘caller_get_posts’ => 1
+);
+query_posts($args);
+if (have_posts()) {
+while (have_posts()) {
+the_post(); update_post_caches($posts); ?>
+<li>* <a href=”<?php the_permalink(); ?>” rel=”bookmark” title=”<?php the_title_attribute(); ?>”><?php the_title(); ?></a></li>
+<?php
+}
+}
+else {
+echo ‘<li>* 暂无相关文章</li>’;
+}
+wp_reset_query();
+}
+else {
+echo ‘<li>* 暂无相关文章</li>’;
+}
+?>
+</ul>
+方法三：标签相关，SQL获取
+
+获取相关文章的原理与方法一相似，不过在获取文章的时候是以SQL语句来直接读取数据库，从而随机获取6篇相关文章记录，而不是WordPress的函数query_posts().
+
+<ul id=”tags_related”>
+<?php
+global $post, $wpdb;
+$post_tags = wp_get_post_tags($post->ID);
+if ($post_tags) {
+$tag_list = ”;
+foreach ($post_tags as $tag) {
+// 获取标签列表
+$tag_list .= $tag->term_id.’,’;
+}
+$tag_list = substr($tag_list, 0, strlen($tag_list)-1);
+$related_posts = $wpdb->get_results(”
+SELECT DISTINCT ID, post_title
+FROM {$wpdb->prefix}posts, {$wpdb->prefix}term_relationships, {$wpdb->prefix}term_taxonomy
+WHERE {$wpdb->prefix}term_taxonomy.term_taxonomy_id = {$wpdb->prefix}term_relationships.term_taxonomy_id
+AND ID = object_id
+AND taxonomy = ‘post_tag’
+AND post_status = ‘publish’
+AND post_type = ‘post’
+AND term_id IN (” . $tag_list . “)
+AND ID != ‘” . $post->ID . “‘
+ORDER BY RAND()
+LIMIT 6″);
+// 以上代码中的 6 为限制只获取6篇相关文章
+// 通过修改数字 6，可修改你想要的文章数量
+if ( $related_posts ) {
+foreach ($related_posts as $related_post) {
+?>
+<li><a href=”<?php echo get_permalink($related_post->ID); ?>” rel=”bookmark” title=”<?php echo $related_post->post_title; ?>”><?php echo $related_post->post_title; ?></a></li>
+<?php   }
+}
+else {
+echo ‘<li>暂无相关文章</li>’;
+}
+}
+else {
+echo ‘<li>暂无相关文章</li>’;
+}
+?>
+</ul>
+方法四：分类相关，SQL获取
+
+获取相关文章的原理与方法二相似，不过在获取文章的时候是以SQL语句来直接读取数据库，从而随机获取6篇相关文章记录，而不是WordPress的函数query_posts().
+
+<ul id=”cat_related”>
+<?php
+global $post, $wpdb;
+$cats = wp_get_post_categories($post->ID);
+if ($cats) {
+$related = $wpdb->get_results(”
+SELECT post_title, ID
+FROM {$wpdb->prefix}posts, {$wpdb->prefix}term_relationships, {$wpdb->prefix}term_taxonomy
+WHERE {$wpdb->prefix}posts.ID = {$wpdb->prefix}term_relationships.object_id
+AND {$wpdb->prefix}term_taxonomy.taxonomy = ‘category’
+AND {$wpdb->prefix}term_taxonomy.term_taxonomy_id = {$wpdb->prefix}term_relationships.term_taxonomy_id
+AND {$wpdb->prefix}posts.post_status = ‘publish’
+AND {$wpdb->prefix}posts.post_type = ‘post’
+AND {$wpdb->prefix}term_taxonomy.term_id = ‘” . $cats[0] . “‘
+AND {$wpdb->prefix}posts.ID != ‘” . $post->ID . “‘
+ORDER BY RAND( )
+LIMIT 6″);
+if ( $related ) {
+foreach ($related as $related_post) {
+?>
+<li>* <a href=”<?php echo get_permalink($related_post->ID); ?>” rel=”bookmark” title=”<?php echo $related_post->post_title; ?>”><?php echo $related_post->post_title; ?></a></li>
+<?php
+}
+}
+else {
+echo ‘<li>* 暂无相关文章</li>’;
+}
+}
+else {
+echo ‘<li>* 暂无相关文章</li>’;
+}
+?>
+</ul>
+方法五：作者相关
+
+该方法是获取该文章作者的其他文章来充当相关文章，代码如下：
+
+<ul id=”author_related”>
+<?php
+global $post;
+$post_author = get_the_author_meta( ‘user_login’ );
+$args = array(
+‘author_name’ => $post_author,
+‘post__not_in’ => array($post->ID),
+‘showposts’ => 6,               // 显示相关文章数量
+‘orderby’ => date,          // 按时间排序
+‘caller_get_posts’ => 1
+);
+query_posts($args);
+if (have_posts()) {
+while (have_posts()) {
+the_post(); update_post_caches($posts); ?>
+<li>* <a href=”<?php the_permalink(); ?>” rel=”bookmark” title=”<?php the_title_attribute(); ?>”><?php the_title(); ?></a></li>
+<?php
+}
+}
+else {
+echo ‘<li>* 暂无相关文章</li>’;
+}
+wp_reset_query();
+?>
+</ul>
+时间效率对比
+
+我们将用之前的一个php代码对以上各个相关文章代码执行时间进行测算，以便对以上各个的方法进行效率，给你的选择提供参考。以下是在同一篇文章中获取6篇相关文章，以上各方法最终测算的时间如下：
+
+方法一：0.18067908287048 秒
+方法二：0.057158946990967 秒
+方法三：0.037126064300537 秒
+方法四：0.045628070831299 秒
+方法五：0.023991823196411 秒

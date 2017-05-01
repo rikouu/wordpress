@@ -1,0 +1,117 @@
+核心更新
+
+核心文件更新被分成三种模式：
+
+核心开发更新模式，就是所说的“前沿（bleeding edge）”，这个模式下，你的 WordPress 是和开发版本同步的。这个不建议，除非你是 WordPress 极度爱好和尝鲜者。
+小版本核心更新模式，一般是安全和维护版本发布，比如 3.7 更新到 3.7.1。
+大版本核心更新模式，比如，3.7 更新 3.8。
+默认，自动更新只开启了更新小版本发布和翻译文件。那么如何设置更新模式呢？我们可以通过定义常量或者过滤器来处理：
+
+WP_AUTO_UPDATE_CORE
+
+可以通过在 wp-config.php 文件中定义常量 WP_AUTO_UPDATE_CORE 下面三种值来设置不同更新模式：
+
+true – 开发版，小更新，大更新都会自动更新。
+false – 开发版，小更新，大更新都不会自动更新。
+minor – 只有小版本更新才会自动更新。
+过滤器（Filters）
+
+除了开启或者关闭所有三种的核心更新模式之外，如果你想单独开启某种或者关闭它们，我们可以用到这几个 filter：allow_dev_auto_core_updates, allow_minor_auto_core_updates, 以及 allow_major_auto_core_updates
+
+这里有两个 WordPress 内置的函数 __return_true 和 __return_false 会用来设置开启和关闭。
+
+开启开发更新模式，和开发版本同步：
+
+add_filter( 'allow_dev_auto_core_updates', '__return_true' );
+关闭小版本更新：
+
+add_filter( 'allow_minor_auto_core_updates', '__return_false' );
+开启大版本更新：
+
+add_filter( 'allow_major_auto_core_updates', '__return_true' );
+插件和主题更新
+
+插件和主题自动更新在默认是关闭的，可以通过 auto_update_$type 这个 filter 去开启它们，其中 $type 可能是 “plugin” 或者 “theme”.
+
+开启插件自动更新：
+
+add_filter( 'auto_update_plugin', '__return_true' );
+开启主题自动更新：
+
+add_filter( 'auto_update_theme', '__return_true' );
+翻译更新
+
+翻译更新默认是开启的，如果要关闭：
+
+add_filter( 'auto_update_translation', '__return_false' );
+关闭自动更新
+
+WordPress 后台自动更新功能很贴心，保证网站的代码实时最新，但是很多人感觉我的网站我做主，不希望自动更新，WordPress 也是提供了选项：
+
+关闭核心文件更新
+
+也是使用 auto_update_$type 这个 filter，不过这时 $type 应该是“core”，所以关闭核心更新：
+
+add_filter( 'auto_update_core', '__return_false' );
+关闭所有更新
+
+两种方法：
+
+1. 在 wp-config.php 添加如下常量：
+
+define( 'AUTOMATIC_UPDATER_DISABLED', true );
+2. 或者使用下面的 filter：
+
+add_filter( 'automatic_updater_disabled', '__return_true' );
+
+===============================================================================
+WordPress默认有四种类型的自动更新,分别为：
+
+Core updates（核心更新）
+Plugin updates（插件更新）
+Theme updates（主题更新）
+Translation file updates（翻译文件更新）
+下面就来一一介绍禁止四类自动更新的设置方法：
+
+1、禁止Core updates（核心更新）
+
+打开根目录下的 wp-config.php 文件，找到如下代码：
+
+define('WP_AUTO_UPDATE_CORE',minor);
+
+这个配置就是设置核心更新的地方，参数有四种：
+
+minor：表示启用小版本核心自动更新
+true：表示启用所有更新，包括每夜更新、小版本和大版本更新
+false：表示禁用所有更新
+major：启用大版本核心自动更新
+禁止全部自动更新，就在wp-config.php文件里面找到：
+
+define('AUTOMATIC_UPDATER_DISABLED',true);
+
+设置成false就可以了。
+
+2、禁止插件、主题和翻译文件更新
+
+禁用插件和主题可以使用钩子的方式设置，诸如auto_update_$type这样的参数就是了。auto_update_plugin表示插件更新，auto_update_theme表示主题更新等等。
+
+如果想禁用某一个更新，就在functions.php添加如下代码：
+
+插件自动更新部分代码：
+
+add_filter('auto_update_plugin','__return_true' );
+
+主题自动更新部分代码：
+
+add_filter( 'auto_update_theme', '__return_true' );
+
+翻译文件自动更新部分代码：
+
+add_filter( 'auto_update_translation', '__return_true' );
+
+参数：
+
+__return_true：为启用
+__return_false：为禁用
+
+只需将参数“__return_true”修改成为“__return_false”，就可以禁止自动更新了！

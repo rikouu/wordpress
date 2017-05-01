@@ -1,0 +1,23 @@
+如何制作wordpress作者页面，wordpress强大就在于此，不管你想做什么功能，wordpress内核总有你需要输出的函数，今天笔者就说一下如何制作wordpress作者页面的基本教程。
+wordpress输出作者页面是这样的一个过程，首先搜索主题中author.php文件并执行输出，如果没有author.php这个文件，wordpress就会就执行archives.php这个文件，如果找不到这个文件，就在搜索并执行主题下的index.php。如果连index.php这个文件都没有的话那么这就不是一个主题了！
+一.作者页面author.php的制作
+我们直接把archives.php或者index.php中的全部代码直接复制到author.php中。这个页面创建成功之后，里面就根据你的需要具体修改了。
+二.作者页面常用函数
+the_author //显示文章的作者
+the_author_description //显示文章作者的描述（后台个人资料中的描述）
+the_author_login //显示文章作者的登录名
+the_author_firstname //显示文章作者的firstname（名）
+the_author_lastname //显示文章作者的lastname（姓）
+the_author_nickname //显示文章作者的昵称
+the_author_ID //显示文章作者的ID号
+the_author_email //显示文章作者的电子邮箱
+the_author_url //显示文章作者的网站地址
+the_author_link  //显示一个以文章作者名为链接名，链接地址为文章作者的网址的链接
+the_author_icq //显示文章作者的icq
+the_author_aim //显示文章作者的aim
+the_author_yim //显示文章作者的yim
+the_author_msn //(不推荐使用) 显示文章作者的msn
+the_author_posts //显示文章作者已发表文章的篇数
+the_author_posts_link //显示一个链接到文章作者已发表文章列表的链接
+ 
+通过以上函数就可以调用你所需要的关于作者的信息了！

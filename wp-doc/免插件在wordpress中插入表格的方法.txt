@@ -1,0 +1,53 @@
+要在 WordPress 中插入表格其实并非难事，只要用 wp-table 插件就能轻松做到，本文的重点是介绍免插件在 WordPress 中插入表格的方法，下面有个不错的示例感兴趣的朋友可以参考下
+
+
+WordPress 很强大，但是其编辑器却很简陋，可能 WordPress 依仗着自己有丰富的插件功能所以将后台的编辑器简化了吧。当然，一些简单的文字与图片输入对于 WordPress 编辑器来说是完全能够胜任的，但是如果要输入像表格这类稍稍复杂些的格式就要向 WordPress 投降了。虽然 WordPress 编辑器中有一项“从 Word 粘贴”的功能键，但是从 Word 中复制出来的表格粘贴在 WordPress 中就荡然无存了，就算是在 Dreamweaver 中编辑好的表格代码粘贴到 WordPress 编辑器的 HTML 格式下还是不能完美呈现。 
+
+要在 WordPress 中插入表格，其实并非难事，只要用 wp-table 插件就能轻松做到，但是如果我们一碰到问题就用插件解决，那 WordPress 迟早会被拖垮的。再次重申一下我的口号：能用代码搞定的就绝不用插件解决！所以本文对 wp-table 插件不作任何评价，有需要的朋友可以试试，本文的重点是介绍免插件在 WordPress 中插入表格的方法。 
+
+切入正题，和 用 caption 属性给图片加描述边框一样，要在 WordPress 中插入表格，我们只需要给表格定义一个 CSS 样式就行。参考代码如下： 
+
+/*----------table----------*/ 
+table.table { 
+border-spacing:2px; 
+border-collapse:separate; 
+background-color:#FFF; 
+border-color:gray; 
+border-style:outset; 
+border-width:1px; 
+} 
+table.table th { 
+background-color:#FFF; 
+-moz-border-radius:0; 
+border-color:gray; 
+border-style:inset; 
+border-width:1px; 
+padding:1px; 
+} 
+table.table td { 
+-moz-border-radius:0; 
+border-color:gray; 
+border-style:inset; 
+border-width:1px; 
+padding:1px; 
+} 
+
+在 WordPress 后台编辑器中插入表格时，只需用 Dreamweaver 之类的编辑器事先划好表格，再将代码粘贴至 HTML 格式下，并引用class="table"，例如： 
+
+<table class="table" border="1" width="200" align="center"> 
+<tbody> 
+<tr> 
+<td>第1行第1列</td> 
+<td>第1行第2列</td> 
+</tr> 
+<tr> 
+<td>第2行第1列</td> 
+<td>第2行第2列</td> 
+</tr> 
+</tbody> 
+</table> 
+
+
+效果： 
+第1行第1列 第1行第2列 
+第2行第1列 第2行第2列

@@ -1,0 +1,47 @@
+wordpress文章页面的相关文章功能怎样实现？这个，大多数网友都是通过插件来实现的，插件有插件的好处——实践起来方便，这也是wordpress最迷人的一个方面。但是插件也有它的短板——会影响网站的打开速度，尤其是网站后台，如果你的空间不太好，要打开好长时间才能打开。所以，能用代码实现的功能，就尽量不使用插件。本节，高时银博客就跟大家一起分享一下“不用插件怎样给wordpress文章页面添加相关文章”。
+把下面这段代码放到single.php文件里，一般放在<?php the_content(); ?> 代码后面。
+<!--相关文章开始-->
+<div class="similarity">
+<br><h5>相关文章：</h5>
+<?php
+$post_tags=wp_get_post_tags($post->ID); //如果存在tag标签，列出tag相关文章
+$pos=1;
+if($post_tags) {
+foreach($post_tags as $tag) $tag_list[] .= $tag->term_id;
+$args = array(
+'tag__in' => $tag_list,
+'category__not_in' => array(NULL), // 不包括的分类ID,可以把NULL换成分类ID
+'post__not_in' => array($post->ID),
+'showposts' => 0, // 显示相关文章数量
+'caller_get_posts' => 1,
+'orderby' => 'rand'
+);
+query_posts($args);
+if(have_posts()):while (have_posts()&&$pos<=6) : the_post(); update_post_caches($posts); ?>
+<li><span><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php the_title_attribute(); ?>"><?php if(get_the_title())the_title();else the_time('Y-m-d'); ?></a></span> <span id="shijian"><?php the_time('Y-m-d') ?></span></li>
+<?php $pos++;endwhile;wp_reset_query();endif; ?>
+<?php } //end of rand by tags ?>
+<?php if($pos<=6): //如果tag相关文章少于10篇，那么继续以分类作为相关因素列出相关文章
+$cats = wp_get_post_categories($post->ID);
+if($cats){
+$cat = get_category( $cats[0] );
+$first_cat = $cat->cat_ID;
+$args = array(
+'category__in' => array($first_cat),
+'post__not_in' => array($post->ID),
+'showposts' => 0,
+'caller_get_posts' => 1,
+'orderby' => 'rand'
+);
+query_posts($args);
+if(have_posts()): while (have_posts()&&$pos<=6) : the_post(); update_post_caches($posts); ?>
+<li><span><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php the_title_attribute();?>"><?php if(get_the_title())the_title();else the_time(‘Y-m-d’); ?></a></span> <span id="shijian"><?php the_time('Y-m-d');if($options['tags']):the_tags(", '/', ");endif; ?></span></li>
+<?php $pos++;endwhile;wp_reset_query();endif; ?>
+<?php } endif; //end of rand by category ?>
+<?php if($pos<=10){ //如果上面两种相关都还不够10篇文章，再随机挑几篇凑成10篇 ?>
+<?php query_posts('showposts=10&orderby=rand');while(have_posts()&&$pos<=6):the_post(); ?>
+<li><span><a href="<?php the_permalink() ?>" title="<?php the_title(); ?>"><?php if(get_the_title())the_title();else the_time('Y-m-d') ?></a></span> <span id="shijian"><?php the_time('Y-m-d') ?></span></li>
+<?php $pos++;endwhile;wp_reset_query();?>
+<?php } ?>
+</div><!--相关文章结束-->
+这样就实现了相关文章功能，这段代码先是以标签来判断相关文章，如果标签相关文章不满6个（这个数字可以自己调整大小），就会再通过文章的分类来判断，如果该文章分类相关文章还不够6个，会再添加随机文章来补充。显示样式，可根据自己的需求在CSS里设置。

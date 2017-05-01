@@ -1,0 +1,63 @@
+WordPress远程图片本地化非插件实现方法
+
+平时给自己个人博客编辑文章的时候，偶尔会直接复制别人网站上的图片；
+图片不多的话另存为到本地再上传到WordPress当中，但是图片一多的话就比较累了；
+我特别特别的懒，这种搬运活想越简单就越好，编辑文章的时候直接复制对方的网址让程序自动本地化；
+除了省体力外，再一个也不用担心别人站点图片失效的问题；
+之前遇到这种问题是用插件搞定的《WordPress全自动将远程图片本地化插件》；
+但这次我找到不用插件，纯代码搞定的方法只需要将下列代码放入到当前使用主题的functions.php中就行了；
+在编辑发布文章的时候他会自动判断文章中的外链图片，处理保存到你的网站服务器中，一劳永逸；
+
+<?php
+add_action(‘publish_post’, ‘newbody’);
+function newbody($post_ID){
+$reg= ‘/<img[^>]+src=[\'”]([^\'”]+)[\'”][^>]*>/i’;
+$temp1 =array();
+$temp2= array();
+remove_action(‘publish_post’, ‘newbody’);
+$body = get_post($post_ID);
+preg_match_all($reg,$body->post_content,$temp1);
+if(!empty($temp1)) $temp2= array_unique($temp1[1]);
+if(!empty($temp2)) {
+foreach($temp2 as $k=>$v){
+if (!strpos($v,$_SERVER[‘HTTP_HOST’])===false) unset($temp2[$k]);
+}
+}
+class hatmore{
+public $pid = ”;
+public $imgoldurl=array();
+public $imgnewurl=array();
+public function upload(){
+foreach ($this->imgoldurl as $v){
+$pkwall = array(‘user-agent’=>‘Mozilla/5.0 (Windows NT 6.1; WOW64; rv:17.0) Gecko/20100101 Firefox/17.0′);
+if(!preg_match(‘/^([^\'”]+)(\.[a-z]{3,4})$\b/i’,$v)){
+$v.=‘.png’;
+}
+$get = wp_remote_get($v,$pkwall);
+$type = wp_remote_retrieve_header( $get, ‘content-type’ );
+$mirror = wp_upload_bits(rawurldecode(basename($v)), ”, wp_remote_retrieve_body( $get ) );
+$attachment = array(
+‘post_title’=> basename( $v ),
+‘post_mime_type’ => $type
+);
+$attach_id = wp_insert_attachment( $attachment, $mirror[‘file’], $this->pid);
+$attach_data = wp_generate_attachment_metadata( $attach_id, $v );
+  
+wp_update_attachment_metadata( $attach_id, $attach_data );
+set_post_thumbnail($this-pid, $attach_id);
+  
+$this->imgnewurl[] = $mirror[url];
+}}
+}
+$img = new hatmore();
+$img->pid = $post_ID;
+$img->imgoldurl = $temp2;
+if(!empty($img->imgoldurl)) {
+$img->upload();
+$tag = array_combine($img->imgoldurl, $img->imgnewurl);
+$newbody = strtr($body->post_content,$tag);
+wp_update_post(array(‘ID’ => $post_ID, ‘post_content’ => $newbody));
+}
+add_action(‘publish_post’, ‘newbody’);
+}
+?>

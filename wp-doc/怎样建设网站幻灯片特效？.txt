@@ -1,0 +1,23 @@
+怎样建设网站幻灯片特效？看到许多的网站首页都有非常漂亮的幻灯片，心里直痒痒的，也想为自己的爱网弄个漂亮的幻灯片。于是在网上找幻灯片插件。可是，找了好多都不理想。我用了all-in-one-seo-packefbc8dzh_cn插件时图片不显示；用了Content Slide Plugin插件时图片倒是显示了，而且能幻灯效果，但是问题出现了，在老的浏览器(如IE6.0或傲游2.5)上，百页窗效果就会出问题；又用了d13slideshow.2.2.0.插件，也是同样的问题。于是，我决定放弃这些幻灯片，而改用FLASH幻灯片，效果非常好，可以兼容所有的浏览器，只是对搜索引擎不太友好，但是没关系，我只是用一个FLASH而已，我的页面还是以文字为主，整个页面对搜索引擎还是非常友好的。像很多的门户网站也是用的这个FLASH幻灯片，如新浪、搜狐等。我这里用的是新浪的FLASH幻灯片“pixviewer.swf”，你可以在百度里搜索这个FLASH下载下来。
+然后把下面的代码放到你的页面需要显示幻灯片的地方，
+<script type=”text/javascript”>
+var focus_width=315//Flash图片宽度
+var focus_height=400//Flash图片高度
+var text_height=20//标题文字高度
+var swf_height = focus_height+text_height//Flash高度=图片高度+文字高度
+//下面是幻灯片的图片
+var pics=’http://www.aimmay.com/wp-content/uploads/2012/02/3033861_210539023895_2.jpg|http://www.aimmay.com/wp-content/uploads/2012/02/184.jpg|http://www.aimmay.com/wp-content/uploads/2012/02/74.jpg|http://www.aimmay.com/wp-content/uploads/2012/02/119.jpg|http://www.aimmay.com/wp-content/uploads/2012/01/4.11.jpg’
+//下面是幻灯片的图片链接
+var links=’http://www.aimmay.com/7720120224631.html|http://www.aimmay.com/7720120210498.html|http://www.aimmay.com/7720120209300.html|http://www.aimmay.com/7720120215545.html|http://www.aimmay.com/7720120123147.html’
+//下面是幻灯片的图片标题
+var texts=’办公室白领怎样减肥？只需几个小动作|我终于减肥成功了！终于可以去向我的梦中情人表白了|为了追喜欢的男生，她下定决心去减肥，结果呢？|章子怡说：苗条身材是喝水喝出来的，运动也离不开|美国流行天后”布兰妮”7招恢复少女身材 ‘
+document.write(‘<object classid=”clsid:d27cdb6e-ae6d-11cf-96b8-444553540000″ codebase=”http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0″ width=”‘+ focus_width +’” height=”‘+ swf_height +’”>’);
+document.write(‘<param name=”allowScriptAccess” value=”sameDomain”><param name=”movie” value=”http://www.aimmay.com/wp-content/themes/bbshuang 4.0/pixviewer.swf”><param name=”quality” value=”high”><param name=”bgcolor” value=”#DADADA”>’);
+document.write(‘<param name=”menu” value=”false”><param name=wmode value=”opaque”>’);
+//关键：参数传入
+document.write(‘<param name=”FlashVars” value=”pics=’+pics+’&links=’+links+’&texts=’+texts+’&borderwidth=’+focus_width+’&borderheight=’+focus_height+’&textheight=’+text_height+’”>’);
+//下面是幻灯片“pixviewer.swf”软件放在你网站的地方
+document.write(‘<embed src=”http://www.aimmay.com/wp-content/themes/bbshuang 4.0/pixviewer.swf” wmode=”opaque” FlashVars=”pics=’+pics+’&links=’+links+’&texts=’+texts+’&borderwidth=’+focus_width+’&borderheight=’+focus_height+’&textheight=’+text_height+’” menu=”false” bgcolor=”#DADADA” quality=”high” width=”‘+ focus_width +’” height=”‘+ swf_height +’” allowScriptAccess=”sameDomain” type=”application/x-shockwave-flash” pluginspage=”http://www.macromedia.com/go/getflashplayer” />’);
+document.write(‘</object>’);
+</script>
+这些代码是我网站上的代码，如果你要采纳的话，可以根据自己的网站情况进行更改，如幻灯片宽度高度、图片链接标题以及pixviewer.swf的地址。这个用法，很方便，也容量不大。希望对需要的菜鸟朋友有所帮助。

@@ -1,0 +1,18 @@
+现在写代码都用的是文件编辑器，主要是软件速度快，可是代码提示不全或没有
+写程序的时候难免会遇到写js跳转的代码，这时候可能要到网上找一下，这里做个记录
+js跳转方式一
+
+window.location.href="http://www.phpsong.com";
+js跳转方式二
+
+window.navigate("http://www.phpsong.com");
+js跳转方式三，这种方式主要用来后退，返回上一页
+
+window.history.back(-1);
+js跳转方式四,这种方式会弹出一张新页面，open方法还有其他参数，这里不详讲
+
+window.open("http://www.phpsong.com");
+这个不是用js实现的，是html代码，下面的代码是3秒之后跳转到http://www.phpsong.com网站
+
+<meta http-equiv=refresh content=3;URL="http://www.phpsong.com">
+QQ交流群：136351212

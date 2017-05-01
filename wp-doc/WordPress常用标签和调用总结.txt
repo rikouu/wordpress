@@ -1,0 +1,271 @@
+调用头部模板
+<?php get_header();?>
+
+调用尾部模板
+<?php get_footer();?>
+
+调用侧边栏
+<?php get_sidebar();?>
+
+放在head标签内，方便插件调用：
+<?php wp_head(); ?>
+
+放在footer里，body结束之前，方便插件调用：
+<?php wp_footer(); ?>
+
+----------------------------------------------------------
+
+头部编码调用：
+<meta http-equiv="Content-Type" content="text/html; charset=<?php bloginfo( 'charset' ); ?>" />
+
+头部css调用：
+<link href="<?php bloginfo('stylesheet_url'); ?>" rel="stylesheet" type="text/css" media="screen" />
+
+style.css路径调用：
+<?php bloginfo( 'stylesheet_url' ); ?>
+
+博客标题：
+<?php bloginfo('name'); ?>
+
+博客副标题：
+<?php bloginfo('description'); ?>
+
+主页地址：
+<?php echo get_option('home'); ?>
+或
+<?php bloginfo('home'); ?>
+
+主题模板所在路径：
+<?php bloginfo('template_directory'); ?>
+
+----------------------------------------------------------
+
+page页面列表：
+<?php wp_list_pages('sort_column=menu_order&title_li=&depth=2&include='); ?>
+
+分类目录列表：
+<?php wp_list_categories('title_li=&orderby=name&show_count=0&depth=2'); ?>
+
+----------------------------------------------------------
+
+主循环的开始和结束：
+<?php if(have_posts()) : ?>
+<?php while(have_posts()) : the_post(); ?>
+<?php endwhile; ?>
+<?php else : ?>
+<?php endif; ?>
+
+文章的URL地址：
+<?php the_permalink() ?>
+文章标题：
+<?php the_title(); ?>
+文章内容：
+<?php the_content('Read more...'); ?>
+文章摘要：
+<?php the_excerpt(); ?>
+文章所在分类：
+<?php the_category(', ') ?>
+文章发布时间：
+<?php the_time('Y-m-d') ?>
+文章作者：
+<?php the_author_posts_link(); ?>
+文章评论数量：
+<?php comments_number('No comment', '1 comment', '% comments'); ?>
+文章标签：
+<?php the_tags( 'Tags: ', ', '); ?>
+
+文章评论：
+<?php comments_template(); ?>
+
+多页型文章的翻页按钮（调用：<!--nextpage-->）：
+<?php wp_link_pages(); ?>
+
+----------------------------------------------------------
+
+小工具边栏调用：
+<?php if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar('Sidebar') ) : ?>
+<?php endif; ?>
+
+小工具动态边栏注册（functions.php）：
+<?php 
+if ( function_exists('register_sidebar') ) {
+    register_sidebar(array(
+		'name'=>'Sidebar',
+        'before_widget' => '<div class="widget">',
+        'after_widget' => '</div>',
+        'before_title' => '<h4>',
+        'after_title' => '</h4>',
+    ));}
+?>
+
+自定义菜单调用：
+<?php wp_nav_menu(array('theme_location' => 'primary')); ?>
+
+自定义菜单注册（functions.php）：
+<?php register_nav_menu('primary',__('Primary Navigation')); ?>
+
+----------------------------------------------------------
+	
+最新文章列表：
+<?php wp_get_archives('type=postbypost&limit=10'); ?>
+
+文章按月归档列表：
+<?php wp_get_archives('type=monthly'); ?>
+
+RSS地址：
+<?php bloginfo('rss2_url'); ?>
+
+标签云：
+<?php wp_tag_cloud('smallest=8&largest=32'); ?>
+
+友情链接：
+<?php wp_list_bookmarks(); ?>
+
+翻页插件按钮调用：
+<?php if(function_exists('wp_pagenavi')) wp_pagenavi(); ?>
+
+列表页面的上一页下一页调用：
+<span class="older"><?php previous_posts_link() ?></span>
+<span class="newer"><?php next_posts_link() ?></span>
+
+文章页面的上一篇下一篇调用：
+<span class="older"><?php previous_post_link(); ?></span>
+<span class="newer"><?php next_post_link(); ?></span>
+
+缩略图调用：
+<?php the_post_thumbnail(); ?>
+
+缩略图功能启用（functions.php）：
+add_theme_support( 'post-thumbnails' );
+set_post_thumbnail_size( 200, 150, true ); // 普通的缩略图
+
+搜索框调用：
+<?php get_search_form(); ?>
+
+在分类页面显示分类名称：
+<?php single_cat_title(); ?> 
+----------------------------------------------------------
+
+style.css版权信息	
+
+/*
+Theme Name: wpcourse theme
+Theme URI: http://www.wpcourse.com
+Description: wpcourse blog theme
+Author: ralph
+Author URI: http://www.wpcourse.com
+Version: 1.0
+Tags: white, simple, blog, wpcourse
+*/
+
+----------------------------------------------------------
+
+更多wordpress标签参考：
+http://codex.wordpress.org/Function_Reference
+
+----------------------------------------------------------
+
+WP Kit CN 中文工具箱插件可直接调用的标签：
+<?php wkc_recent_posts() ?> 显示最新文章
+<?php wkc_random_posts() ?> 显示随机文章
+<?php wkc_related_posts() ?> 显示相关文章
+<?php wkc_posts_in_the_same_categories() ?> 输出同一个分类下的文章
+<?php wkc_most_commented_posts() ?> 显示评论最多的文章
+<?php wkc_recent_comments() ?> 显示最新评论
+<?php wkc_recent_pings() ?> 显示最新pingback和trackback
+<?php wkc_most_active_commentors() ?> 显示n天内，评论最多的用户
+<?php wkc_recent_commentors() ?> 显示本周或者本月内评论最多的用户
+使用说明：
+http://sexywp.com/wp-kit-cn-doc
+----------------------------------------------------------
+调用最新文章列表（方法2）：
+<?php
+	$args = array( 'numberposts' => '10' );
+	$recent_posts = wp_get_recent_posts( $args );
+	foreach( $recent_posts as $recent ){
+		echo '<li><a href="' . get_permalink($recent["ID"]) . '" title="Look '.esc_attr($recent["post_title"]).'" >' .   $recent["post_title"].'</a> </li> ';
+	}
+?>
+
+----------------------------------------------------------
+调用某个分类下的最新文章列表：
+<?php
+	$args = array( 'numberposts' => '5','category'=>'41' );
+	$recent_posts = wp_get_recent_posts( $args );
+	foreach( $recent_posts as $recent ){
+		echo '<li><a href="' . get_permalink($recent["ID"]) . '">'.$recent["post_title"].'</a></li> ';
+	}
+?>
+
+调用某个分类下的最新文章列表（方法2）：
+<ul>
+<?php
+global $post;
+$args = array( 'numberposts' => 5, 'category' => 1 );
+$myposts = get_posts( $args );
+foreach( $myposts as $post ) :	setup_postdata($post); ?>
+	<li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
+<?php endforeach; ?>
+</ul>
+
+调用某个分类下置顶的文章列表：
+<?php
+	$args = array( 'numberposts' => '5','category'=>'41' );
+	$recent_posts = wp_get_recent_posts( $args );
+	foreach( $recent_posts as $recent ){
+	if (is_sticky($recent["ID"])) {
+		echo '<li><a href="' . get_permalink($recent["ID"]) . '">'.$recent["post_title"].'</a></li> ';
+		}
+	}
+?>
+
+
+----------------------------------------------------------
+面包屑导航：
+<?php if(function_exists('bcn_display'))
+{
+	bcn_display();
+}?>
+----------------------------------------------------------
+在分类页面显示子分类列表：
+<?php
+$args=array(
+  'orderby' => 'name',
+  'order' => 'ASC',
+  'child_of'  => 1
+  );
+$categories=get_categories($args);
+  foreach($categories as $category) { 
+    echo '<li class="nav2">
+	<a href="' . get_category_link( $category->term_id ) . '" title="' . sprintf( __( "View all posts in %s" ), $category->name ) . '" ' . '>' . $category->name.'</a> 
+	</li>';
+    } 
+?>
+----------------------------------------------------------
+热评文章列表(functions.php)：
+<?php function simple_get_most_viewed($posts_num=10, $days=30){
+global $wpdb;
+$sql = "SELECT ID , post_title , comment_count
+FROM $wpdb->posts
+WHERE post_type = 'post' AND TO_DAYS(now()) - TO_DAYS(post_date) < $days
+ORDER BY comment_count DESC LIMIT 0 , $posts_num ";
+$posts = $wpdb->get_results($sql);
+$output = "";
+foreach ($posts as $post){
+$output .= "\n<li><a href= \"".get_permalink($post->ID)."\" rel=\"bookmark\" title=\"".$post->post_title." (".$post->comment_count."条评论)\" >".$post->post_title."</a> </li>";
+}
+echo $output;
+}
+?>
+
+----------------------------------------------------------
+随机文章列表：
+<?php 
+$rand_posts = get_posts('numberposts=10&orderby=rand');
+foreach($rand_posts as $post) : ?> 
+    <li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li> 
+<?php endforeach;?>
+
+分类页面调用缩略图（wp_thumbnails插件）：
+<?php if(function_exists('wp_thumbnails_for_category')) { wp_thumbnails_for_category(); } ?>
+

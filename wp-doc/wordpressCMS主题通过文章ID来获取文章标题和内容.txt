@@ -1,0 +1,39 @@
+在wordpressCMS主题的制作过程中，我们会碰到各种各样的情况，比如要文要讲到的，我们想要获取文章的标题、内容、作者、标签等等相关信息，而我们只知道文章的ID号，那么，怎样通过这个文章ID号来获取到文章的标题内容呢？其实，这个问题，wordpress开发者早就想到了，并且提供了获取方法。下面，就随高时银博客一起来看看吧。
+要想通过ID号获取到文章标题等信息，我们就要用到get_post()函数，这是一个wordpress数组函数，它会把这篇文章的所有信息以对象或数组的形式返回，然后，我们通过这个数组就可以可以获取到我们想要的文章标题等信息。
+get_post()函数：
+get_post($post_id, $output);
+//$post_id 文章ID号
+//$output 以什么形式返回，有以下4种形式
+//对象：OBJECT
+//关联数组：ARRAY_A
+//数值数组：ARRAY_N
+//默认值：OBJECT
+get_post()简单案例：
+$mypost_id = 158;
+$post_id_158 = get_post($mypost_id, ARRAY_A);
+$title = $post_id_158['post_title'];
+ssmay主题
+上面案例是直接添加文章ID158，我们也可以在文章页循环中使用 the_ID()来代替158。我们上面以$title = $post_id_158['post_title'];来获取到了文章标题，我们也可以通过同样的方法获取到文章其它信息，如：内容、标签等。下面是其它信息的参数，
+post_author：(整数）文章作者的编号
+post_data：(字符）文章发表的日期和时间
+post_data_gmt：（字符）文章发表的格林尼治标准时间（GMT）
+post_content：（字符）文章内容
+post_title：（字符）文章标题
+post_category：（整数）文章类别的编号。
+post_excerpt：（字符）文章摘要
+post_status：(字符）文章状态
+comment_status：（字符）评论状态
+ping_status：（字符）pingback/trackback状态
+post_password：(字符）文章密码
+post_name：(字符）文章的URL嵌套
+to_ping：(字符）要引用的URL链接
+pinged：（字符）引用过的链接
+post_modified：(字符）文章最后修改时间
+post_modified_gmt：(字符）文章最后修改GMT时间
+post_parent：(整数）父级文章编号（供附件等）
+guid：（字符）文章的一个链接。注意：不能将GUID作为永久链接
+post_type：（字符）（日志 | 页面 | 附件）
+post_mime_type：(字符）Mime类型（供附件等）
+comment_count：（整数）评论总数
+我们只需把 $title = $post_id_158['post_title']; 这句中的 post_title 替换成下面的任何参数，就可以获取到相应的文章信息。
+好了，通过wordpress文章ID号来获取文章标题等相关信息的方法我们就介绍到这里，在使用中，我们要灵活应用。

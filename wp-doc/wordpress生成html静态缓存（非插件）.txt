@@ -1,0 +1,39 @@
+很多小伙伴在使用wordpress缓存时，除了缓存对象（memcached）和缓存php字节码（xcache），有时候还需要缓存文章的静态页面，所以现在为大家带来了非插件形式的生成html静态缓存，同时还可以自动更新！如果有需要的伙伴可以把静态html缓存到主机的内存中，这样就会更加快速的，不过需要你的主机内存够大才行！
+ 
+实现方法如下：
+一、复制一下这段代码保存为cu-cache.php文件。
+
+<?php
+define('DEL_DIR',dirname(__FILE__).'/cache');
+function deleteAll($path) {
+    $op = dir($path);
+    while(false != ($item = $op->read())) {
+        if($item == '.' || $item == '..') {
+            continue;
+        }
+        if(is_dir($op->path.'/'.$item)) {
+            deleteAll($op->path.'/'.$item);
+            rmdir($op->path.'/'.$item);
+        } else {
+            unlink($op->path.'/'.$item);
+        }
+            
+    }  
+}
+if( $_GET['up'] == 1 )
+deleteAll(DEL_DIR);
+
+二、将保存好的文件放入wordpress的同级目录下，然后将以下代码加入到当前使用的wordpress主题的functions.php文件中。
+
+function PushCache(){
+    $PushUrl = home_url('/').'cu-cache.php?up=1';
+    $request = new WP_Http();
+    return $request->request($PushUrl);
+}
+add_action('publish_post', 'PushCache');
+add_action('delete_post', 'PushCache');
+add_action('post_updated', 'PushCache');
+add_action('publish_page', 'PushCache');
+
+添加完两篇教程中的所有代码后即可让wordpress实现非插件自动生成html缓存，并且自动更新缓存了~~
+如果大家主机内存比较小而页面访问需求很高的话，不妨尝试下这种“高级”的缓存，我们的宗旨是，能不用插件就不用插件！

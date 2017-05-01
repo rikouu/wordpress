@@ -1,0 +1,64 @@
+WordPress作为一个强大的博客系统插件众多，使用这些插件可以轻松的扩展，由于WordPress插件实
+在太多而且完全兼容RSS输出和输入，因此对于初学者来说会看得眼花缭乱，因此我这里就介绍几个
+自己收集和使用过的一些自动采集插件。
+
+常用WordPress采集插件
+
+这里只介绍wordpress 自动采集插件的名称，具体安装使用方法这里就不详解了。
+
+1、wordpress 自动采集插件-Auto Get Rss
+
+这个插件可以在Wordpress博客程序上自动更新、发布文章的插件，通过任何RSS或Atom供稿。使用
+Wordpress Auto Get Rss建立一个自动的博客，比如视频博客、创建主题门户网站，或聚合RSS摘要
+。
+
+2、wordpress自动采集插件 -Caffeinated Content
+
+这个插件根据关键词搜索Youtube、Yahoo Answer、Articles、Files而获取相关内容，可保留原文也
+可翻译成多个国家语言，并可以定时定量自动发布到你的博客上的插件工具。功能是十分强大的，如
+果想自行做二次开发，用这个做基础是非常好的选择。
+
+3、wordpress自动采集插件-WP-o-Matic
+
+这个插件是一款效果非常不错的WordPress采集插件，虽然少了自动分类功能，但该插件在各个方面
+都表现的尚佳，相对于wordpress采集插件 Caffeinated Content来说，wp-o-matic是不错的选择，
+通过RSS完成blog的自动采集。
+
+4、wordpress自动采集发布插件WP Robot
+
+这个插件是一个基于wordpress平台的内容采集工具。wp robot是一个款英文站工具，如果主题选择
+好，会自动去搜索相关帖子主题支持采集yahoo answers的德语、法语、英语和西班牙语。
+
+5、wordpress自动采集插件-FeedWordPress
+
+这个插件用的很不错，主要是读取feed来实现你的博文更新的，并且是以全文的形式。优点是插件更
+新升级很及时!建议不要用汉化包，就用英文版WordPress和 FeedWordPress原插件!插件下载后需要
+在后台控制面板激活，并根据需要定制功能。
+
+6、wordpress 自动采集插件-Friends RSS Aggregator (FRA)
+
+Friends RSS Aggregator (FRA) 这个插件可以通过RSS聚合，也只是现实文章的标题，发布日期等。
+
+7、wordpress 自动采集插件 inlineRSS
+
+这个插件可支持RSS, RDF, XML or HTML等几种格式，通过Inlinefeed可以让Rss源的文章现实在特定
+文章内。
+
+8、wordpress 自动采集插件-autoblogged
+
+这个插件可以自动根据关键词获得YouTube及Yahoo answer等内容，进而实现博客内容自动发布的目
+的，可以建立你自己的博客群(blog farm)，通过这个插件你可以生成视频、图片或者文章博客等。
+
+9、wordpress自动采集插件-smartrss
+
+这个插件可以随心所欲地把自己喜欢的RSS里面的文章自动发布到自己的wordpress 博客上，使得 
+wordpress 具有了类似于有些 CMS 的自动采集功能。
+
+10、wordpress自动采集插件-BDP RSS Aggregator
+
+这个插件可以可以聚合多个blog的内容。适用于拥有多个博客的blogger，或者资源聚合和分享类的
+blogger，以及群组blogger，聚合多个博客的内容一文。
+
+目前WordPress已经成为主流的Blog搭建平台，插件和模板众多，易于扩充功能。以上这些插件的目
+的是为了方便大家做采集站，节省人力时间成本，更好的自动更新自己博客内容。挑选一款自己喜欢
+的自动采集插件试试吧!

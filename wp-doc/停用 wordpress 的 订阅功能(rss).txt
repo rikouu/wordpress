@@ -1,0 +1,17 @@
+WordPress本身就内建RSS Feed功能，不过WordPress的用途相当广泛，几乎什么类型的网站都可以呈现。如果你想把WordPress打造为内容管理系统（CMS）、作为一个公司的网站或资讯页面的话，那么你可能不需要RSS功能，使用几个简单的小技巧可以停用内建的RSS Feeds，并移除标签里的RSS链结。
+
+开启你的布景主题下functions.php档案，并加入以下程式码：
+
+wp_disable_feed（）{
+ wp_die( __( '目前不提供RSS功能，请前往我们的首页。' ) );
+}
+ 
+add_action（'do_feed'，'wp_disable_feed'，1）;
+add_action（'do_feed_rdf'，'wp_disable_feed'，1）;
+add_action（'do_feed_rss'，'wp_disable_feed'，1）;
+add_action（'do_feed_rss2'，'wp_disable_feed'，1）;
+add_action（'do_feed_atom'，'wp_disable_feed'，1）;
+这样就可以将RSS Feeds功能关闭。如果你想顺道把标签里的RSS资讯移除，在加入两行程式码：
+
+remove_action（'wp_head'，'feed_links_extra'，3）;
+remove_action（'wp_head'，'feed_links'，2）;

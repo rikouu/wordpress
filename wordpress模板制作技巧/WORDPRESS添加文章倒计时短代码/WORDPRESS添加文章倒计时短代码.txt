@@ -1,0 +1,101 @@
+https://www.mywpku.com/article-countdown.html
+
+文章倒计时对于T楼，预告等方面有奇异之效，可以勾起各种访客们的再次回访。代码来自麦田一根葱，感谢想出这么好的功能~
+
+　　顺便还要给各位道个歉：WP酷这几天将会选择性掉线，准备进入备案阶段……QAQ备个案还要快递喷绘扫描，坑爆了！
+
+ 
+
+使用方法
+
+将以下代码加入functions.php中：
+
+function BYMT_countdown($atts, $content=null) {
+extract(shortcode_atts(array("time" => ''), $atts));
+date_default_timezone_set('PRC');
+$endtime=strtotime($time);
+$nowtime=time();
+$counttime=$endtime-$nowtime;
+$day=floor($counttime/(60*60*24));
+$day=$day<10 ? "0".$day : $day;
+$hour=floor(($counttime-$day*24*60*60)/3600);
+$hour=$hour<10 ? "0".$hour : $hour;
+$min=floor(($counttime-$day*24*60*60-$hour*3600)/60);
+$min=$min<10 ? "0".$min : $min;
+$sect=floor($counttime-$day*24*60*60-$hour*3600-$min*60-1);
+$sect=$sect<10 ? "0".$sect : $sect;
+global $endtimes;
+$endtimes = str_replace(array("-"," ",":"),",",$time);
+if($endtime>$nowtime){
+return '
+<div class="reply-to-read">这里面是什么内容？倒计时结束后，马上为您揭晓！还剩：
+<div class="Countdownbox">
+<div style="left:10px;" id="day">'.$day.'天</div>
+<div style="left:125px;" id="hour">'.$hour.'时</div>
+<div style="left:232px;" id="min">'.$min.'分</div>
+<div style="left:342px;" id="sec">'.$sect.'秒</div>
+</div></div>
+';
+}else{
+return $content;
+}
+}
+function BYMT_countdown_foot_JS() {
+global $endtimes;
+echo '<script>window.setInterval(function(){ShowCountDown('.$endtimes.');}, interval);</script>'."\n";
+}
+add_shortcode('countdown', 'BYMT_countdown');
+add_action('wp_footer', 'BYMT_countdown_foot_JS');
+wp_register_script( 'BYMT_countdown_head_JS', get_template_directory_uri() . '/js/countdownjs.js', array(), '1.0', false );
+wp_enqueue_script( 'BYMT_countdown_head_JS' );
+
+将下面代码另存为countdownjs.js文件，并上传到主题js文件夹里:
+
+function add0(time){
+if(time<10){
+return "0"+time;
+}else{
+return time;
+}
+}
+var interval = 1000;
+function ShowCountDown(year,month,day,hourd,minuted)
+{
+var now = new Date();
+var endDate = new Date(year, month-1, day, hourd, minuted);
+var leftTime=endDate.getTime()-now.getTime();
+var leftsecond = parseInt(leftTime/1000);
+var day=Math.floor(leftsecond/(60*60*24));
+day = day < 0 ? 0 : day;
+var hour=Math.floor((leftsecond-day*24*60*60)/3600);
+hour = hour < 0 ? 0 : hour;
+var minute=Math.floor((leftsecond-day*24*60*60-hour*3600)/60);
+minute = minute < 0 ? 0 : minute;
+var second=Math.floor(leftsecond-day*24*60*60-hour*3600-minute*60);
+second = second < 0 ? 0 : second;
+var day2 = add0(day)
+var hour2 = add0(hour)
+var minute2 = add0(minute)
+var second2 = add0(second)
+$("#day").html(day2);
+$("#hour").html(hour2);
+$("#min").html(minute2);
+$("#sec").html(second2);
+}
+
+最后再添加一个小样式，加入style.css里：
+
+.Countdownbox{width:456px; height:116px; position:relative; background: url(images/Countdown.jpg) center center no-repeat; margin:0 auto;}
+.Countdownbox div{width:70px;height:90px;text-align:center;font:bold 50px/91px arial;color:#fff;position:absolute;top: 15px;}
+
+
+
+没问题了！
+
+1
+[countdown time=""]倒计时完成后显示的内容[/countdown]
+ time就是倒计时结束的时间，格式是2013-08-08 18:20:57
+
+
+
+

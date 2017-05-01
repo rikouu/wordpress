@@ -1,0 +1,4 @@
+在/etc/modprobe.d/dist.conf结尾添加
+
+alias net-pf-10 off
+alias ipv6 off

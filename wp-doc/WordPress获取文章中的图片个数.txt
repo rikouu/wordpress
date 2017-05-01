@@ -1,0 +1,14 @@
+丰富wordpress主题的info tags 除了分类、标签、作者、发布时间等等外，其实，我们也可以放出文章内的图片数量，那么今天说的就是wordpress获取文章中的图片个数的教程！
+复制以下代码到当前使用主题的functions.php文件中，然后在文章列表主循环或文章页中调用该函数即可。
+//获取文章中的图片个数
+
+if( !function_exists('get_post_images_number') ){
+    function get_post_images_number(){
+        global $post;
+        $content = $post->post_content;
+        preg_match_all('/<img.*?(?: |\\t|\\r|\\n)?src=[\'"]?(.+?)[\'"]?(?:(?: |\\t|\\r|\\n)+.*?)?>/sim', $content, $result, PREG_PATTERN_ORDER);
+        return count($result[1]);
+    }
+}
+函数使用方法：
+<?php echo get_post_images_number().'张图片' ?>

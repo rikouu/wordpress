@@ -1,0 +1,41 @@
+WordPress里要实现文章自动提取tag方法有很多，最方便的使用插件。今天分享一个不用插件来实现文章的自动提取tag并添加链接的方法。
+
+登录博客后台，打开博客主题的function.php功能函数，在这个文件里面添加如下代码：
+
+//连接数量
+$match_num_from = 1; //一个关键字少于多少不替换
+$match_num_to = 10; //一个关键字最多替换
+//连接到WordPress的模块
+add_filter('the_content','tag_link',1);
+//按长度排序
+function tag_sort($a, $b){
+if ( $a->name == $b->name ) return 0;
+return ( strlen($a->name) > strlen($b->name) ) ? -1 : 1;
+}
+//改变标签关键字
+function tag_link($content){
+global $match_num_from,$match_num_to;
+$posttags = get_the_tags();
+if ($posttags) {
+usort($posttags, "tag_sort");
+foreach($posttags as $tag) {
+$link = get_tag_link($tag->term_id);
+$keyword = $tag->name;
+//连接代码
+$cleankeyword = stripslashes($keyword);
+$url = "<a href=\"$link\" title=\"".str_replace('%s',addcslashes($cleankeyword, '$'),__('View all posts in %s'))."\"";
+$url .= ' target="_blank"';
+$url .= ">".addcslashes($cleankeyword, '$')."</a>";
+$limit = rand($match_num_from,$match_num_to);
+//不连接的 代码
+$content = preg_replace( '|(<a[^>]+>)(.*)('.$ex_word.')(.*)(</a[^>]*>)|U'.$case, '$1$2%&&&&&%$4$5', $content);
+$content = preg_replace( '|(<img)(.*?)('.$ex_word.')(.*?)(>)|U'.$case, '$1$2%&&&&&%$4$5', $content);
+$cleankeyword = preg_quote($cleankeyword,'\'');
+$regEx = '\'(?!((<.*?)|(<a.*?)))('. $cleankeyword . ')(?!(([^<>]*?)>)|([^>]*?</a>))\'s' . $case;
+$content = preg_replace($regEx,$url,$content,$limit);
+$content = str_replace( '%&&&&&%', stripslashes($ex_word), $content);
+}
+}
+return $content;
+}
+纯粹为自己使用方便。

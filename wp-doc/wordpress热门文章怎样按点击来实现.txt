@@ -1,0 +1,100 @@
+网上有很多关于wordpress热门文章实现方法的介绍，但大多都是通过热门评论来实现的。当然，这也无可厚非。但是，大多的wordpress站长还是希望通过点击来实现热门文章调用，我就是其中的一个。呵呵，今天，高时银博客就跟大家分享一下怎样按点击实现热门文章的调用吧。
+方法一、通过wp-postviews插件来实现。
+安装好插件后，设置好，然后在需要显示热门文章 的地方添加 <?php get_most_viewed('post',10); ?> 这样就实现了热门文章10篇的调用。关于插件的设置这里不做多介绍，网上多的是。
+方法二、非插件来实现热门文章的调用。
+这里只是针对ssmay主题而设计的分类热门文章，如果想实现所有的热门文章，可以做相应的修改。
+在主题模板函数文件function.php中添加如下代码：
+/// 函数作用：取得阅读最多的文章 开始
+add_action('wp_head', 'process_postviews');
+function process_postviews() {
+global $user_ID, $post;
+if(is_int($post)) {
+$post = get_post($post);
+}
+if(!wp_is_post_revision($post)) {
+if(is_single() || is_page()) {
+$id = intval($post->ID);
+$views_options = get_option('views_options');
+$post_views = get_post_custom($id);
+$post_views = intval($post_views['views'][0]);
+$should_count = false;
+switch(intval($views_options['count'])) {
+case 0:
+$should_count = true;
+break;
+case 1:
+if(empty($_COOKIE[USER_COOKIE]) && intval($user_ID) == 0) {
+$should_count = true;
+}
+break;
+case 2:
+if(intval($user_ID) > 0) {
+$should_count = true;
+}
+break;
+}
+if(intval($views_options['exclude_bots']) == 1) {
+$bots = array('Google Bot' => 'googlebot', 'Google Bot' => 'google', 'MSN' => 'msnbot', 'Alex' => 'ia_archiver', 'Lycos' => 'lycos', 'Ask Jeeves' => 'jeeves', 'Altavista' => 'scooter', 'AllTheWeb' => 'fast-webcrawler', 'Inktomi' => 'slurp@inktomi', 'Turnitin.com' => 'turnitinbot', 'Technorati' => 'technorati', 'Yahoo' => 'yahoo', 'Findexa' => 'findexa', 'NextLinks' => 'findlinks', 'Gais' => 'gaisbo', 'WiseNut' => 'zyborg', 'WhoisSource' => 'surveybot', 'Bloglines' => 'bloglines', 'BlogSearch' => 'blogsearch', 'PubSub' => 'pubsub', 'Syndic8' => 'syndic8', 'RadioUserland' => 'userland', 'Gigabot' => 'gigabot', 'Become.com' => 'become.com');
+$useragent = $_SERVER['HTTP_USER_AGENT'];
+foreach ($bots as $name => $lookfor) {
+if (stristr($useragent, $lookfor) !== false) {
+$should_count = false;
+break;
+}
+}
+}
+if($should_count && (!defined('WP_CACHE') || !WP_CACHE)) {
+if(!update_post_meta($id, 'views', ($post_views+1))) {
+add_post_meta($id, 'views', 1, true);
+}
+}
+}
+}
+}
+if(!function_exists('get_most_viewed_category')) {
+function get_most_viewed_category($category_id = 0, $mode = '', $limit = 10, $chars = 0, $display = true) {
+global $wpdb;
+$views_options = get_option('views_options');
+$where = '';
+$temp = '';
+$output = '';
+if(is_array($category_id)) {
+$category_sql = "$wpdb->term_taxonomy.term_id IN (".join(',', $category_id).')';
+} else {
+$category_sql = "$wpdb->term_taxonomy.term_id = $category_id";
+}
+if(!empty($mode) && $mode != 'both') {
+$where = "post_type = '$mode'";
+} else {
+$where = '1=1';
+}
+$most_viewed = $wpdb->get_results("SELECT DISTINCT $wpdb->posts.*, (meta_value+0) AS views FROM $wpdb->posts LEFT JOIN $wpdb->postmeta ON $wpdb->postmeta.post_id = $wpdb->posts.ID INNER JOIN $wpdb->term_relationships ON ($wpdb->posts.ID = $wpdb->term_relationships.object_id) INNER JOIN $wpdb->term_taxonomy ON ($wpdb->term_relationships.term_taxonomy_id = $wpdb->term_taxonomy.term_taxonomy_id) WHERE post_date < '".current_time('mysql')."' AND $wpdb->term_taxonomy.taxonomy = 'category' AND $category_sql AND $where AND post_status = 'publish' AND meta_key = 'views' AND post_password = '' ORDER BY views DESC LIMIT $limit");
+if($most_viewed) {
+foreach ($most_viewed as $post) {
+$post_views = intval($post->views);
+$post_title = get_the_title($post);
+if($chars > 0) {
+$post_title = snippet_text($post_title, $chars);
+}
+$views_options['most_viewed_template'] = '<li><a href="%POST_URL%" title="%POST_TITLE%">%POST_TITLE%</a></li>';
+$temp = stripslashes($views_options['most_viewed_template']);
+$temp = str_replace("%VIEW_COUNT%", number_format_i18n($post_views), $temp);
+$temp = str_replace("%POST_TITLE%", $post_title, $temp);
+$temp = str_replace("%POST_EXCERPT%", $post_excerpt, $temp);
+$temp = str_replace("%POST_CONTENT%", $post->post_content, $temp);
+$temp = str_replace("%POST_URL%", get_permalink($post), $temp);
+$output .= $temp;
+}
+} else {
+$output = '<li>'.__('N/A', 'wp-postviews').'</li>'."\n";
+}
+if($display) {
+echo $output;
+} else {
+return $output;
+}
+}
+}
+这段代码是我从wp-postviews中直接提取出来的，做了一些小的修改。然后，在主题的热门文章处添加如下代码来实现文章调用：
+<?php get_most_viewed_category(1,"both",1); ?>
+这句中用2个数字1 ，第一个1是分类的ID，第二个1是显示这个分类的热门文章数量。

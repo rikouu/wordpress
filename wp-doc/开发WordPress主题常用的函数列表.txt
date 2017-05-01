@@ -1,0 +1,125 @@
+如果你经常折腾WordPress主题，那么肯定会经常Google搜索一些WordPress主题(模版:Template)函数跑到到WordPress的CODEX中去(英语不好使的同学很是难过啊~)，这不整了个开发WordPress主题常用的函数列表，这些都是在开发(构建)、更新和维护WordPress主题时的常用函数，简单Copy-Paste收集汇总之。
+
+
+主题基本模板文件列表
+文件名	描述
+style.css	主题样式文件
+index.php	首页模板文件
+header.php	头部模板文件
+single.php	单篇文章模板文件
+archive.php	存档/分类模板文件
+searchform.php	搜索表单模板文件
+search.php	搜索模板文件
+404.php	404模板文件
+comments.php	留言模板文件
+footer.php	底部模板文件
+sidebar.php	侧边栏模板文件
+page.php	静态页面模板文件
+front-page.php	静态首页模板文件
+tag.php	标签存档模板文件
+category.php	分类存档模板文件
+WordPress常用主题函数
+函数名	描述
+<?php the_content(); ?>	文章内容
+<?php if(have_posts()): ?>	检查是否有文章
+<?php while(have_posts()): the_post(); ?>	显示文章
+<?php endwhile; ?>	结束循环
+<?php endif; ?>	结束判断
+<?php get_header(); ?>	头部模板内容
+<?php get_sidebar(); ?>	侧边栏模板内容
+<?php get_footer(); ?>	底部模板内容
+<?php the_time(‘m-d-y’); ?>	显示时间，格式为：’08-18-07′
+<?php comments_popup_link(); ?>	显示到文章留言的链接
+<?php the_title(); ?>	文章标题
+<?php the_permalink(); ?>	文章链接
+<?php the_category(); ?>	文章分类
+<?php the_author(); ?>	文章作者
+<?php the_ID(); ?>	文章ID
+<?php edit_post_link(); ?>	文章编辑链接
+<?php wp_list_bookmarks(); ?>	友情链接列表
+<?php comments_template(); ?>	留言模板内容
+<?php wp_list_pages(); ?>	所有页面列表
+<?php wp_list_categories(); ?>	所有分类列表
+<?php next_post_link(‘%link’); ?>	下一篇文章链接
+<?php previous_post_list(‘%link’); ?>	上一篇文章链接
+<?php get_calendar(); ?>	显示文章日历
+<?php wp_get_archives(); ?>	存档链接列表
+<?php posts_nav_link(); ?>	上一篇和下一篇文章链接
+<?php rewind_posts(); ?>	重回开头开始第二个循环
+头部(Header Tag)常用函数
+函数名	描述
+<?php site_url(); ?>	站点根链接
+<?php wp_title(); ?>	文章或者静态页面标题
+<?php bloginfo(‘name’); ?>	站点名称
+<?php bloginfo(‘description’); ?>	站点描述
+<?php get_stylesheet_directory(); ?>	样式文件所在目录
+<?php bloginfo(‘stylesheet_url’); ?>	样式文件链接
+<?php bloginfo(‘pingback_url’); ?>	pingback 链接
+<?php bloginfo(‘template_url’); ?>	模板文件所在目录链接
+<?php bloginfo(‘version’); ?>	WordPress 版本
+<?php bloginfo(‘atom_url’); ?>	atom 链接
+<?php bloginfo(‘rss2_url’); ?>	rss2 链接
+<?php bloginfo(‘url’); ?>	网站根链接
+<?php bloginfo(‘html_type’); ?>	html 版本
+<?php bloginfo(‘charset’); ?>	字符集
+导航菜单实现
+默认导航菜单
+<?php wp_nav_menu(); ?>
+指定的导航菜单
+<?php wp_nav_menu( array(‘menu’ => ‘Project Nav’ )); ?>
+基于分类的导航
+<ul id=”menu”>
+<li <?php if(is_home()) { ?> class=”current-cat” <?php } ?>>
+<a href=”<?php bloginfo(‘home’); ?>”>Home</a></li>
+<?php wp_list_categories(‘title_li=&orderby=id’);?>
+</ul>
+基于页面的导航
+<ul id=”menu”>
+<li <?php if(is_home()) { ?> class=”current-page-item” <?php } ?>>
+<a href=”<?php bloginfo(‘home’); ?>”>Home</a></li>
+<?php wp_list_pages(‘sort_column=menu_order&depth=1&title_li=’);?>
+</ul>
+目录页面(首页)输出文章列表
+<?php if(have_posts()) { ?>
+<?php while(have_posts()) { ?>
+<?php the_post(); ?>
+<?php // 对文章样式、标题、摘要，特色图像进行渲染处理DIY的地方 ?>
+<?php } // 结束while ?>
+<?php } // 退出if ?>
+其他杂项函数
+函数名	描述
+<?php get_template_part(‘page-title’); ?>	加载当前应用主题下其它局部模版(灰常好用~)
+<?php include(TEMPLATEPATH . ‘/xxx’); ?>	从模板文件夹加载文件
+<?php the_search_query(); ?>	搜索表单返回的值
+<?php _e(‘Message’); ?>	返回翻译之后的文本
+<?php wp_register(); ?>	注册链接
+<?php wp_loginout(); ?>	登录/登出链接
+<?php wp_meta(); ?>	管理元链接
+<?php timer_start(); ?>	开始计时 (header.php)
+<?php timer_stop(1); ?>	停止计时 (footer.php)
+<?php echo get_num_queries(); ?>	显示生成当前页面所需的查询数
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

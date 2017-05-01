@@ -1,0 +1,13 @@
+之前小编做 wordpress主题 的时候也研究过相关代码，但没成功，可能还是因为php没到家吧，函数没定义OK。。。而今天要说的教程确确实实完成了wordpress文章图片自动添加alt和title信息的功能，可能对于新手会说，不清楚添加这两个标签的意义是什么，那么小编在这就进行一下扫盲吧。
+搜索引擎目前还不能对图片进行一个抓取定义描述，但的搜索引擎可以通过图片的alt和title信息来很快的清楚知道图片的信息，从而符合搜索引擎规范，在我们进行wordpress主题做网站优化的时候能有个高分，当然被搜索引擎抓取的图片当然在（百度）的图片里，顺便给网站带来流量。
+其实实现wordpress文章图片自动添加alt和title信息的功能有很多插件可以完成，但是小编一直不喜欢用插件，能够代码完成的尽量代码实现了。。。而今天我们讲的也是如何代码实现wordpress文章图片自动添加alt和title信息的功能，下面直接来教程吧：
+//给文章图片自动添加alt和title信息
+add_filter('the_content', 'imagesalt');
+function imagesalt($content) {
+       global $post;
+       $pattern ="/<a(.*?)href=('|\")(.*?).(bmp|gif|jpeg|jpg|png)('|\")(.*?)>/i";
+       $replacement = '<a$1href=$2$3.$4$5 alt="'.$post->post_title.'" title="'.$post->post_title.'"$6>';
+       $content = preg_replace($pattern, $replacement, $content);
+       return $content;
+}
+将上面的代码放到 wordpress主题 文件夹下的functions.php文件内，这样文章图片就会自动添加alt和title信息

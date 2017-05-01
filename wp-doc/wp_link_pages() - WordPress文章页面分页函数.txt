@@ -1,0 +1,36 @@
+wp_link_pages() - WordPress文章页面分页函数
+
+wordpress中，如果一遍文章比较长，我们需要对这篇文章实行分页来方便阅读。我们可以在编辑其
+中先对文章进行分页（实现分页我们可以在编辑器文本环境下添加<!--nextpage-->或点击文章分页
+按钮），然后在模板中内容标签<?php the_content(); ?>的下边通过wp_link_pages()函数来添加文
+章分页。
+
+wp_link_pages()函数说明：
+
+
+<?php wp_link_pages(array(
+'before' => '<p>' . __('Pages:'),//分页导航前，可写文字，可设置样式
+'after' => '</p>',//分页导航闭合
+'link_before' => ,
+'link_after' => ,
+'next_or_number' => 'number',//下一页还是页码
+'nextpagelink' => __('Next page'),//下一页链接
+'previouspagelink' => __('Previous page'),//上一页链接
+'pagelink' => '%',//页码链接
+'more_file' => ,
+'echo' => 1 ); ?>
+
+一般情况下我们都用数字链接，我们可以在single.php中，<?php the_content(); ?>的下面添加如
+下代码：
+
+
+<?php wp_link_pages(array(
+		'before' => '<div class="page-links"><span class="page-links-title">' . 
+		__( '<b>Pages:</b>' ) . '</span>', 
+		'after' => '</div>',
+		'link_before' => '<span>', 
+		'link_after'  => '</span>',
+		'next_or_number' => 'number'
+		)); 
+		?>
+

@@ -1,0 +1,60 @@
+美国的主机产品还是很深受国人喜爱的，特别是一些便宜的VPS、虚拟主机、还有一些域名等还是挺
+实惠的。虽说现在使用美国VPS的人要相对少些，但还是有很多的，以下是整理的一些对于发送VPS工
+单（Ticket）有用的一些常用语，部分还适用于虚拟主机！
+
+1、月付改为年付：Please change my billing cycle to annual pay.
+
+2、求一个测试ip或者下载地址：Do you have a test IP/testfile?
+can you provide me an address&nbsp;or&nbsp;file to test your hosting speed?
+
+3、VPS重启失败或者说VPS不能够启动 ：My VPS account is unable to access, probably due to 
+reboot failure, please help me restart it, thank you.
+
+注：如果是服务器把VPS改为“server”就行了！
+
+4、请帮忙重装XXX系统，并且帮忙装kloxo控制面板，不需要备份：Please,could you help me 
+rebuild my VPS to XXX with pre-installed kloxo.There are no important data, no backups 
+needed.(XXX改为你需要的系统)
+
+注：如果是服务器把VPS改为“server”就行了！
+
+5、SSH登陆不上了:I can not access SSH with information provide, please help.
+
+6、购买额外IP： Can I purchase additional IPs? Do I need to comply with ARIN 
+regulations?
+
+7、我考虑一下再决定： I will think about it then make a decision.
+
+8、Hi, my 〔server/vps/hosting) is down, can you please take a look into it? My account 
+info/ip is [在这里插入您的IP或者帐户信息]
+嗨， 我的(服务器/vps/空间)死机了， 可不可以帮我查一下怎么回事？ 我的帐户信息/ip 是[在这
+里插入您的IP或者帐户信息]
+
+9、Hi, I would like to purchase [#] extra [ips/ram/storage/bandwidth] for my 
+[server/vps]. My account info/ip is [在这里插入您的IP或者帐户信息]
+嗨， 我想购买 [#] 个 [ip/内存/空间/带宽] 给我的 [服务器/vps]. 我的帐户信息/ip 是[在这里
+插入您的IP或者帐户信息]
+
+10、Hi, Can you please reload my [server/vps]. My account info/ip is [在这里插入您的IP或
+者帐户信息]
+嗨， 可不可以帮我从新安装我的 [服务器/vps]. 我的帐户信息/ip 是[在这里插入您的IP或者帐户
+信息]
+
+11、Hi, my [server/vps] load is very high! please take a look! My account info/ip is [在
+这里插入您的IP或者帐户信息]
+嗨， 我的 [服务器/vps] cpu 用量很高！ 请帮我看一下! 我的帐户信息/ip 是[在这里插入您的IP
+或者帐户信息]
+
+12、Hi, where are your servers located? Can you provide a test [ip/file]?
+嗨，你们服务器在哪，可以给我一个测试[IP/文件]吗？
+
+13、可选、非必填 optional
+
+14、原先的 original
+15、退款的写法举例：
+Ｉ,m sorry that I have to tell you that I am not satisfied with the access speed from 
+china mainland to your server, where my target visitors are from. so would you assist me 
+to end this service/contract and give my money back? thank you very much.
+
+希望以上的内容对部分朋友有所帮助，部分已经更改为最新的！
+

@@ -1,0 +1,5 @@
+许多时候我们一直在用插件如WP Cleaner来删除WordPress自带的修订版本(Revisions)，在建站时间达到1年以上后，随着修订版本的增多，数据库体积将会越来越大。删除旧的修订版本信息是一个非常不错的WordPress优化方法，实现非常简单，在主题目录下的functions.php中加入以下代码：
+$wpdb->query( "
+DELETE FROM $wpdb->posts
+WHERE post_type = 'revision'
+" );

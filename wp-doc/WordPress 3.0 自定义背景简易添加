@@ -1,0 +1,5 @@
+只要各位童鞋安装了WP3.0+，实现很easy，往functions.php加一句代码：
+
+add_custom_background();
+
+之后，后台——外观——背景：

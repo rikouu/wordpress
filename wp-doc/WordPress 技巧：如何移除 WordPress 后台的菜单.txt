@@ -1,0 +1,32 @@
+WordPress 技巧：如何移除 WordPress 后台的菜单
+
+可能因为不想给客户看到过多的菜单或者其他种种原因，你想简化 WordPress 后台菜单，其实这个
+非常容易：
+
+
+add_action( 'admin_menu', 'wpjam_remove_admin_menus' );
+function wpjam_remove_admin_menus(){
+	remove_menu_page( 'index.php' );                  //Dashboard
+	remove_menu_page( 'edit.php' );                   //Posts
+	remove_menu_page( 'upload.php' );                 //Media
+	remove_menu_page( 'edit.php?post_type=page' );    //Pages
+	remove_menu_page( 'edit-comments.php' );          //Comments
+	remove_menu_page( 'themes.php' );                 //Appearance
+	remove_menu_page( 'plugins.php' );                //Plugins
+	remove_menu_page( 'users.php' );                  //Users
+	remove_menu_page( 'tools.php' );                  //Tools
+	remove_menu_page( 'options-general.php' );        //Settings 
+}
+如果仅仅想移除子菜单，比如设置界面：
+
+
+remove_menu_page( 'options-general.php' );        //Settings 
+也可以移除插件生成的菜单，只要复制链接的最后一段即可，比如要隐藏下面自定义日志类型生成的
+页面：
+
+
+http://yourdomain.com/wp-admin/edit.php?post_type=portfolio
+可以使用函数：
+
+
+remove_menu_page( 'edit.php?post_type=portfolio' );

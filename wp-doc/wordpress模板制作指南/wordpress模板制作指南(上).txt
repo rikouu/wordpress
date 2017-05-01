@@ -1,0 +1,54 @@
+来源：http://wordpress.zzbaike.com
+
+我们带大家学习wordpress已经有一段时间了，相信大家对它的使用方法已经有所了解了，但若让大家自己设计一款模板出来，还是不知道如何去做吗？我们将在这里带大家一起学习wordpress模板制作，在这节中，我们介绍wordpress模板基本资料，希望对朋友们有所助益。
+
+
+WordPress基本模板文件
+
+一套完整的WordPress模板应至少具有如下文件：
+
+style.css : CSS(样式表)文件
+index.php : 主页模板
+archive.php : Archive/Category模板
+404.php : Not Found 错误页模板
+comments.php : 留言/回复模板
+footer.php : Footer模板
+header.php : Header模板
+sidebar.php : 侧栏模板
+page.php : 内容页(Page)模板
+single.php : 内容页(Post)模板
+searchform.php : 搜索表单模板
+search.php : 搜索结果模板
+当然，具体到特定的某款模板，可能不止这些文件，但一般而言，这些文件是每套模板所必备的。
+
+
+基本条件判断Tag
+
+is_home() : 是否为主页
+is_single() : 是否为内容页(Post)
+is_page() : 是否为内容页(Page)
+is_category() : 是否为Category/Archive页
+is_tag() : 是否为Tag存档页
+is_date() : 是否为指定日期存档页
+is_year() : 是否为指定年份存档页
+is_month() : 是否为指定月份存档页
+is_day() : 是否为指定日存档页
+is_time() : 是否为指定时间存档页
+is_archive() : 是否为存档页
+is_search() : 是否为搜索结果页
+is_404() : 是否为 “HTTP 404: Not Found” 错误页
+is_paged() : 主页/Category/Archive页是否以多页显示
+Header部分常用到的PHP函数
+
+<?php bloginfo(’name’); ?> : 博客名称(Title)
+<?php bloginfo(’stylesheet_url’); ?> : CSS文件路径
+<?php bloginfo(’pingback_url’); ?> : PingBack Url
+<?php bloginfo(’template_url’); ?> : 模板文件路径
+<?php bloginfo(’version’); ?> : WordPress版本
+<?php bloginfo(’atom_url’); ?> : Atom Url
+<?php bloginfo(’rss2_url’); ?> : RSS 2.o Url
+<?php bloginfo(’url’); ?> : 博客 Url
+<?php bloginfo(’html_type’); ?> : 博客网页Html类型
+<?php bloginfo(’charset’); ?> : 博客网页编码
+<?php bloginfo(’description’); ?> : 博客描述
+<?php wp_title(); ?> : 特定内容页(Post/Page)的标题

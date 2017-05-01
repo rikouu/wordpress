@@ -1,0 +1,23 @@
+自从2.9版本以来，wordpress引入了特色图像功能，如果你的wordpress主题支持该功能，那么使用
+特色图像将可以很方便地在首页、分类页等列表页面显示指定的文章缩略图。
+如果你使用的wordrpress主题没有特色图片功能，可以通过以下方法设置。
+1、在主题文件夹下的functions.php文件中加入代码：
+if ( function_exists( 'add_theme_support' ) ) {  
+    add_theme_support( 'post-thumbnails' );  
+} 
+2、发布文章时，在上传图像时设置特色图像。
+3、在需要显示特色图像的地方插入以下代码：
+<?php if ( has_post_thumbnail()) : ?> 
+   <a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>" > 
+   <?php the_post_thumbnail(); ?> 
+   </a> 
+ <?php endif; ?> 
+4、特色图像缩略图尺寸参数设置：修改以上the_post_thumbnail(); 的参数即可。
+the_post_thumbnail('thumbnail');       // 小缩略图 (默认 150px x 150px )  
+the_post_thumbnail('medium');          // 中缩略图 (默认 300px x 300px )-自适应图像比例 
+ 
+the_post_thumbnail('large');           // 大缩略图 (默认 640px x 640px )-自适应图像比例 
+ 
+the_post_thumbnail('full');            // 完整尺寸   
+the_post_thumbnail( array(100,100) );  // 自定义 
+其中 thumbnail、medium、large的默认尺寸在后台-设置-媒体中定义。

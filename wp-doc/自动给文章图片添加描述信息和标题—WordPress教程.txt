@@ -1,0 +1,18 @@
+有时候写文章的时候，难免会忘记给图片添加描述标题信息；
+
+在主题functions.php中添加如下代码:
+
+//给文章图片自动添加alt和title信息
+add_filter('the_content', 'imagesalt');
+function imagesalt($content) {
+       global $post;
+       $pattern ="/<a(.*?)href=('|\")(.*?).(bmp|gif|jpeg|jpg|png)('|\")(.*?)>/i";
+       $replacement = '<a$1href=$2$3.$4$5 alt="'.$post->post_title.'" title="'.$post->post_title.'"$6>';
+       $content = preg_replace($pattern, $replacement, $content);
+       return $content;
+}
+
+
+
+
+

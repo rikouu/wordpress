@@ -1,0 +1,19 @@
+我们可以在wordpress博客的侧边栏基本上都带有最新文章列表和随机文章列表。那么，wordpress怎样调用最新文章？本节就来讲讲wordpress博客最新文章是怎样调用的。
+WordPress最新文章调用方法一：通过标签wp_get_archvies来实现。
+如：
+<?php get_archives('postbypost', 10); ?> (显示10篇最新更新文章)
+<?php wp_get_archives('type=postbypost&limit=20&format=custom'); ?>
+后面这个代码显示你博客中最新的20篇文章，参数详解如下：
+type=postbypost:显示文章标题。
+format=custom：用来自定义这份文章列表的显示样式。也可以不要，默认以UL列表显示文章标题。
+limit=20：表示显示20遍。
+WordPress最新文章调用方法一：通过WP的query_posts()函数
+我们还可以通过wordpress的query_posts()函数来调用最新文章列表，虽然代码会比较多一点，但可以更好的控制Loop的显示，比如你可以设置是否显示摘要。如下例：
+<?php query_posts('posts_per_page=8&caller_get_posts=1'); ?>
+<?php while (have_posts()) : the_post(); ?>
+<li>
+<a target="_blank" href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"
+class="title"><?php echo cut_str($post->post_title,34); ?></a>
+</li>
+<?php endwhile; ?>
+wordpress文章列表默认是按最新文章显示，posts_per_page=8表求显示8遍，caller_get_posts=1表示如果有置顶文章，可置顶1遍，其它按最新显示

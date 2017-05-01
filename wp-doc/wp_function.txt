@@ -1,0 +1,41 @@
+WordPress中文文档:http://www.wordpress.la/codex.html
+WordPress 常用函数参考:http://blog.wpjam.com/function_reference
+WordPress函数参考:http://www.uedsc.com/wordpress-functions.html
+
+
+add_filter()
+remove_action()
+wp_clear_scheduled_hook()
+WordPress截取字符串函数wp_trim_words:
+WordPress网站添加面包屑（Breadcrumb）导航的代码:http://www.weste.net/2013/11-1/94145.html
+去掉WordPress分类链接前缀“Category”的方法:
+WordPress菜单函数wp_nav_menu()详细介绍:http://www.2zzt.com/jcandcj/6373.html
+WORDPRESS入门教程:http://www.2zzt.com/jcandcj
+WordPress函数：load_theme_textdomain（主题本地化）:https://www.wpdaxue.com/load_theme_textdomain.html
+WORDPRESS 集成百度 SITEMAP 实时推送代码:https://www.mywpku.com/wordpress-sitemap-real-time-pushcode.html
+WordPress 中文文档 :http://codex.wordpress.org.cn/
+WordPress 官方中文文档:https://codex.wordpress.org/zh-cn:Main_Page
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,10 @@
+//WordPress设置指定分类文章不在首页显示
+function exclude_category_home( $query ) {
+if ( $query->is_home ) {
+$query->set( 'cat', '-20, -22' ); //你要排除的分类ID
+}
+return $query;
+}
+add_filter( 'pre_get_posts', 'exclude_category_home' );          效果可查看：http://www.liele.net/
+
+注意：  代码要方正 函数中间的任意位置  有用的 我自己试了

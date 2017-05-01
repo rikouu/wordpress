@@ -1,0 +1,65 @@
+1:实现”加入收藏”功能的代码如下: 
+<a href=”javascript:window.external.AddFavorite(’http://www.dddxs.com’,’当代大学生’)”>加
+入收藏</a>
+
+如果你要实现鼠标划过时即提示是否加入收藏,只需将代码改为: 
+<a onmouseover=”window.external.addFavorite(’http://www.dddxs.com’,’当代大学生’)” 
+target=_self href=http://www.dddxs.com>加入收藏</a>
+
+2.设为首页代码(html源码)
+
+图片链接： 
+<a style=”cursor:hand” onclick=”this.style.behavior=’url(#default#homepage)’; 
+this.setHomePage(’http://www.dddxs.com/’);”> 
+<img width=16 height=16 border=0 src=”images/house.png”> 
+<u> Set as Home Page</u></a>
+
+文字型： 
+<A 
+onclick=”this.style.behavior=’url(#default#homepage)’;this.setHomePage(’http://hi.baidu.
+com/bing2008_love/blog/’)” 
+href=”#”>设为首页</a> 
+范例： 
+设为首页
+
+热点链接：
+例：
+<map name=”Map”>
+<area shape=”rect” coords=”837,12,897,30″ 
+href=”javascript:window.external.AddFavorite(’http://www.dddxs.com’,’当代大学生)”>
+<area shape=”rect” coords=”765,13,824,29″ 
+href=”this.style.behavior=’url(#default#homepage)’;this.setHomePage(’http://www.dddxs.co
+m’);”>
+</map>
+
+按钮型： 
+< input TYPE=”button” VALUE=” 设为首页 ” onclick=”this.style.behavior=’url 
+(#default#homepage)’;this.setHomePage(’http://www.dddxs.com/’);” href=”#”>
+
+离开时自动提示设为首页 
+<body 
+onunload=”BASEBody.style.behavior=’url(#default#homepage)’;if(!(BASEBody.isHomePage(’htt
+p://www.dddxs.com/’)))BASEBody.setHomePage(www.baidu.com//’);”>
+
+打开页面时自动弹出窗口询问是否设为首页
+
+将以下代码放在<head></head>之间： 
+<script language=”javascript”> 
+function myhomepage(){ 
+this.homepage.style.behavior=’url(#default#homepage)’;this.homepage.sethomepage(’http://
+www.dddxs.com’); 
+} 
+</script> 
+<p align=”center”><a href=”http://www.dddxs.com/” name=”homepage” 
+onclick=”myhomepage();”></a>
+
+再将下面代码加入<body>内： 
+onload=”myhomepage();” 
+即：<body onload=”myhomepage();”>
+
+鼠标指向时提示设为首页
+
+将下列代码插入<body>区中：
+<A href=”http://www.dddxs.com/” onmouseover 
+=”this.style.behavior=’url(#default#homepage)’;this.setHomePage(’http://www.dddxs.com/’)
+; ” target=”_blank”>设为首页</A>

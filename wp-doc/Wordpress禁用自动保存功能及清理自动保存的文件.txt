@@ -1,0 +1,17 @@
+禁用自动保存功能
+在以下4个文件中 
+wp-admin/post-new.php
+wp-admin/post.php
+wp-admin/page-new.php
+wp-admin/page.php
+注释掉
+wp_enqueue_script('autosave');
+ 
+删除临时保存的文件
+在后台的phpMyadmin中运行以下SQL代码
+delete from wp_posts where post_type='revision';
+ 
+禁用修订历史的功能
+如果感觉不需要这个功能可以直接在wp-config.php中把它禁掉
+define(’WP_POST_REVISIONS’, false);
+这样就不会有revision类型的post了...

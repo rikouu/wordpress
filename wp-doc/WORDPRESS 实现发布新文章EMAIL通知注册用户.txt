@@ -1,0 +1,56 @@
+QQ邮箱订阅中有这样一个功能：在读者订阅博客后将每天汇总该博客更新信息，并发送至QQ邮箱里。我们可以效仿此法，达到同等推广效果。这样一来，网站更新了什么内容即可直接调用信息，批量发送新文章内容至 Email 通知自己的用户。代码来自 DZ9 ，感谢分享。
+
+ 
+
+在服务器开启 Mail 函数情况下，添加以下代码至 Functions.php：
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+function newPostNotify($post_ID) {
+     if( wp_is_post_revision($post_ID) ) return;
+ 
+     global $wpdb;
+     $get_post_info = get_post($post_ID);
+     if ( $get_post_info->post_status == 'publish' && $_POST['original_post_status'] != 'publish' ) {
+         // 读数据库，获取所有用户的email
+         $wp_user_email = $wpdb->get_results("SELECT DISTINCT user_email FROM $wpdb->users");
+ 
+         // 依次给每个Email发邮件
+        foreach ( $wp_user_email as $email ) {
+             // 邮件标题：xx博客有新文章
+            $subject = 'xx博客有新文章';
+ 
+             // 邮件内容：新文章网址：+ URL
+             $message = '新文章网址：' . get_permalink($post_ID);
+ 
+             // 发邮件
+            wp_mail($email->user_email, $subject, $message); 
+         }
+     }
+}
+ 
+// 钩子，一旦WordPress有新文章发布或文章被修改即刻执行newPostNotify函数
+add_action('publish_post', 'newPostNotify');

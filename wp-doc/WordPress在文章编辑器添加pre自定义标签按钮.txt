@@ -1,0 +1,15 @@
+给wordpress后台文章编辑器添加一个pre按钮，pre通常用做显示代码只用；
+添加一个按钮位自动插入pre标签，为的是提高编辑文章效率，能偷一点懒就多偷一点懒；
+打开主题下的functions.php文件，找个合适的地方插入；
+编辑好后，刷新wordpress后台文章编辑器切入到文本状态下就会看见pre自定义按钮已经设置好了；
+
+// www.5yun.org添加HTML编辑器自定义标签按钮
+add_action('admin_print_footer_scripts','eg_quicktags');
+function eg_quicktags() {
+?>
+<script type="text/javascript" charset="utf-8">
+QTags.addButton( 'eg_pre', 'pre', '<pre>代码代码代码\n</pre>', '', 'q' );
+</script>
+<?php
+}
+// 添加HTML编辑器自定义标签按钮结束

@@ -1,0 +1,50 @@
+不少的wordpress主题都集成了为新增加文章添加”NEW”标志，这个有些喜欢、有些不喜欢；如果你使用的wordpress主题没有这么一项功能，自己动手添加一下还是可以的。好处就是能够让老访客一眼就能找到网站最新的内容，嘿嘿。这里小七为大家收集到增加最新提示，方法很简单。我们所需要做的就是将下文提供的代码放在你想让其显示的位置，如首页列表的文章标题后（多为<h2></h2>中间），或者小工具文章列表等等，这些需要到相对应的文件中去添加哦。
+
+文字提示代码
+
+简单的一点的就是直接输出一个英文单词 NEW
+
+<?php
+$t1=$post->post_date;
+$t2=date(“Y-m-d H:i:s”);
+$diff=(strtotime($t2)-strtotime($t1))/3600;
+if($diff<24){echo “<em>New</em>”;} //数字为判断输出NEW的小时数，请根据自己情况修改
+else{echo “”;} //时间超过则不输出内容
+?>
+图片版提示代码
+
+比较美观一点的，我们可以单独做一个提示图片。
+
+<?php
+$t1=$post->post_date;
+$t2=date(“Y-m-d H:i:s”);
+$diff=(strtotime($t2)-strtotime($t1))/3600;
+if($diff<24){echo “<img src=’new.gif’ />”;} //数字为判断输出NEW的小时数，请根据自己情况修改
+else{echo “”;} //时间超过则不输出内容
+?>
+
+美化版
+
+相对图片版直接输出图片，选择了在CSS中设置提示图片，这样能很好的控制提示图片的显示位置，搭配相应的图片，达到更好的视觉效果。在标题的右上角，一个合适的角标，毫无违和感。
+
+html代码，放到首页文章列表标题</h2>前面
+
+<?php
+$t1=$post->post_date;
+$t2=date(“Y-m-d H:i:s”);
+$diff=(strtotime($t2)-strtotime($t1))/3600;
+if($diff<24){echo “<span class=’new-post’></span>”;} //数字为判断输出NEW的小时数，请根据自己情况修改
+else{echo “”;} //时间超过则不输出内容
+?>
+css代码写入style.css中
+
+.new–post {
+background: url(img/new.png) no–repeat;
+position: absolute;
+width: 44px;
+height: 45px;
+right: –3px;
+top: –3px;
+z–index: 10;
+}
+在修改的时候请把文件备份一下，以防止出错的时候能够及时的恢复。其实很多时候就是自己瞎折腾，慢慢来吧！另外不是说网站非要增加这些小功能，功能越多，越占用资源，限制过多的主机可能会出现各种问题，所以请根据自己的需求合理选择吧。

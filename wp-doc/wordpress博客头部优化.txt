@@ -1,0 +1,77 @@
+好久没有更新博客了，前端时间本来想写关于wordpress博客的头部优化来着，不知道写了存那里了
+！我又转了一个更全面的。首先说貌似没用的东西不代表能删，页面模板文件最前面都是注释都不能
+删，何况它是个函数。但是它确实给头部添加好多冗余代码，什么是冗余呢，冗余就是白天戴夜视仪
+，晚上戴墨镜，不能说没用，只能说现在没用。
+下面是函数的一般用法：
+<head>
+<?php
+...
+/* 你主题的</head>标签前面都会有wp_head()函数
+* 通过这个函数我们可以给 <head>添加
+* styles, scripts, 或者meta tags.
+* 否则，许多插件将不能正常使用,
+*/
+wp_head();
+?>
+</head>
+ok，wp_head()函数的大概用途清楚了，现在先让我叨叨一下浏览器，个人建议如果你经常去别人的
+网站或者自己也折腾网站，最好同时安装多个浏览器，必要的至少3个，分别是：Chrome、Firefox、
+360浏览器。Chrome浏览器里面鼠标右键有审查元素，查看源代码点哪看哪，比较方便；Firefox浏览
+器可以安装一个插件叫firebug，功能和Chrome类似，也是查看源代码做测试用的，不可缺少；360浏
+览器和IE接近，专门用来测试网页与 IE8 和IE6 的兼容性。一般的折腾砖家都知道修改模板后都要
+在这4个浏览器刷新以查看效果，以防存在不兼容的情况，当然你可以忽略不兼容IE6的情况，但是请
+不要忽略23%左右的中国人依然使用着IE6的事实。
+叨叨完毕，翠花上代码，这些代码你可以插入到主题文件夹的functions.php文件，以移除wp_head()
+函数产生的冗余。：
+ <?php
+remove_action( 'wp_head', 'wp_generator' );
+remove_action( 'wp_head', 'rsd_link' );
+remove_action( 'wp_head', 'wlwmanifest_link' );
+remove_action( 'wp_head', 'index_rel_link' );
+remove_action( 'wp_head', 'parent_post_rel_link', 10, 0 );
+remove_action( 'wp_head', 'start_post_rel_link', 10, 0 );
+remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0 );
+remove_action( 'wp_head', 'rel_canonical' );
+remove_action( 'wp_head', 'feed_links', 2 );
+remove_action( 'wp_head', 'feed_links_extra', 3 );
+?>
+添加了什么？
+remove_action函数
+顾名思义，按照翻译过来的中文，它就是一个移除指定动作的函数，明白这些就足够了。
+remove_action( ‘wp_head’, ‘wp_generator’ );
+移除WordPress版本：Chrome 浏览器里输入你的网址，打开后随便在哪里鼠标右键 > 审查元素，在
+head区域，是否看到如下代码：
+<meta name=”generator” content=”WordPress 版本号” />
+这是WordPress版本信息，默认添加。虽然是隐形显示，但是也可以被黑客利用，攻击特定版本的
+WordPress漏洞。
+remove_action( ‘wp_head’, ‘rsd_link’ );
+remove_action( ‘wp_head’, ‘wlwmanifest_link’ );
+移除离线编辑器开放接口：WordPress自动添加两行离线编辑器的开放接口，审查元素后head区域你
+应该会看到
+<link rel=”EditURI” type=”application/rsd+xml” title=”RSD” 
+href=”http://example.com/xmlrpc.php?rsd” />
+<link rel=”wlwmanifest” type=”application/wlwmanifest+xml” 
+href=”http://example.com/wp-includes/wlwmanifest.xml” />
+其 中RSD是一个广义的接口，wlwmanifest是针对微软Live Writer编辑器的。如果你不需要离线编辑
+，可移除之。即便你需要使用离线编辑器，大部分时候也不需要这两行代码，而且可能会留有安全隐
+患。
+remove_action( ‘wp_head’, ‘index_rel_link’ );
+remove_action( ‘wp_head’, ‘parent_post_rel_link’, 10, 0 );
+remove_action( ‘wp_head’, ‘start_post_rel_link’, 10, 0 );
+remove_action( ‘wp_head’, ‘adjacent_posts_rel_link_wp_head’, 10, 0 );
+移除首页链接、前后文链接、第一篇文章链接和相邻文章链接：WordPress把这些链接全放在meta中
+。我认为于SEO帮助不大，反使得头部信息巨大。我检查了我的head区域，没有这些
+<link rel=’index’ title=’ifonder’ href=’http://ifnder.com.com’ />
+<link rel=’start’ title=’Use WordPress 2.7 Offline’ href=’http://…’ />
+<link rel=’prev’ title=’Recents Drafts All Authors’ href=’http://…’ />
+remove_action( ‘wp_head’, ‘rel_canonical’ );
+移除Canonical标记：网站上有重复的内容会影响到网站页面的权重，造成重复内容的原因有很多，
+最常见的便是多个url地址指向了同一个页面，通过canonical标签，能有效的避免这类问题。如果你
+觉得这个标签对你无用，就可以和我一样移除之，当然不想移除就删除这行代码即可。
+remove_action( ‘wp_head’, ‘feed_links’, 2 );
+remove_action( ‘wp_head’, ‘feed_links_extra’, 3 );
+移除文章和评论Feed ：通过head区域的<link rel=”alternate” type=”application/rss+xml” 
+title=”feed名” href=”http://example.com/feed/” />来指定博客feed。可以被浏览器检测到，然
+后被读者订阅。但是如果你用的烧制的feed（FeedSky或者Feedburner烧制的feed），你就可以使用
+上述代码移除之。
+你觉得没必要移除的功能，就删除相关的代码，根据自己取舍吧。

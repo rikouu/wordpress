@@ -1,0 +1,11 @@
+WordPress的开源性是一个双刃剑，它的好处是可以为用户带来更多的高效资源；但另一方面，其自由的开放性也使得部分针对WordPress开发的模版程序在统一性方面无法满足本地化用户的需求，比如，国外开发者发布的WordPress主题模版的文章段落都是没有中文网站的段落缩进效果的，所以，中文WordPress用户在使用一些国外主题模版时，会因为这个细节问题而却步，但这并不是一个多大的问题，简单的解决方法如下。
+方法1：
+在主题的style.css文件中，找到文章正文的样式代码，一般为 .post-content p{ line-height:18px;} 或者  .entry p{ line-height:18px;}，在这段代码中添加 text-indent:2em; 或者 text-indent:24px;，这样即可实现段落自动缩进了。
+方法2：
+在主题的functions.php文件中添加如下代码：
+
+add_filter(‘tiny_mce_before_init’, ‘preserve_nbsp_chars’);
+function preserve_nbsp_chars($initArray) {
+$initArray[‘entities’] = ‘160,nbsp,’.$initArray[‘entities’];
+return $initArray;
+}

@@ -1,0 +1,107 @@
+WordPress是一套非常好的CSM（或者叫做BLOG）系统，其实它早已经超越了BLOG系统。功能强大，操作简单，插件繁多。下面是对WordPress操作的18条WordPress SQL查询语句（不仅仅是查询语句），还有删除和修改语句。
+
+1. 删除所有未使用的标签
+
+DELETE a,b,c
+FROM wp_terms AS a
+LEFT JOIN wp_term_taxonomy AS c ON a.term_id = c.term_id
+LEFT JOIN wp_term_relationships AS b ON b.term_taxonomy_id = c.term_taxonomy_id
+WHERE c.taxonomy = 'post_tag' AND c.count = 0
+
+2. 删除所有文章修订版本(Revisions)以及它们的Meta数据
+
+DELETE a,b,c
+FROM wp_posts a
+LEFT JOIN wp_term_relationships b ON (a.ID = b.object_id)
+LEFT JOIN wp_postmeta c ON (a.ID = c.post_id)
+WHERE a.post_type = 'revision'
+
+3. 更改WordPress地址和首页地址
+
+UPDATE wp_options
+SET option_value = replace(option_value, 'http://www.旧网址.com', 'http://www.新网址.com')
+WHERE option_name = 'home' OR option_name = 'siteurl'
+
+4. 更改文章的GUID
+
+UPDATE wp_posts
+SET guid = REPLACE (guid, 'http://www.旧网址.com', 'http://www.新网址.com')
+
+5. 更改正文中的链接地址
+
+UPDATE wp_posts
+SET post_content = REPLACE (post_content, 'http://www.旧网址.com', 'http://www.新网址.com')
+
+6. 更新文章的Meta值
+
+UPDATE wp_postmeta
+SET meta_value = REPLACE (meta_value, 'http://www.旧网址.com', 'http://www.新网址.com'
+
+7. 重设Admin密码
+
+UPDATE wp_users
+SET user_pass = MD5( 'new_password' )
+WHERE user_login = 'admin'
+
+8. 重设admin的用户名
+
+UPDATE wp_users
+SET user_login = 'newname'
+WHERE user_login = 'admin'
+
+9. 将作者a的文章全部转移到作者b
+
+UPDATE wp_posts
+SET post_author = 'b'
+WHERE post_author = 'a'
+
+10. 删除文章的meta标签
+
+DELETE FROM wp_postmeta
+WHERE meta_key = 'your-meta-key'
+
+11. 导出所有评论中的邮件地址
+
+SELECT DISTINCT comment_author_email
+FROM wp_comments
+
+12. 删除所有的Pingback
+
+DELETE FROM wp_comments
+WHERE comment_type = 'pingback'
+
+13. 删除所有的垃圾评论
+
+DELETE FROM wp_comments
+WHERE comment_approved = 'spam'
+
+14. 禁用所有激活的插件
+
+UPDATE wp_options
+SET option_value = ''
+WHERE option_name = 'active_plugins'
+
+15. 罗列所有未使用的Meta标签
+
+SELECT *
+FROM wp_postmeta pm
+LEFT JOIN wp_posts wp ON wp.ID = pm.post_id
+WHERE  wp.ID IS NULL
+
+16. 关闭旧文章的留言
+
+UPDATE wp_posts
+SET comment_status = 'closed'
+WHERE post_date < '2009-01-01' AND post_status = 'publish'
+
+17. 更新留言者的网址
+
+UPDATE wp_comments
+SET comment_author_url = REPLACE( comment_author_url, 'http://旧网址.com', 'http://新网址.com' )
+
+18. 更新正文内所有的’target=”_blank”‘为’rel=”nofollow”‘
+
+UPDATE wp_posts
+SET post_content = REPLACE (post_content, 'target="_blank',  'rel="nofollow')
+
+注意：在每次执行SQL语句前，请勿必备份你的WordPress数据库。

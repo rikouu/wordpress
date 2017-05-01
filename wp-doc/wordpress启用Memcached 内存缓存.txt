@@ -1,0 +1,25 @@
+对于小内存的vps，启用缓存是一个非常有效的节省资源的方法。今天介绍下memcached内存缓存如何使用。
+
+什么是Memcached
+
+Memcached 是一种高性能的分布式内存对象缓存系统。在动态应用，Memcached 既能提高访问的速度，同时还减低了数据库的负载。
+
+Danga Interactive 为提升 LiveJournal.com 的速度研发了 Memcached。目前，LiveJournal.com 每天已经在向一百万用户提供多达两千万次的页面访问。而这些，是由一个由 Web 服务器和数据库服务器组成的集群完成的。Memcached 几乎完全放弃了任何数据都从数据库读取的方式，同时，它还缩短了用户查看页面的速度、更好的资源分配方式，以及 Memcache 失效时对数据库的访问速度。
+
+WordPress 和 Memcache
+
+由于 WordPress 默认支持 Object Cache，所以在 WordPress 实现 Memcached 就是使用 Memcached 把 WordPress 的 Object Cache 写到内存中去，下次直接从内存中读取。相比直接从数据库去读取数据，或者从 Object Cache 数据存到文件，然后从硬盘中读取，Memcached 有很大的速度优势。
+
+ Memcache安装
+
+1、先在你的VPS或者服务器上安装memcached，当然如果你是空间的话，就无法支持安装了，空间建议安装其他cache插件！
+
+2、需要空间或者VPS以及服务器支持php-memcached扩展。
+
+wordpress使用memcached
+
+1. 下载 WordPress Memcached 插件：http://wordpress.org/extend/plugins/memcached/。
+
+2. 把下载的：object-cache.php 复制到 wp-content，注意不是 wp-content/plugins/。
+
+3. WordPress 会自动检查在 wp-content 目录下是否有 object-cache.php 文件，如果有，直接调用它作为 WordPress 对象缓存机制。

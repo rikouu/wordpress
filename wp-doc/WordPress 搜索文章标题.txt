@@ -1,0 +1,31 @@
+WordPress默认的搜索功能不只搜索文章标题，而且还会搜索文章内容，这样当读者搜索网站时会把一些文章内容也包含关键字的文章也搜索出来，这样有时读者看到搜索出来这样的文章会感觉很迷惑。所以我们可以把文章内容搜索禁止掉，只搜索文章标题来使得搜索结果保持关联性更高。将下面的代码添加到主题的 functions.php 文件即可：
+
+//SearchOnlyPostTitle
+function wpyou_search_by_title_only( $search, &$wp_query )
+{
+global $wpdb;
+
+if ( empty( $search ) )
+return $search; // skip processing – no search term in query
+
+$q = $wp_query->query_vars;
+$n = ! empty( $q[‘exact’] ) ? ” : ‘%’;
+
+$search =
+$searchand = ”;
+
+foreach ( (array) $q[‘search_terms’] as $term ) {
+$term = esc_sql( like_escape( $term ) );
+$search .= “{$searchand}($wpdb->posts.post_title LIKE ‘{$n}{$term}{$n}’)”;
+$searchand = ‘ AND ‘;
+}
+
+if ( ! empty( $search ) ) {
+$search = ” AND ({$search}) “;
+if ( ! is_user_logged_in() )
+$search .= ” AND ($wpdb->posts.post_password = ”) “;
+}
+
+return $search;
+}
+add_filter( ‘posts_search’, ‘wpyou_search_by_title_only’, 500, 2 );

@@ -1,0 +1,37 @@
+在制作wordpress主题的过程，我们可能会用到很多不太常用的功能，比如本节中要讲到的同一分类下的文章标签。一般主题只需要展示所有的标签就可以了，而有的特例主题，它可能让标签按分类来展示，如：高时银博客开发的dream主题，就用到了同一分类下文章的标签的集合展示。
+实现方法：
+把下面的代码放到主题的functions.php文件里。
+//获取分类标签，可以Dream主题底部标签展示
+function ludou_get_category_tags($args) {
+global $wpdb;
+$tags = $wpdb->get_results
+("
+SELECT DISTINCT terms2.term_id as tag_id, terms2.name as tag_name
+FROM
+$wpdb->posts as p1
+LEFT JOIN $wpdb->term_relationships as r1 ON p1.ID = r1.object_ID
+LEFT JOIN $wpdb->term_taxonomy as t1 ON r1.term_taxonomy_id = t1.term_taxonomy_id
+LEFT JOIN $wpdb->terms as terms1 ON t1.term_id = terms1.term_id,
+$wpdb->posts as p2
+LEFT JOIN $wpdb->term_relationships as r2 ON p2.ID = r2.object_ID
+LEFT JOIN $wpdb->term_taxonomy as t2 ON r2.term_taxonomy_id = t2.term_taxonomy_id
+LEFT JOIN $wpdb->terms as terms2 ON t2.term_id = terms2.term_id
+WHERE
+t1.taxonomy = 'category' AND p1.post_status = 'publish' AND terms1.term_id IN (".$args['categories'].") AND
+t2.taxonomy = 'post_tag' AND p2.post_status = 'publish'
+AND p1.ID = p2.ID
+ORDER by tag_name
+");
+$count = 0;
+if($tags) {
+foreach ($tags as $tag) {
+$mytag[$count] = get_term_by('id', $tag->tag_id, 'post_tag');
+$count++;
+}
+}
+else {
+$mytag = NULL;
+}
+return $mytag;
+}
+然后，在需要展示的地方调用这个函数就可以了。

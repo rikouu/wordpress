@@ -1,0 +1,38 @@
+大多数的wordpress博客主题的首页文章列表，基本都是全站所有分类的文章近时间循环显示出来。对于这样的显示，我们可能不太满意，就有用户想让wordpress主题的首页文章按分类来显示出来，也就是wordpress主题首页显示所有分类，而每个分类显示最新的几篇文章。嗯，那么，怎样实现wordpress主题首页自动按分类显示文章呢？
+思路：首页循环wordpress网站的所有分类，然后在每个分类中再循环输出该分类的最新几篇文章。
+第一步：循环wordpress分类目录。
+
+global $cat;
+$cats = get_categories(array(
+'child_of' => $cat,
+'parent' => $cat,
+'hide_empty' => 0
+));
+$c = get_category($cat);
+foreach($cats as $the_cat){
+//这里添加文章列表
+}
+
+通过上面的代码，我们就可以循环获取到wordpress网站的所有分类目录。
+第二步：获取各分类的文章。
+获取到分类后， 我们再通过分类ID来获取各分类最新文章的代码。在上面的代码中的"//这里添加文章列表"后台添加如下代码：
+
+ $posts = get_posts(array(
+'category' => $the_cat->cat_ID,
+'numberposts' => 5,
+));
+if(!empty($posts)){
+echo '
+<div class="item cat_item">
+<div class="item_title"><h2><a title="'.$the_cat->name.'" href="'.get_category_link($the_cat).'">'.$the_cat->name.'</a></h2></div>
+<ul class="box_list">';
+foreach($posts as $post){
+echo '<li><span class="alignright">'.mysql2date('Y-m-d', $post->post_date).'</span>
+<a title="'.$post->post_title.'" href="'.get_permalink($post->ID).'">'.$post->post_title.'</a></li>';
+}
+echo '</ul>
+</div>';
+}
+
+通过上面的代码，在worddpress的每一个分类都会输出5篇文章。
+好了，如何为wordpress主题首页文章列表按分类来显示就介绍到这里。其实，这种方式不仅可以用在wordpress博客主题上，在wordpress分类不太多的时候，也可以用在一些比较简单的wordpressCMS主题上使用。相信，这种方法也可能在你的wordpress主题上也可以用上哦。

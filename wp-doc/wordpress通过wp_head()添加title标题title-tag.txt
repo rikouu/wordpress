@@ -1,0 +1,15 @@
+在以前，我们做wordpress模板的时候，需要在head.php中通过<title>wp_title()</title>来设置网页的标题。
+
+从wordpress4.1版本开始，增加了一个函数：add_theme_support( 'title-tag' )
+
+我们可以在functions.php中添加如下代码，然后在模板中</head>之前添加wp_head()，就可以实现网页直接调用<title>标签。
+
+
+function bxh_setup() {
+
+ add_theme_support( 'title-tag' );
+ }
+
+ add_action( 'after_setup_theme', 'bxh_setup' );
+
+根据wp官方消息，WordPress4.4版本开始弃用wp_title()函数，所以做wordpress主题的同学要注意了。

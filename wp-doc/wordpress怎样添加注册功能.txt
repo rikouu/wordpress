@@ -1,0 +1,24 @@
+用wordpress做网站的站长，有时可能需要别人来注册投稿。而默认情况下，wordpress没有开启注册功能。
+这里，我们想要实现用户注册，我们可以按照以下几步来实现。
+第一步：后台开启wordpress注册功能。
+点击“设置——>常规”，这时会打开常规选项页面，找到“成员资格”，在后面的单选框里打上勾；在“新用户默认角色”选项下拉框选择一个角色（如：作者）。这里面管理员权限最大，不要选择这个；编辑权限排在第二，可以修改和删除所有文章，这个也尽量不要选择，除非是你信得过的人；可以选择“作者”或“投稿”。如下图：
+wordpress怎样添加注册功能
+
+这样，我们就开启了wordpress的注册功能。然后，我们就可以在前台添加调用“注册”代码，一般添加如下代码就可以了：
+<a rel="nofollow" href="<?php bloginfo('url'); ?>/wp-login.php" target="_blank" title="注册用户">注册</a>
+这时，别人就可以通过前台这个链接来进行注册。但是，可能会出现一个问题：因为在注册时，系统会把密码发送到你的注册邮箱里，如果你的网站空间商服务器没有支持邮件功能，你就收不到邮件，我的就出现这种情况。所以，我们要接着往下看。
+第二步：让注册密码直接显示。
+1、打开wordpress根目录下的wp-login.php文件，在其中找到函数代码：
+wp_new_user_notification($user_id,$user_pass);
+（如果是wordpress 3.9版的，要到 wp-includes/user.php 文件中找到。）
+2、在以上代码的下面添加以下代码：
+setcookie("u",$user_login);
+setcookie("user_pass",$user_pass);
+这两句是把注册时用户填写的用户名和随机生成的密码写进cookies
+
+3、再找到以下代码：
+$errors->add('registered',__('Registrationcomplete.Pleasecheckyoure-mail.'),'message');
+将其替换为
+$errors->add('registered',__('注册成功！用户名：'.$_COOKIE["u"].'密码：'.$_COOKIE["user_pass"].'（登录后自行修改成您便于记忆的密码）'),'message');
+4、保存文件后即可。
+这样一来，用户注册时，就可以在页面直接显示注册的用户名和密码了。

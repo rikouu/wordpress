@@ -1,0 +1,24 @@
+做wordpress的站点，会员功能确实很弱，如果开放了注册，在会员表里面就只记录了注册时间，而没有登录时间，这确实是比较无助的，为了增强用户体验，提现站点的活跃度，我们可以自定义函数记录和显示会员最后登录的时间，代码如下：
+
+将以下代码放入functions.php文件中
+
+add_action('wp_login','user_last_login'); 
+function user_last_login($login) { 
+  global $user_ID;
+  $user = get_user_by('id', $user_ID); 
+  update_user_meta($user->ID, 'last_login', date('Y-m-d H:i:s')); 
+}
+
+在需要显示会员最后登录时间的地方插入：
+
+<?php 
+global $userdata; 
+get_currentuserinfo(); 
+get_user_meta($userdata->ID, 'last_login'); 
+?>
+
+
+
+
+
+

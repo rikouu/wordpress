@@ -1,0 +1,145 @@
+很多网站都想开放读者的投稿功能，接受读者的投稿，不仅可以丰富博客的内容，还可以增加与读者之间的沟通，可以说是一举多得的事情，何乐不为呢？WordPress本身并不提供投稿功能，但是WordPress拥有强大的扩展能力，
+
+
+很多网站都想开放读者的投稿功能，接受读者的投稿，不仅可以丰富博客的内容，还可以增加与读者之间的沟通，可以说是一举多得的事情，何乐不为呢？WordPress本身并不提供投稿功能，但是WordPress拥有强大的扩展能力，我们可以自己来添加这个功能。
+
+实现用户投稿，有两种方法，一种是开放后台的注册功能，普通用户注册进去默认为投稿者，登陆进去即可添加文章（默认为草稿）；另一种方法是在前台提供投稿表单，用户填写相应的表格即可。前一种方法实现起来比较简单，基本不需要博主配置太多东西，只是有些博主可能会觉得别扭，不愿让他人看到自己的博客后台；而后一种方法对投稿者来说方便了很多，博主也不用担心自己博客的后台隐私，只是该方法实现起来比较麻烦，需要配置的东西很多。本文也只将介绍后一种方法，希望对你有所帮助。
+
+一、添加投稿表单
+
+1、首先在当前主题的目录下新建一个php文件，命名为tougao-page.php，然后将page.php中的所有代码复制到tougao-page.php中；
+
+2、删除tougao-page.php开头的所有注释，即 /* 与 */ ，以及它们之间的所有内容；
+
+3、将 <?php the_content(); ?> 改成以下代码：
+
+PHP Code复制内容到剪贴板
+<?php the_content(); ?>
+
+<form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
+    <div style="text-align: left; padding-top: 10px;">
+        <label>昵称:*</label>
+    </div>
+    <div>
+        <input type="text" size="40" value="" name="tougao_authorname" />
+    </div>
+
+    <div style="text-align: left; padding-top: 10px;">
+        <label>E-Mail:*</label>
+    </div>
+    <div>
+        <input type="text" size="40" value="" name="tougao_authoremail" />
+    </div>
+
+    <div style="text-align: left; padding-top: 10px;">
+        <label>您的博客:</label>
+    </div>
+    <div>
+        <input type="text" size="40" value="" name="tougao_authorblog" />
+    </div>
+
+    <div style="text-align: left; padding-top: 10px;">
+        <label>文章标题:*</label>
+    </div>
+    <div>
+        <input type="text" size="40" value="" name="tougao_title" />
+    </div>
+
+    <div style="text-align: left; padding-top: 10px;">
+        <label>分类:*</label>
+    </div>
+    <div style="text-align: left;">
+        <?php wp_dropdown_categories('show_count=1&hierarchical=1'); ?>
+    </div>
+
+    <div style="text-align: left; padding-top: 10px;">
+        <label>文章内容:*</label>
+    </div>
+    <div>
+        <textarea rows="15" cols="55" name="tougao_content"></textarea>
+    </div>
+
+    <br clear="all">
+    <div style="text-align: center; padding-top: 10px;">
+        <input type="hidden" value="send" name="tougao_form" />
+        <input type="submit" value="提交" />
+        <input type="reset" value="重填" />
+    </div>
+</form>
+二、添加表单处理代码
+
+在tougao-page.php中，将第一个 <?php 改成:
+
+PHP Code复制内容到剪贴板
+<?php
+/*
+ * Template Name: tougao
+ * @author: Ludou
+ * @Email : zhouzb889@gmail.com
+ * @Blog  : http://www.ludou.org/
+ */
+
+if( isset($_POST['tougao_form']) && $_POST['tougao_form'] == 'send')
+{
+    if ( isset($_COOKIE["tougao"]) && ( time() - $_COOKIE["tougao"] ) < 120 )
+    {
+        wp_die('您投稿也太勤快了吧，先歇会儿！');
+    }
+
+    // 表单变量初始化
+    $name = isset( $_POST['tougao_authorname'] ) ? trim(htmlspecialchars($_POST['tougao_authorname'], ENT_QUOTES)) : '';
+    $email =  isset( $_POST['tougao_authoremail'] ) ? trim(htmlspecialchars($_POST['tougao_authoremail'], ENT_QUOTES)) : '';
+    $blog =  isset( $_POST['tougao_authorblog'] ) ? trim(htmlspecialchars($_POST['tougao_authorblog'], ENT_QUOTES)) : '';
+    $title =  isset( $_POST['tougao_title'] ) ? trim(htmlspecialchars($_POST['tougao_title'], ENT_QUOTES)) : '';
+    $category =  isset( $_POST['cat'] ) ? (int)$_POST['cat'] : 0;
+    $content =  isset( $_POST['tougao_content'] ) ? trim(htmlspecialchars($_POST['tougao_content'], ENT_QUOTES)) : '';
+
+    // 表单项数据验证
+    if ( emptyempty($name) || strlen($name) > 20 )
+    {
+        wp_die('昵称必须填写，且长度不得超过20字');
+    }
+
+    if ( emptyempty($email) || strlen($email) > 60 || !preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $email))
+    {
+        wp_die('Email必须填写，且长度不得超过60字，必须符合Email格式');
+    }
+
+    if ( emptyempty($title) || strlen($title) > 100 )
+    {
+        wp_die('标题必须填写，且长度不得超过100字');
+    }
+
+    if ( emptyempty($content) || strlen($content) > 3000 || strlen($content) < 100)
+    {
+        wp_die('内容必须填写，且长度不得超过3000字，不得少于100字');
+    }
+
+    $post_content = '昵称: '.$name.'<br />Email: '.$email.'<br />blog: '.$blog.'<br />内容:'.$content;
+
+    $tougao = array(
+        'post_title' => $title,
+        'post_content' => $post_content,
+        'post_category' => array($category)
+    );
+
+
+    // 将文章插入数据库
+    $status = wp_insert_post( $tougao );
+
+    if ($status != 0)
+    {
+        setcookie("tougao", time(), time()+180);
+        wp_die('投稿成功！感谢投稿！');
+    }
+    else
+    {
+        wp_die('投稿失败！');
+    }
+}
+代码补充说明，如果你想让让投稿的文章立即发布，而不需要审核再编辑，那么请将以上代码45行改成：
+
+
+'post_content' => $post_content, 'post_status' => 'publish',
+
+最后进入WordPress管理后台 – 页面 – 创建页面，标题为投稿（可以自己起名），内容填上投稿说明等，右侧可以选择模板，选择 tougao 即可好了，基本的投稿功能已经添加完毕，至于表单样式不好看，表单缺少你想要的项目等问题，你就自己添加css、表单项吧。

@@ -1,0 +1,54 @@
+Wordpress实现缩略图的方法有几种，一是插件，最简单，二是使用timthumb.php，三是添加代码。爱吧使用第三种方法，定制性较高，且不易出错。
+
+功能上，实现调用文中第一个图片作为缩略图，没有图片，调用随机图片。
+
+下面给出方法：
+
+一、在主题文件夹下的functions.php添加代码
+
+//文章缩略图获取
+function dm_the_thumbnail() {
+global $post;
+if ( has_post_thumbnail() ) {
+echo '<a href="'.get_permalink().'">';
+$domsxe = simplexml_load_string(get_the_post_thumbnail());
+$thumbnailsrc = $domsxe->attributes()->src;
+echo '<img src="'.$thumbnailsrc.'" alt="'.trim(strip_tags( $post->post_title )).'" />';
+echo '</a>';
+} else {
+$content = $post->post_content;
+preg_match_all('/<img.*?(?: |\\t|\\r|\\n)?src=[\'"]?(.+?)[\'"]?(?:(?: |\\t|\\r|\\n)+.*?)?>/sim', $content, $strResult, PREG_PATTERN_ORDER);
+$n = count($strResult[1]);
+$random = mt_rand(1, 5);
+if($n > 0){
+echo '<a href="'.get_permalink().'"><img src="'.$strResult[1][0].'" alt="'.get_the_title().'" title="'.get_the_title().'"/></a>';
+}else {
+echo '<a href="'.get_permalink().'"><img src="'.get_bloginfo('template_url').'/images/random/oukan'.$random.'.jpg" alt="'.get_the_title().'" title="'.get_the_title().'"/></a>';
+}
+}
+}
+add_theme_support('post-thumbnails');
+set_post_thumbnail_size(100, 140, true);
+二、在主题文件index.php；category.php；archive.php里面的
+
+<?php the_content('(Continue reading..)'); ?>
+前面添加
+
+<?php dm_the_thumbnail(); ?>
+the_content也可能是the_excerpt。
+
+三、将如下css代码添加到主题文件style.css。
+
+.post .intro img {
+float:left;
+width:140px;
+height:100px;
+margin:12px 10px 8px 15px;
+padding:4px;
+border:1px solid #ccc;
+position:relative;
+z-index:3;
+}
+其中，.post是日志及相关信息的css， .intro是the_content的css。
+
+提供随机图片（放在主题目录的images下，放其它地方记得改代码）：

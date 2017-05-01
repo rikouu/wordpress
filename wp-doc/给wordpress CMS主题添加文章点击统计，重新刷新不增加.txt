@@ -1,0 +1,127 @@
+在前在的章节中我们也介绍过wordpress主题添加文章浏览量统计代码，可以实现文章用户浏览计数，但是有一个小问题，就是同一个客户在同一个页面上重复刷新，它也会不断地增加浏览量，这样一来，文章统计的就不是多少人查看了这篇文章，而是这篇文章总共被刷新浏览了多少次。一般情况下，这也没有什么大的影响。但是对于一些比较苛刻的站长来说，这可不是他们想要的，他们想要的是文章有多少个用户浏览过。所以，高时银博客特在这里再次推出给wordpress主题添加文章点击统计，不记入重新刷新。
+第一步：添加统计代码。
+
+在主题的functions.php文件中添加如下统计代码：
+
+function process_postviews() {
+global $user_ID, $post;
+if(check_cookie($post))
+return;
+if(is_int($post)) {
+$post = get_post($post);
+}
+if(!wp_is_post_revision($post)) {
+if(is_single() || is_page()) {
+$id = intval($post->ID);
+//$post_views = get_post_custom($id);
+$post_views = get_post_meta($id,'_check_count',true);
+//统计所有人
+$should_count = true;
+//排除机器人
+$bots = array('Google Bot' => 'googlebot', 'Google Bot' => 'google', 'MSN' => 'msnbot', 'Alex' => 'ia_archiver', 'Lycos' => 'lycos', 'Ask Jeeves' => 'jeeves', 'Altavista' => 'scooter', 'AllTheWeb' => 'fast-webcrawler', 'Inktomi' => 'slurp@inktomi', 'Turnitin.com' => 'turnitinbot', 'Technorati' => 'technorati', 'Yahoo' => 'yahoo', 'Findexa' => 'findexa', 'NextLinks' => 'findlinks', 'Gais' => 'gaisbo', 'WiseNut' => 'zyborg', 'WhoisSource' => 'surveybot', 'Bloglines' => 'bloglines', 'BlogSearch' => 'blogsearch', 'PubSub' => 'pubsub', 'Syndic8' => 'syndic8', 'RadioUserland' => 'userland', 'Gigabot' => 'gigabot', 'Become.com' => 'become.com','Baidu Bot'=>'Baiduspider');
+$useragent = $_SERVER['HTTP_USER_AGENT'];
+foreach ($bots as $name => $lookfor) {
+if (stristr($useragent, $lookfor) !== false) {
+$should_count = false;
+break;
+}
+}
+if($should_count) {
+if(!update_post_meta($id, '_check_count', ($post_views+1))) {
+add_post_meta($id, '_check_count', 1, true);
+}
+}
+}
+}
+}
+function check_cookie($post){
+$COOKNAME = 'ashuwp_view';
+if(isset($_COOKIE[$COOKNAME]))
+$cookie = $_COOKIE[$COOKNAME];
+else
+return false;
+$id = $post->ID;
+if(empty($id)){
+return false;
+}
+if(!empty($cookie)){
+$list = explode('a', $cookie);
+if(!empty($list) && in_array($id, $list)){
+return true;
+}
+}
+return false;
+}
+### Function: Display The Post Views
+function the_views($display = true,$id) {
+$post_views = intval(get_post_meta($id,'_check_count',true));
+$output = number_format_i18n($post_views);
+if($display) {
+echo $output;
+} else {
+return $output;
+}
+}
+### Function: Display Total Views
+if(!function_exists('get_totalviews')) {
+function get_totalviews($display = true) {
+global $wpdb;
+$total_views = intval($wpdb->get_var("SELECT SUM(meta_value+0) FROM $wpdb->postmeta WHERE meta_key = '_check_count'"));
+if($display) {
+echo number_format_i18n($total_views);
+} else {
+return $total_views;
+}
+}
+}
+### Function: Add Views Custom Fields
+add_action('publish_post', 'add_views_fields');
+add_action('publish_page', 'add_views_fields');
+function add_views_fields($post_ID) {
+global $wpdb;
+if(!wp_is_post_revision($post_ID)) {
+add_post_meta($post_ID, '_check_count', 0, true);
+}
+}
+### Function: Delete Views Custom Fields
+add_action('delete_post', 'delete_views_fields');
+function delete_views_fields($post_ID) {
+global $wpdb;
+if(!wp_is_post_revision($post_ID)) {
+delete_post_meta($post_ID, '_check_count');
+}
+}
+这段代码可以精确地统计出浏览用户的个数，不会记入重复刷新页面的数据。
+
+第二步：记入COOKIE代码。
+
+上面的统计代码，是通过记入cookie信息来统计浏览量的。所以，我们要在文章页面文件中添加记入cookie代码，设置cookie前是不能有任何输出的，所以，把下面这段代码加到wordpress主题的single.php文件的最顶端，也就是要放在<?php get_header(); ?> 这句的上面。代码如下：
+$COOKNAME = 'ashuwp_view'; //cookie名称
+$TIME = 3600 * 24;
+$PATH = '/';
+$id = $posts[0]->ID;
+$expire = time() + $TIME; //cookie有效期
+if(isset($_COOKIE[$COOKNAME]))
+$cookie = $_COOKIE[$COOKNAME]; //获取cookie
+else
+$cookie = '';
+if(empty($cookie)){
+//如果没有cookie
+setcookie($COOKNAME, $id, $expire, $PATH);
+}else{
+//用a分割成数组
+$list = explode('a', $cookie);
+//如果已经存在本文的id
+if(!in_array($id, $list)){
+setcookie($COOKNAME, $cookie.'a'.$id, $expire, $PATH);
+}
+}
+ssmay主题
+cookie会保留一天的时间，也就是说，在一天之内同一个用户浏览同一个文章页面，只会在cookie中记录一次，有效期是一天。一天过后，就可以重新统计。
+第三步：添加前台显示代码。
+
+在wordpress主题的single.php文件的循环语句 while( have_posts() ) : the_post();的后面，添加统计浏览数的函数。
+<?php process_postviews(); ?>
+再在循环内想要显示统计数的地方添加显示函数：
+<?php the_views(true,$post->ID);?>
+通过上面介绍的3步骤，我们就为wordpress主题添加了文章统计代码，而且同一客户浏览同一文章页面时，重复刷新页面不再记入。

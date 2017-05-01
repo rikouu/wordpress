@@ -1,0 +1,21 @@
+有时候，我们想在PHP网站首页显示指定分类目录下的文章，对于高手来说，也许是小菜一碟，但对于我们这些菜鸟级别的朋友来说，真的是太难了。怎样在网站首页显示指定分类目录下的文章？我在网上搜集了一下，也找了很多解说的方法，但是很多都是没有用的。昨天，终于让我给弄到了，这里分享给跟我一样菜鸟的朋友，希望对朋友们有所帮助。
+要求，要略懂点HTML代码。
+代码如下：
+<div class=”bb_post6″>
+<div class=”subnavi9″>减肥方法</div>
+<?php query_posts(array(‘orderby’ => ‘rand’, ‘showposts’ =>10,’category__in’ => array(3)));
+if (have_posts()) :while (have_posts()) :the_post();?>
+<div class=”bb_list6″>
+<h6><a href=”<?php the_permalink() ?>” rel=”bookmark” title=”<?php the_title(); ?>”><?php the_title(); ?> </a></h6>
+<div class=”bb_detail6″>
+<?php echo mb_strimwidth(strip_tags(apply_filters(‘the_content’, $post->post_content)), 0, 235,”…”); ?> <a href=”<?php the_permalink() ?>” rel=”bookmark” title=”<?php the_title(); ?>”>详细内容</a>
+<span class=”bb_date8″><?php the_time(‘Y-m-d’); ?> </span>
+</div>
+<div class=”clear-float”> </div>
+<?php endwhile; endif; ?>
+</div>
+</div>
+解说一下吧：
+<?php query_posts(array(‘orderby’ => ‘rand’, ‘showposts’ =>10,’category__in’ => array(3)))这句代码中的’showposts’ =>10是表示首页显示文章条数；array(3)是指定分类目录的ID，这个ID可以在你的网站地址栏里找到，如：点击你网站菜单中的“减肥方法”，擊现“http://localhost/wordpress/?cat=4”，其中cat=4中的4就是这个分类的ID。这两项都可以根据自己的网站来更改。
+<?php echo mb_strimwidth(strip_tags(apply_filters(‘the_content’, $post->post_content)), 0, 235,”…”)中的$post->post_content)), 0, 235,”…”是表示文章内容要显示多少字，这里是要显示235个字节，也就是117个汉字。可以更改的。
+呵呵，有时候，用过了，才知道这么简单。但对于新手来说，真的是太难了。

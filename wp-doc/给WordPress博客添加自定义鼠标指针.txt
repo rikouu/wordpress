@@ -1,0 +1,6 @@
+找到当前使用WordPress主题下面的style.css层叠样式表文件，把下面的css代码添加进去；
+
+/** 鼠标样式 **/
+body {
+cursor: url(img/鼠标样式图片的名称.png), auto;
+}

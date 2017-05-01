@@ -1,0 +1,39 @@
+很多朋友开始接触wordpress都是在本地安装调试好了，再上传到服务器正常运营，我也是一样当我
+在本地测试好了准备将网站上线，在搬家到服务器的时候遇到过的一些问题，记录分享一下我是如何
+为wordpress如何搬家换域名。
+
+一、wordpress搬家
+使用wordpress备份插件BackWPup中文版进行把数据备份好，把整个网站的文件打包，上传到服务器
+。
+
+打开根目录下wp-config.PHP找到
+
+/** WordPress数据库的名称 */
+define('DB_NAME', '填写你的数据库名称');
+/** MySQL数据库用户名 */
+define('DB_USER', '填写你的数据库账号');
+/** MySQL数据库密码 */
+define('DB_PASSWORD', '填写你的数据库密码');
+修改好上传服务器覆盖原有的文件。
+
+然后找到刚刚使用BackWPup备份好的压缩包
+
+wp-content/uploads/backwpup-9fc2c6-backups/backwpup_9fc2c6_2015-01-11_10-00-16.tar.gz
+解压在当前文件夹，打开phpMyAdmin导入刚刚解压出来的wordpress.sql文件即可完成搬家了。虽然
+可以正常访问了，但是点击网站的一些链接依然是本地的域名，那么还需要进行域名的替换，域名替
+换的方法很简单，只需要执行一下sql即可。
+
+二、wordpress换域名
+登陆phpMyAdmin后台，点sql把下面的代码复制进去，把旧域名改成你本地的域名，新域名改成你正
+式的域名，然后执行即可。
+
+UPDATE wp_posts SET post_content = replace( post_content, '旧域名','新域名') ;
+UPDATE wp_comments SET comment_content = replace(comment_content, '旧域名', '新域名') ;
+UPDATE wp_comments SET comment_author_url = replace(comment_author_url, '旧域名', '新域
+名') ;
+UPDATE wp_options SET option_value = replace( option_value , '旧域名','新域名') ;
+注意如果您的数据库表前缀修改过的记得修改上面的表前缀哦。
+
+顶
+0
+踩

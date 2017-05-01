@@ -1,0 +1,21 @@
+默认状态下wordpress支持rss输出，这样一来用户就可以通过rss快速获取到最近更新的完整内容；
+因为种种原因如果不想开启该输出功能，是可以干掉rss功能的；
+禁用后Rss将失效，例如：http://www.5yun.org/feed这样的地址也就获取不到输出信息了；
+
+禁止RSS输出代码:
+
+
+
+/* 完全移除RSS訂閱功能開始（由AREFLY.COM製作） */
+remove_action('wp_head', 'feed_links_extra', 3);
+remove_action('wp_head', 'feed_links', 2);
+ 
+function wordpress_disable_feed() {
+	wp_die('目前本站不提供RSS訂閱功能，請回到<a href="'. get_bloginfo('url') .'">首頁</a>！');
+}
+add_action('do_feed', 'wordpress_disable_feed', 1);
+add_action('do_feed_rdf', 'wordpress_disable_feed', 1);
+add_action('do_feed_rss', 'wordpress_disable_feed', 1);
+add_action('do_feed_rss2', 'wordpress_disable_feed', 1);
+add_action('do_feed_atom', 'wordpress_disable_feed', 1);
+/* 完全移除RSS訂閱功能結束（由AREFLY.COM製作） */

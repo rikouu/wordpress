@@ -1,0 +1,58 @@
+/*  
+Theme Name: Tutorial
+Theme URI: http://www.wpdesigner.com
+Description: This is my theme for a tutorial.
+Version: 1.0
+Author: Small Potato
+Author URI: http://www.wpdesigner.com/
+
+*/
+
+body{
+	margin: 0;
+	font-family: Arial, Helvetica, Georgia, Sans-serif;
+	font-size: 12px;
+	text-align: center;
+	vertical-align: top;
+	background: #ffffff;
+	color: #000000;
+}
+
+a:link, a:visited{
+	text-decoration: underline;
+	color: #336699;
+}
+
+a:hover{
+	text-decoration: none;
+}
+
+#wrapper{
+	margin: 0 auto 0 auto;
+	width: 750px;
+	text-align: left;
+}
+
+#header{
+	float: left;
+	width: 750px;
+}
+
+#container{
+	float: left;
+	width: 500px;
+}
+
+.sidebar{
+	float: left;
+	width: 240px;
+	background: #eeeeee;
+	margin: 0 0 0 10px;
+	display: inline;
+}
+
+#footer{
+	clear: both;
+	float: left;
+	width: 750px;
+}

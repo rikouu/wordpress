@@ -1,0 +1,20 @@
+日志总数：
+<?php $count_posts = wp_count_posts(); echo $published_posts = $count_posts->publish;?>
+草稿数目：
+<?php $count_posts = wp_count_posts(); echo $draft_posts = $count_posts->draft; ?>
+评论总数：
+<?php echo $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->comments");?>
+成立时间：
+<?php echo floor((time()-strtotime("2013-6-25"))/86400); ?>
+标签总数：
+<?php echo $count_tags = wp_count_terms('post_tag'); ?>
+页面总数：
+<?php $count_pages = wp_count_posts('page'); echo $page_posts = $count_pages->publish; ?>
+分类总数：
+<?php echo $count_categories = wp_count_terms('category'); ?>
+链接总数：
+<?php $link = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->links WHERE link_visible = 'Y'"); echo $link; ?>
+用户总数：
+<?php $users = $wpdb->get_var("SELECT COUNT(ID) FROM $wpdb->users"); echo $users; ?>
+最后更新：
+<?php $last = $wpdb->get_results("SELECT MAX(post_modified) AS MAX_m FROM $wpdb->posts WHERE (post_type = 'post' OR post_type = 'page') AND (post_status = 'publish' OR post_status = 'private')");$last = date('Y-n-j', strtotime($last[0]->MAX_m));echo $last; ?>

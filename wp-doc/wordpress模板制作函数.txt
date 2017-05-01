@@ -1,0 +1,204 @@
+（一）WordPress基本模板文件，一套完整的WordPress模板包括如下文件，但是只有index.php和style.css是不能缺少的：
+1. style.css : CSS(样式表)文件，不可缺少版权部分，真正CSS样式表可以放在其他文件；
+2. index.php : 主页模板，不可缺少；
+3. archive.php : Archive/Category模板，如果缺少，默认为index.php的显示；
+4. 404.php : Not Found 错误页模板，如果缺少，默认为index.php的显示；
+5. comments.php : 留言/回复模板，不可缺少；
+6. footer.php : Footer模板，可合并到index.php；
+7. header.php : Header模板，可合并到index.php；
+8. sidebar.php : 侧栏模板，可合并到index.php；
+9. page.php : 内容页(Page)模板，如果缺少，默认为index.php的显示；
+10. single.php : 内容页(Post)模板，如果缺少，默认为index.php的显示；
+11. searchform.php : 搜索表单模板，可合并到index.php；
+12. search.php : 搜索结果模板，如果缺少，默认为index.php的显示；
+
+（二）基本条件判断Tag
+1. is_home() : 是否为主页
+2. is_single() : 是否为内容页(Post)
+3. is_page() : 是否为内容页(Page)
+4. is_category() : 是否为Category/Archive页
+5. is_tag() : 是否为Tag存档页
+6. is_date() : 是否为指定日期存档页
+7. is_year() : 是否为指定年份存档页
+8. is_month() : 是否为指定月份存档页
+9. is_day() : 是否为指定日存档页
+10. is_time() : 是否为指定时间存档页
+11. is_archive() : 是否为存档页
+12. is_search() : 是否为搜索结果页
+13. is_404() : 是否为 “HTTP 404: Not Found” 错误页
+14. is_paged() : 主页/Category/Archive页是否以多页显示
+（三）Header部分常用到的PHP函数
+1. <?php bloginfo('name'); ?> : 博客名称(Title)
+2. <?php bloginfo('stylesheet_url'); ?> : CSS文件路径
+3. <?php bloginfo('pingback_url'); ?> : PingBack Url
+4. <?php bloginfo('template_url'); ?> : 模板文件路径
+5. <?php bloginfo('version'); ?> : WordPress版本
+6. <?php bloginfo('atom_url'); ?> : Atom Url
+7. <?php bloginfo('rss2_url'); ?> : RSS 2.o Url
+8. <?php bloginfo('url'); ?> : 博客 Url
+9. <?php bloginfo('html_type'); ?> : 博客网页Html类型
+10. <?php bloginfo('charset'); ?> : 博客网页编码
+11. <?php bloginfo('description'); ?> : 博客描述
+12. <?php wp_title(); ?> : 特定内容页(Post/Page)的标题
+（四）模板常用的PHP函数及命令
+1. <?php get_header(); ?> : 调用Header模板
+2. <?php get_sidebar(); ?> : 调用Sidebar模板
+3. <?php get_footer(); ?> : 调用Footer模板
+4. <?php the_content(); ?> : 显示内容(Post/Page)
+5. <?php if(have_posts()) : ?> : 检查是否存在Post/Page
+6. <?php while(have_posts()) : the_post(); ?> : 如果存在Post/Page则予以显示
+7. <?php endwhile; ?> : While 结束
+8. <?php endif; ?> : If 结束
+9. <?php the_time('字符串') ?> : 显示时间，时间格式由”字符串”参数决定，具体参考PHP手册
+10. <?php comments_popup_link(); ?> : 正文中的留言链接。如果使用 comments_popup_script() ，则留言会在新窗口中打开，反之，则在当前窗口打开
+11. <?php the_title(); ?> : 内容页(Post/Page)标题
+12. <?php the_permalink() ?> : 内容页(Post/Page) Url
+13. <?php the_category(',') ?> : 特定内容页(Post/Page)所属Category
+14. <?php the_author(); ?> : 作者
+15. <?php the_ID(); ?> : 特定内容页(Post/Page) ID
+16. <?php edit_post_link(); ?> : 如果用户已登录并具有权限，显示编辑链接
+17. <?php get_links_list(); ?> : 显示Blogroll中的链接
+18. <?php comments_template(); ?> : 调用留言/回复模板
+19. <?php wp_list_pages(); ?> : 显示Page列表
+20. <?php wp_list_categories(); ?> : 显示Categories列表
+21. <?php next_post_link('%link'); ?> : 下一篇文章链接
+22. <?php previous_post_link('%link'); ?> : 上一篇文章链接
+23. <?php get_calendar(); ?> : 日历
+24. <?php wp_get_archives() ?> : 显示内容存档
+25. <?php posts_nav_link(); ?> : 导航，显示上一篇/下一篇文章链接
+26. <?php include(TEMPLATEPATH . '/文件名'); ?> : 嵌入其他文件，可为定制的模板或其他类型文件
+（五）与模板相关的其他函数
+1. <?php _e('Message'); ?> : 输出相应信息
+2. <?php wp_register(); ?> : 显示注册链接
+3. <?php wp_loginout(); ?> : 显示登录/注销链接
+4. <!–next page–> : 将当前内容分页
+5. <!–more–> : 将当前内容截断，以不在主页/目录页显示全部内容
+6. <?php timer_stop(1); ?> : 网页加载时间(秒)
+7. <?php echo get_num_queries(); ?> : 网页加载查询量
+（六）与模板相关的功能代码块
+1.显示最新文章
+<?php query_posts('showposts=5'); ?>
+<ul>
+<?php while (have_posts()) : the_post(); ?>
+<li><a href=”<?php the_permalink() ?>”><?php the_title(); ?></a></li>
+<?php endwhile;?>
+</ul>
+2.显示最新评论
+<?php global $wpdb; $sql = “SELECT DISTINCT ID, post_title, post_password, comment_ID, comment_post_ID, comment_author, comment_date_gmt, comment_approved, comment_type,comment_author_url, SUBSTRING(comment_content,1,30) AS com_excerpt FROM $wpdb->comments LEFT OUTER JOIN $wpdb->posts ON ($wpdb->comments.comment_post_ID = $wpdb->posts.ID) WHERE comment_approved = '1' AND comment_type = ” AND post_password = ” ORDER BY comment_date_gmt DESC LIMIT 10″; $comments = $wpdb->get_results($sql); $output = $pre_HTML; $output .= “n<ul>”; foreach ($comments as $comment) { $output .= “n<li>”.strip_tags($comment->comment_author) .”:” . “<a href=”” . get_permalink($comment->ID) . “#comment-” . $comment->comment_ID . “” title=”on ” . $comment->post_title . “”>” . strip_tags($comment->com_excerpt) .”</a></li>”; } $output .= “n</ul>”; $output .= $post_HTML; echo $output;?>
+3.显示热评文章
+<?php $result = $wpdb->get_results(“SELECT comment_count,ID,post_title FROM $wpdb->posts ORDER BY comment_count DESC LIMIT 0 , 10″); foreach ($result as $topten) { $postid = $topten->ID; $title = $topten->post_title; $commentcount = $topten->comment_count; if ($commentcount != 0) { ?>
+<li><a href=”<?php echo get_permalink($postid); ?>” title=”<?php echo $title ?>”><?php echo $title ?></a></li>
+<?php } } ?>
+4.显示文章分类
+<h2>Categories</h2>
+<ul><?php wp_list_cats('sort_column=name'); ?></ul>
+5.显示归档
+<h2>Archives</h2>
+<ul><?php wp_get_archives('type=monthly'); ?></ul>
+6.在侧栏显示页面列表
+<h2>Pages</h2>
+<ul><?php wp_list_pages('title_li='); ?></ul>
+7.调用Gravatar(只适应2.5以上)
+<?php if(function_exists('get_avatar')){ echo get_avatar($comment, '50');} ?>
+8.显示友情链接
+<ul><?php get_links_list(); ?></ul>
+9.显示管理员链接
+<ul><?php wp_register(); ?>
+<li><?php wp_loginout(); ?></li>
+<li><a href=”http://www.wordpress.org/”>WordPress</a></li>
+<?php wp_meta(); ?>
+<li><a href=”http://validator.w3.org/check?uri=referer”>XHTML</a></li>
+</ul>
+10.在侧栏显示页面的子页面
+<?php$children = wp_list_pages('title_li=&child_of='.$post->ID.'&echo=0');if ($children) { ?>
+<ul><?php echo $children; ?></ul>
+<?php } ?>
+11.显示Wordpress标签
+<?php the_tags(); ?>
+12.显示Wordpress标签云
+<?php wp_tag_cloud('smallest=8&largest=36&'); ?>
+13.模板标题
+<?php /* Template Name: cyuugagi */ ?>
+14.动态标题标签
+<title><?phpif (is_home()) { echo bloginfo('name'); } elseif (is_404()) { echo '404 Not Found'; } elseif (is_category()) { echo 'Category:'; wp_title(”); } elseif (is_search()) { echo 'Search Results'; } elseif ( is_day() || is_month() || is_year() ) { echo 'Archives:'; wp_title(”); } else { echo wp_title(”); } ?></title>
+15.在独立页面中运行PHP
+<?php if ( is_home() ) { include ('file.php'); } ?>
+
+<?php the_author_nickname(); ?>这句是用来读取WordPress后台设定的作者昵称，如果不愿意使用昵称而要使用名字，也可以使用其它函数：the_author显示作者名字；the_author_login显示作者登录名；the_author_url显示作者的网站地址。
+<?php the_time('F dS, Y'); ?> 显示发布时间
+<?php the_category(', ') ?> 显示文章分类。
+<?php edit_post_link('edit', '(', ')'); ?>如果作者就是博客管理员，则会在登录状态下显示edit编辑按钮
+the_author 显示文章的作者
+the_author_description 显示文章作者的描述（作者个人资料中的描述）
+the_author_login 显示文章作者的登录名
+the_author_firstname 显示文章作者的firstname（名）
+the_author_lastname 显示文章作者的lastname（姓）
+the_author_nickname 显示文章作者的昵称
+the_author_ID 显示文章作者的ID号
+the_author_email 显示文章作者的电子邮箱
+the_author_url 显示文章作者的网站地址
+the_author_link (添加于2.1版本) 显示一个以文章作者名为链接名，链接地址为文章作者的网址的链接。
+the_author_icq (不推荐使用) 显示文章作者的icq
+the_author_aim 显示文章作者的aim
+the_author_yim 显示文章作者的yim
+the_author_msn (不推荐使用) 显示文章作者的msn
+the_author_posts 显示文章作者已发表文章的篇数
+the_author_posts_link 显示一个链接到文章作者已发表文章列表的链接
+list_authors (不推荐使用) 显示blog所有作者和他们的相关信息。完整函数如下：
+参数：
+optioncount：是否显示各作者已发表文章的篇数，可选值为：TRUE 和 FALSE（默认值）
+exclude_admin：是否不列出管理员，可选值为：TRUE（默认值） 和 FALSE
+show_fullname ：是否显示各作者的全名，可选值为：TRUE 和 FALSE（默认值）
+hide_empty：是否不显示发表文章数为0的作者，可选值为：TRUE（默认值） 和 FALSE
+feed：链接到各个作者发表文章的RSS供稿种子链接名，默认为空，不显示RSS供稿种子
+feed_image：供稿种子的图片地址，如果提供此项，则覆盖上面的feed，默认为空
+例如：
+代表不显示各个作者的发布文章数，列出管理员，显示各作者的全名，显示发布文章数为0的作者和不显示RSS供稿种子。
+<?php list_authors(optioncount, exclude_admin, show_fullname, hide_empty, 'feed', 'feed_image'); ?>
+<?php list_authors(FALSE, FALSE, TRUE, FALSE); ?>
+wp_list_authors 显示blog作者列表，如果作者发表过文章，则他的名字将链接到他发表的文章列表中。可定义是否显示其他信息。
+参数：
+optioncount：是否显示各个作者发表文章数，可选值：true 和 false（默认值）
+exclude_admin：是否不显示“admin”用户，可选值：true（默认值） 和 false
+show_fullname：是否显示各个作者的全名，如果不显示，将显示昵称。可选值：true 和 false（默认值）
+hide_empty：是否不显示发表文章数为0的作者，可选值：true（默认值） 和 false
+feed：链接到各个作者发表文章的RSS供稿种子链接名，默认为空，不显示RSS供稿种子
+feed_image：供稿种子的图片地址，如果提供此项，则覆盖上面的feed，默认为空
+例如：
+<?php wp_list_authors('show_fullname=1&optioncount=1'); ?>
+用户函数调用代码:<?php the_author(); ?>显示日志撰写的用户,使用在loop中.
+用户描述函数调用代码:<?php the_author_description(); ?>显示关于这个用户的描叙,使用在loop中.
+用户登录函数调用代码:<?php the_author_login(); ?>显示登录的用户,必须用在loop中
+用户的姓函数调用代码:<?php the_author_firstname(); ?>显示作者的姓,必须用在loop中
+显示用户的名函数调用代码:<?php the_author_lastname(); ?>显示作者名,必须用在loop中
+用户昵称函数调用代码:<?php the_author_nickname(); ?>同上必须用在loop中
+用户ID函数调用代码:<?php the_author_ID(); ?>显示用户的ID,可以利用它为每篇日志增加一个用户缩略图
+用户的邮箱函数调用代码:<?php the_author_email(); ?>显示用户邮箱链接,可以使用于联系作者
+用户的网站url函数调用代码:<?php the_author_url(); ?>显示用户的网站链接
+用户的连接函数调用代码:<?php the_author_link(); ?>显示用户的连接
+Author AIM Screenname函数调用代码:<?php the_author_aim(); ?>显示用户aim信息
+用户所有文章函数调用代码:<?php the_author_posts(); ?>显示用户在WordPress上的所有文章
+用户文章连接函数代码调用:<?php the_author_posts_link(); ?>显示用户在WordPress上的所有文章链接
+用户清单函数代码调用:<?php wp_list_authors('arguments'); ?>
+使用于wordpress mu.
+<?php wp_list_authors('exclude_admin=1&show_fullname=0'); ?>显示用户所有清单并连接到WordPress日志和feed.下面是具体调用:
+optioncount显示每个作者的文章数目.
+<?php wp_list_authors('optioncount=1'); ?>
+1 (true)
+0 (false)
+exclude_admin从用户清单中排除'admin'用户.
+<?php wp_list_authors('exclude_admin=0'); ?>>
+1 (true)
+0 (false)
+show_fullname显示用户全名,没有的话就显示昵称.
+<?php wp_list_authors('show_fullname=1'); ?>>
+1 (true)
+0 (false)
+hide_empty不显抓写日志为0的用户.
+<?php wp_list_authors('hide_empty=0'); ?>
+1 (true)
+0 (false)
+feed文字链接到用户撰写日志的Feed.
+<?php wp_list_authors('feed=RSS'); ?>
+String
+feed_imag图片链接到用户的Feed.

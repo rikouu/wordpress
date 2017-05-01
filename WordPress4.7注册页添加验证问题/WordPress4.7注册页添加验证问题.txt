@@ -1,0 +1,28 @@
+通常网站的注册页都使用验证码来进行验证，但是有没有考虑过使用验证问题来验证呢？使用问题验证的好处在于：防止机器人注册（和验证码一样），只有知道答案的人才能注册（可用于限制用户注册）。下面将添加一个验证问题：中国的首都是哪里？答案是个正常人都知道：北京。
+
+将下面的代码添加到主题的functions.php即可。
+
+/**
+ * WordPress 注册表单添加验证问题
+ * https://wobeibk.com/1193.html
+ */
+add_action( 'register_form', 'add_security_question' );
+function add_security_question() { ?>
+    <p>
+    <label><?php _e('中国的首都是哪里？') ?><br />
+        <input type="text" name="user_proof" id="user_proof" class="input" size="25" tabindex="20" /></label>
+    </p>
+<?php }
+add_action( 'register_post', 'add_security_question_validate', 10, 3 );
+function add_security_question_validate( $sanitized_user_login, $user_email, $errors) {
+    // 如果没有回答
+    if (!isset($_POST[ 'user_proof' ]) || emptyempty($_POST[ 'user_proof' ])) {
+        return $errors->add( 'proofempty', '<strong>错误</strong>: 您还没有回答问题。'  );
+    // 如果答案不正确
+    } elseif ( strtolower( $_POST[ 'user_proof' ] ) != '北京' ) {
+        return $errors->add( 'prooffail', '<strong>错误</strong>: 您的回答不正确。'  );
+    }
+}
+
+注：第 8 行是问题，第 19 行是正确的答案。
+如果你想限制用户注册，将问题和答案设置为只有某些人知道的即可（比如只在某个Q群告知）

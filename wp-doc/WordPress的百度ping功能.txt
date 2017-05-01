@@ -1,0 +1,35 @@
+
+WordPress ping 功能也就是WordPress的更新服务功能，当您发表一篇新文章时，WordPress将会向下面的站点发出通告。在仪表盘的设置选项下面，撰写里面最下边，就是设置这个功能的地方。而百度的ping，可以参照百度ping(http://zhanzhang.baidu.com/tools/ping) ，以前我就是这样设置的：
+http://blogsearch.google.com/ping/RPC2
+http://ping.baidu.com/ping/RPC2
+
+
+在里面写上ping地址，一行一条：
+
+
+http://ping.baidu.com/ping/RPC2
+http://rpc.pingomatic.com/
+http://blogsearch.google.com/ping/RPC2
+后面在小V的博客，发现，百度的ping还与其他的搜索引擎有所不同，各大厂商，当然也包括Wordpress，默认的ping服务都是是3个参数，即网站 名称，首页地址，feed地址；而百度这货的ping呢，则是4个参数，即网站名称，首页地址，新网页的地址，feed地址。所以使用wordpress默认的ping通知服务是通知不了百度的。。。
+
+吐血中。。。
+
+引用小V的解决办法，在当前所用的主题的functions.php文件中，加入下面代码：
+
+function wpyou_baiping($post_id) {
+$baiduXML = 'weblogUpdates.extendedPing' . get_option('blogname') . ' ' . home_url() . ' ' . get_permalink($post_id) . ' ' . get_feed_link() . ' ';
+$wp_http_obj = new WP_Http();
+$return = $wp_http_obj->post('http://ping.baidu.com/ping/RPC2', array('body' => $baiduXML, 'headers' => array('Content-Type' => 'text/xml')));
+if(isset($return['body'])){
+if(strstr($return['body'], '0')){
+$noff_log='succeeded!';
+}
+else{
+$noff_log='failed!';
+}
+}else{
+$noff_log='failed!';
+}
+}
+add_action('publish_post', 'wpyou_baiping');
+这样子可以解决这个问题，如果你也在用wordpress的ping功能的话，建议进行修改，效果还是不错的。

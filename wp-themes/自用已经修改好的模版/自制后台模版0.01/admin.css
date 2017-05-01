@@ -1,0 +1,51 @@
+body{
+    margin: 0;
+    padding: 0;
+    background: #eee;
+}
+
+#main{
+    margin: 0 auto;
+    padding: 0;
+    width:900px;
+    background: #ccc;
+}
+
+#header{
+    margin: 0 auto;
+    padding: 0;
+    height:90px;
+    background:pink;
+    text-align: center;
+}
+.left{
+    margin: 0 auto;
+    padding: 5px 0;
+    width:240px;
+    background: #ccc;
+    text-align: center;
+}
+
+frame{
+    margin: 0;
+    padding: 0;
+}
+frameset{
+    margin: 0;
+    padding: 0;
+}
+
+hr{
+    border: none;
+    height: 1px;
+    border-top:1px dashed #0066CC;
+}
+
+#addform{
+    margin: 0 auto;
+    padding: 0;
+    width: 700px;
+    background: #aaa;
+
+}
+

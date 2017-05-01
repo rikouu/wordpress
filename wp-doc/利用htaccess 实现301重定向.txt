@@ -1,0 +1,18 @@
+利用.htaccess 实现301重定向
+
+今天和朋友讨论网站被收录的问题，无意中发现
+site：72xit.com 和 site:www.72xit.com 被搜索引擎收录的不一致 无形间减少了页面的权重，研究一下，利用.htaccess 实现301重定向：
+
+Options +FollowSymLinks
+rewriteEngine on
+rewriteCond %{http_host} ^72xit.com [NC]
+rewriteRule ^(.*)$ http://www.72xit.com/$1 [R=301,L]
+
+
+这下没有带www的访问被重定向到了www， 大家有需要借鉴吧。
+
+
+
+
+
+

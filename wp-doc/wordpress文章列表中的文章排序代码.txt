@@ -1,0 +1,175 @@
+wordpress默认的是按照文章发布日期从新到旧来排列。
+方法1：推荐一个插件：Post Types Order
+这个插件支持拖拽改变顺序，是比较方便的。
+方法2：如果你不愿下载插件，想自己动手修改，我在网上找了一个不错的方法，主要原理是应用query_posts函数，这个函数功能很强大，大家仔细学习后就可以随心所欲地进行各种排序。
+基本用法：
+首先介绍一下如何使用query_posts函数。在主题目录下找到存档页面文件，存档页面包括index.php、archive.php等，一般分类页、标签页、日期页和作者页等都是用archive.php。
+确定了你要控制哪个页面的文章列表，那么我们就可以开始了，比如你想让首页的文章按评论数排序，那么index.php中的代码基本框架就是这样的：
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+<?php
+// query_posts函数
+query_posts(‘orderby=comment_count’);
+// 主循环
+if ( have_posts() ) : while ( have_posts() ) : the_post();
+..
+endwhile; else:
+..
+endif;
+// 重置query
+wp_reset_query();
+?>
+其实你要做的就是在index.php中查找if (have_posts())或while (have_posts())，在前面添加query_posts函数即可。不过以上方式可能会导致首页无法分页，那你可以将query_posts函数改成这样的行式：
+// 下面这一行代码是必须的，不然你的首页不能分页
+1
+2
+3
+4
+5
+6
+7
+$paged = (get_query_var(‘paged’)) ? get_query_var(‘paged’) : 1;
+$args = array(
+// 这里以下面的方式添加query_posts参数，具体参数可以参加官方文档
+‘orderby’ => comment_count,
+‘paged’ => $paged
+);
+query_posts($args);
+下面是一些常见的query_posts函数用法，你可以直接用到你的主题中。
+一、只显示含有某个自定义字段的文章
+1、打开WordPress当前主题目录，打开index.php，搜索代码： while (have_posts())
+将其替换成：
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+$paged = (get_query_var(‘paged’)) ? get_query_var(‘paged’) : 1;
+$args=array(
+‘meta_key’ => ‘sort’,
+‘orderby’ => meta_value,
+‘paged’ => $paged,
+‘order’ => DESC
+);
+query_posts($args);
+while (have_posts())
+接着搜索： endwhile;
+将其改成：
+endwhile;wp_reset_query();
+2、给之前发表的所有文章添加自定义字段（或者称作自定义栏目，在文章编辑页底部可以看到），名称为 sort ，值填数字。这样在首页，文章的排列顺序就按照sort字段的值，从大到小排列了。通过修改sort字段的值，可以达到自定义文章排列顺序的目的。
+3、需要注意的是，通过以上修改后，你必须给所有文章添加自定义字段sort，否则没有添加sort字段的文章将无法在首页显示。这也许就是手动排序需要付出的代价吧，要不然何谓手动？
+4、如果你同时想手动修改标签页、分类页等存档页面的文章排列顺序，同样可以按照第一步介绍的方法来操作，修改主题目录下的archive.php等。
+二、怎样让某分类的文章不显示/显示
+如果你不想让某分类的文章出现在主循环中，那么你可以使用query_posts添加参数category__not_in即可：
+1
+2
+3
+4
+5
+6
+7
+$paged = (get_query_var(‘paged’)) ? get_query_var(‘paged’) : 1;
+$args = array(
+// 2, 6就是你不想显示的分类ID，多个用半角逗号隔开
+‘category__not_in’ => array(2, 6),
+‘paged’ => $paged
+);
+query_posts($args);
+如果只想让显示某个分类的文章，可以将category__not_in改成category__in。同理，如果不显示某标签下的文章，可以将category__not_in改成：tag__not_in，或者只想让显示某个标签下的文章，可以将category__not_in改成tag__in，后面跟着标签的ID即可。
+三、如何对文章进行排序
+1
+2
+3
+4
+5
+6
+7
+$paged = (get_query_var(‘paged’)) ? get_query_var(‘paged’) : 1;
+$args = array(
+// 以下代码中的title就是orderby的值，按标题排序
+‘orderby’ => title,
+‘paged’ => $paged
+);
+query_posts($args);
+根据orderby的值不同，可以让文章按照很多种方式进行排序，下面是列举几个常见的值及其对应的排序方式:title：按标题；date：按发布日期；modified：按修改时间；ID：按文章ID；rand：随机排序；comment_count：按评论数
+四、只显示相应ID的文章
+如我只想显示ID为2,4,6的文章，可以使用以下代码：
+1
+2
+3
+4
+5
+6
+7
+$paged = (get_query_var(‘paged’)) ? get_query_var(‘paged’) : 1;
+$args = array(
+// 以下代码中的2,4,6就是文章的ID
+‘post__in’ => array(2,4,6),
+‘paged’ => $paged
+);
+query_posts($args);
+如果不想显示2,4,6这几篇文章，可以将 post__in 改成 post__not_in 。另外如果只想显示置顶文章，那么可以将array(2,4,6)改成get_option(‘sticky_posts’)，这段代码会自动给你填充所有置顶文章的ID。
+五、让置顶文章不置顶
+如果你不想让置顶文章显示在顶部，而是让它们安装正常的顺序排列，那么可以使用以下代码：
+1
+2
+3
+4
+5
+6
+$paged = (get_query_var(‘paged’)) ? get_query_var(‘paged’) : 1;
+$args=array(
+‘paged’ => $paged,
+‘caller_get_posts’ => 1
+);
+query_posts($args);
+六、列出所有状态的文章
+WordPress的文章状态有很多种，包括已发布、草稿、已删除、私人的、定时发布的等等，如果你想将这些文章都统统显示出来，那么可以这样：
+1
+2
+3
+4
+5
+6
+$paged = (get_query_var(‘paged’)) ? get_query_var(‘paged’) : 1;
+$args = array(
+‘post_status’ => array(‘publish’, ‘pending’, ‘draft’, ‘future’, ‘private’, ‘trash’),
+‘paged’ => $paged
+);
+query_posts($args);
+post_status参数可以控制具体的文章状态，值包括pending（待审）、publish（已发布）、draft（草稿）, future（定时）, private（私有）, trash（已删除）。
+七、控制文章的数量
+如果你想控制要显示的文章数量，可以使用showposts参数：
+1
+2
+3
+4
+5
+6
+7
+$paged = (get_query_var(‘paged’)) ? get_query_var(‘paged’) : 1;
+$args = array(
+// 控制只显示10篇文章，如果将10改成-1将显示所有文章
+‘showposts’ => 10,
+‘paged’ => $paged
+);
+query_posts($args);
+最后…
+如果你只是想控制首页、分类页等每各分页显示的文章数量，可以在WordPress管理后台 – 设置 – 阅读那里设置博客页面至多显示多少篇文章。

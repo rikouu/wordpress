@@ -1,0 +1,26 @@
+路由跟踪:http://www.webkaka.com/Tracert.aspx
+linux用户putty软件下载页面:http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html
+windows版本的MTR软件,下载页面:http://winmtr.net/download-winmtr/
+
+1. 全球网站测速:http://www.webkaka.com/UrlCheck.aspx
+2. 国内网站测速:http://www.webkaka.com/webCheck.aspx
+3. 网页打开速度测试:http://www.webkaka.com/webspeed
+4. 网站速度诊断:http://pagespeed.webkaka.com
+5. 网站路由检测:http://www.webkaka.com/Tracert.aspx
+6. 网站Ping检测:http://www.webkaka.com/Ping.aspx
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

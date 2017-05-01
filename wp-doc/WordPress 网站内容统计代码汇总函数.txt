@@ -1,0 +1,29 @@
+对于使用WordPress来搭建的网站都喜欢向用户显示一些网站统计数据，比如日志、评论、分类和用户等各自的总数，意义虽然并不是很大，但毕竟可以让读者/用户对自己的网站概况有一定的了解，因此，从这个角度来看也不是没有必要的。
+
+其实，WordPress 已经内置有以上提及的这些数据统计功能，我们可以登录后台查看，但也仅限于管理员本人才拥有这个权限。而写作本文的初衷是向读者显示这些统计数据的，所以，应该将这些数据摆在前台。
+
+WordPress 有许多实现这种数据统计功能的插件，但如果仅仅想要显示以上这几项的统计数据，似乎并没有必要安装任何的插件，我们可以只使用一段简单的代码就可以实事想要的效果。
+下面的这段代码来自Deluxeblogtips，我照抄过来了，为了方便中文用户理解和使用，我将其中的几个英文名称改成了中文。好了，将这段代码添加到当前主题的 functions.php 文件中:
+
+function simple_stats() {
+global $wpdb;
+$stats = array();
+$stats['posts'] = number_format_i18n(wp_count_posts('post')->publish);
+$stats['pages'] = number_format_i18n(wp_count_posts('page')->publish);
+$stats['cats']  = number_format_i18n(wp_count_terms('category'));
+$stats['tags'] = number_format_i18n(wp_count_terms('post_tag'));
+$stats['comments'] = number_format_i18n(wp_count_comments()->approved);
+$stats['users'] = $wpdb->get_var("SELECT COUNT(ID) FROM {$wpdb->prefix}users");
+echo '<div>',
+'<p>日志总数: <b>', $stats['posts'], '</b></p>',
+'<p>页面总数: <b>', $stats['pages'], '</b></p>',
+'<p>分类总数: <b>', $stats['cats'], '</b></p>',
+'<p>标签总数: <b>', $stats['tags'], '</b></p>',
+'<p>评论总数: <b>', $stats['comments'], '</b></p>',
+'<p>用户总数: <b>', $stats['users'], '</b></p>',
+'</div>';
+}
+然后，在你想要显示统计数据的地方插入这条函数（比如 sidebar.php 等文件）:
+
+<?php simple_stats(); ?>
+这样也就 OK 了。数据显示的样式默认是不作修饰的，如果你想要外观好看一些，上面代码中有一个 class 类，给其中的 simple-stats 添加一些CSS代码美化一下就可以了，这方面这里就不提了。

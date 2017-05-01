@@ -1,0 +1,57 @@
+不用插件怎样实现文章列表的分页？少使用插件，却能让使用者完全体验到主题的各项功能，才是真正好的主题，这也是所有主题设计者应考虑的问题。网上不使用插件实现WordPress功能的文章也很多，今天我也来写一遍不使用插件实现翻页功能的函数代码。
+WordPress默认翻页功能很弱，一页页翻，弄到你手麻，所以类似wp-pagenavi翻页插件，几乎是WordPress博客必装的插件，也是普及率很高的一款插件。虽然网上有如何把wp-pagenavi插件集成到wordpress主题的教程，但wp-pagenavi插件函数代码拖沓，只是变相启用插件而已，并没有真正脱离wp-pagenavi插件。下面一段轻量级的函数，加上寥寥数行css样式就可以完全替代分页插件了。
+具体实现方法：
+首先将下面一段函数代码添加到主题的functions.php模板文件中：
+function kriesi_pagination($query_string){
+global $posts_per_page, $paged;
+$my_query = new WP_Query($query_string .”&posts_per_page=-1″);
+$total_posts = $my_query->post_count;
+if(empty($paged))$paged = 1;
+$prev = $paged – 1;
+$next = $paged + 1;
+$range = 2; // only edit this if you want to show more page-links
+$showitems = ($range * 2)+1;
+$pages = ceil($total_posts/$posts_per_page);
+if(1 != $pages){
+echo “<div class=’pagination’>”;
+echo ($paged > 2 && $paged+$range+1 > $pages && $showitems < $pages)? “<a href=’”.get_pagenum_link(1).”‘>最前</a>”:”";
+echo ($paged > 1 && $showitems < $pages)? “<a href=’”.get_pagenum_link($prev).”‘>上一页</a>”:”";
+for ($i=1; $i <= $pages; $i++){
+if (1 != $pages &&( !($i >= $paged+$range+1 || $i <= $paged-$range-1) || $pages <= $showitems )){
+echo ($paged == $i)? “<span class=’current’>”.$i.”</span>”:”<a href=’”.get_pagenum_link($i).”‘ class=’inactive’ >”.$i.”</a>”;
+}
+}
+echo ($paged < $pages && $showitems < $pages) ? “<a href=’”.get_pagenum_link($next).”‘>下一页</a>” :”";
+echo ($paged < $pages-1 && $paged+$range-1 < $pages && $showitems < $pages) ? “<a href=’”.get_pagenum_link($pages).”‘>最后</a>”:”";
+echo “</div>\n”;
+}
+}
+接下来用下面的代码替换原来模板中默认翻页代码或分页插件代码：
+<?php kriesi_pagination($query_string); ?>
+最后再把下面的样式代码添加到style.css中，刷新一下页面，与使用插件实现的翻页效果一样。
+
+.pagination{
+line-height:23px;
+}
+.pagination span, .pagination a{
+font-size:12px;
+margin: 2px 6px 2px 0;
+background:#fff;
+border:1px solid #e5e5e5;
+color:#787878;
+padding:2px 5px 2px 5px;
+text-decoration:none;
+}
+.pagination a:hover{
+background: #8391A7;
+border:1px solid #fff;
+color:#fff;
+}
+.pagination .current{
+background: #fff;
+border:1px solid #8d8d8d;
+color:#393939;
+font-size:12px;
+padding:2px 5px 2px 5px;
+}
+上面的样式是我目前用的主题样式，根据不同的主题修改一下边框与背景，基本就可以了，之后删除分页插件。

@@ -1,0 +1,20 @@
+现在支付宝支付申请比较麻烦，必须备案且拥有企业账号。比较放款的方式是“担保交易”，但是该方式无法确保即时到账，还需要用户确认才能收到款，显然对于网上交易来说卖方比较没有保障。之前支付宝有个“收款主页”的方式，方便博客之类的接受捐赠，但是现在下线了。下面提供一个个人网站可用的支付方案。
+
+支付宝虽然停用了收款主页，但是我们依然可以向他人转账，支付宝转账地址为
+
+https://shenghuo.alipay.com/send/payment/fill.htm
+很显然这个转账地址需要手动填写，我们应该做到用户只需点一点即可支付，而不需要再填入收款人信息
+
+原理即为支付宝的转账页面可以post参数，并自动填入，代码其实很简单，见下面：
+
+<form accept-charset="GBK" action="https://shenghuo.alipay.com/send/payment/fill.htm" method="post" target="_blank">
+<input type="hidden" name="optEmail" value="支付宝账号" /> 
+<input type="hidden" name="memo" value="如果你觉得我的文章对你有帮助，请我喝杯饮料吧，谢谢！" />
+<input id="payAmount" type="hidden" name="payAmount" value="捐赠数额" /> 
+<input id="title" type="hidden" name="title" value="备注" />
+<input type="image" name="pay" src="https://img.alipay.com/sys/personalprod/style/mc/btn-index.png" value="转账" />
+</form>
+
+
+
+

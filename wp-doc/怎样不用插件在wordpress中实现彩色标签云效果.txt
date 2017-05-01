@@ -1,0 +1,28 @@
+怎样不用插件在wordpress中实现彩色标签云效果？使用wordpress的朋友大多都喜欢用插件来实现彩色标签云的效果，这样是比较方便，但是，如果插件用多了，会对系统产生拖累。所以，我这里跟大家分享一下我使用成功了的“标签云”代码，希望对需要的朋友有所帮助。
+具体方法；
+以自己为例好了，在主题的侧边栏sidebar.php文件中添加下面这句代码（当然，你可以添加到任何需要的文件中的任何地方）：
+<?php wp_tag_cloud(‘ssmallest=8&largest=20&number=30&orderby=count&order=DESC’); ?>
+其中参数可以根据自己的需要来设置，下面是它的一些参数：
+smallest和largest用来设置最小（默认8）和最大（默认22）字号
+unit 标签云字体所使用的单位：pt（默认）,em,px等
+number 显示书签的数量：0时为显示全部，默认显示45个
+format 标签云的样式：flat（默认）-标签之间隔开排列；list-列表形式
+orderby 标签云依据：name（默认）-按字母；count-按频率
+order 排序顺序：ASC（默认）-按升序；DESC-按降序
+exclude 排除某个标签。每个标签都有一个ID,如果你希望哪一个标签不显示，那就用’exclude=此标签ID′。那相应的标签就不会显示。默认显示全部。
+include 包括某个标签。跟 exclude相反。如果你用’include=5,12′，那就只显示这两个ID的标签。
+以上是不用插件加入标签云的方法，只显示黑白色。但是要实现随机彩色标签，还需要在主题的functions.php文件中添加如下代码：
+<?php
+function colorCloud($text) {
+$text = preg_replace_callback(‘|<a (.+?)>|i’, ‘colorCloudCallback’, $text);
+return $text;
+}
+function colorCloudCallback($matches) {
+$text = $matches[1];
+$color = dechex(rand(0,16777215));//修改此处可以控制随机色彩值的范围
+$pattern = ‘/style=(\’|\”)(.*)(\’|\”)/i’;
+$text = preg_replace($pattern, “style=\”color:#{$color};$2;\””, $text);
+return “<a $text>”;
+}
+add_filter(‘wp_tag_cloud’, ‘colorCloud’, 1);
+?>

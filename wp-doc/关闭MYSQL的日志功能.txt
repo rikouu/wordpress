@@ -1,0 +1,14 @@
+删除日志：
+
+执行：/usr/local/mysql/bin/mysql -u root -p
+
+输入密码登录后再执行：reset master;
+
+再输入：quit 退出mysql命令模式。
+
+彻底禁用MySQL日志：修改/etc/my.cnf 文件，找到
+
+log-bin=mysql-bin
+binlog_format=mixed
+
+再这两行前面加上#，将其注释掉，再执行/etc/init.d/mysql restart即可。

@@ -1,0 +1,18 @@
+1. chmod 改权限
+
+chmod -R 777 目录名
+chmod 777 文件名
+
+2. chown
+
+例1：把文件sql.sql的所有者改为www。
+chown www sql.sql
+
+例2：把目录/www及其下的所有文件和子目录的属主改成www，属组改成users。
+chown – R www.users /www
+
+3. chgrp
+
+– R 递归式地改变指定目录及其下的所有子目录和文件的属组。
+例1：$ chgrp – R www /home/www
+改变/home/www及其子目录下的所有文件的属组为www。

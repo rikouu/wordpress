@@ -1,0 +1,9 @@
+增加wordpress文章阅读次数的方法有很多，自由屋博客就给大家分享一个很简单的办法——wp-postviews。
+WP-PostViews 插件可轻松实现文章阅读数统计功能，而且还可以实现侧边栏 Widget 以及显示最受欢迎（阅读数最多）文章、某分类下最受欢迎（阅读数最多）文章等功能。
+具体实现：
+1.下载插件，上传到插件目录，然后在插件管理中激活使用。直接在wordpress后台搜索插件就可以的！
+2.修改index.php或single.php文件。
+在<?php the_category() ?> <?php comments_popup_link(’0条评论’, ‘1条评论’, ’%条评论’);  ?>后面添加上如下代码：
+<?php if(function_exists(’the_views’)) { the_views(’次阅读’, true); }  ?>
+ 
+效果参考本博客就可以哦！也可以把阅读次数改成文章热度，或者其他相关词语！自由屋，用最简单的方法为大家解决最繁琐的问题！

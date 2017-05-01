@@ -1,0 +1,44 @@
+wordpress彩色标签怎样设置？wordpress 2.3版本开始使用wp_tag_cloud函数来调用文章标签显示列表，WP博主可以轻易地通过设置wp_tag_cloud函数的标签参数属性，使标签实现多样化显示。那么，怎样来设置wp_tag_cloud函数？下面是wp_tag_cloud标签用法。
+<?php wp_tag_cloud( $args ); ?>
+其默认参数如下：
+<?php
+$args = array(
+'smallest' => 8,
+'largest'=> 22,
+'unit' => 'pt',
+'number' => 45,
+'format' => 'flat',
+'separator' => \"\n\",
+'orderby' => 'name',
+'order' => 'ASC',
+'exclude' => null,
+'include' => null,
+'topic_count_text_callback' => default_topic_count_text,
+'link' => 'view',
+'taxonomy' => 'post_tag',
+'echo' => true );
+?>
+wp_tag_cloud标签参数说明
+smallest：使用次数最少的标签的字号大小（单位由unit参数决定），默认值为8
+largest：使用次数最多的标签的字号大小（单位由unit参数决定），默认值为22
+unit：（字符串）对smallest与largest的值的测量单位。可以是任何CSS长度单位，如pt, px, em, %。默认值为’pt’
+number：显示标签数量。（值为’0′时显示所有标签），默认值为45
+format：（字符串）所显示的云的格式。’flat’ （默认值）标签被“separator”参数所定义的空格分隔；’list’ 标签与class=’wp-tag-cloud’ 共同在UL中；’array’ 标签在数组中，函数以数组方式返回标签云，以用在PHP中。（数组被返回，而非显示，引入于WordPress 2.5）
+separator：（字符串）标签之间的文本/空格。（引入于WordPress 2.9）。默认值：’/n’ （空格）
+orderby：（字符串）标签的排列顺序的方式。’name’ （默认值，按名称排列），’count’ （按使用次数排列）
+order：（字符串）排列顺序（升序或降序）。
+‘ASC’ ——默认值；
+‘DESC’；
+‘RAND’ 随机排列。（引入于WordPress 2.5）
+exclude：（字符串）不显示的标签（term_id）的ID，各ID用逗号隔开。如 ‘exclude=1,2′表示不显示id为1和2的标签。默认全显示。
+include：（字符串）选择要显示的标签（term_id）列表，各ID用逗号隔开。例如， ‘include=3,4′ 表示只显示id为3和4的标签。默认全显示。
+link：（字符串）设置链接，允许编辑某个指定标签。（该标签引入于WordPress 2.7）。
+‘view’ （默认值）
+‘edit’
+taxonomy：（字符串）用以生成云的分类法。（引入于WordPress2.8）。
+‘post_tag’ —— （默认值）将文章标签当作云的来源
+‘category’ —— 用文章分类生成云
+‘link_category’ —— 用链接分类目录生成云
+echo：（布尔型）显示结果，或将结果保留在变量中。默认值为true（显示标签云）。（该标签引入于WordPress2.8）
+1 (true) —— 默认值
+0 (false)

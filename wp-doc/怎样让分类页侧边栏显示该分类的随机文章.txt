@@ -1,0 +1,20 @@
+最近一个群友问道：“wordpress怎样让分类页侧边栏随机文章显示该分类的随机文章？”当时也没在意，问他为什么要这样做，他说有利于SEO，还说其它很多知名博客都这样做，如卢松松博客。有利于SEO，这点我不赞成，但是，这样做有利于用户体验，这一点我觉得是肯定的，比方说，我们打开一遍文章，文章感觉不错，想再看几遍相关文章，但是这个文章页面没有相关文章，而侧边栏显示的文章很杂，没有这个分类的文章，这时，我们的选择可能会是离开这个网站。如果，侧边栏有该分类的文章，虽然没有相关文章那么相关，但是毕竟是同一个分类的，相去不会太远，我可能就会点几个进去看看。嗯，闲话不多说，下面就来实现这样的功能。
+把侧边栏的随机文章代码改成下面这样的代码：
+<ul>
+<?php
+if (is_home()||is_tag()||is_page()) { //这里是判断，如果是首页、标签页或者页面页，就显示所有文章的随机文章
+query_posts('posts_per_page=8&caller_get_posts=1&orderby=rand');
+} else {  //否则，那就是分类页和文章页，就显示该分类随机文章
+$cat_id=the_category_ID(false); //获取分类的ID；
+$fenlei='posts_per_page=8&caller_get_posts=1&orderby=rand&cat='.$cat_id;
+query_posts($fenlei);
+}
+?>
+<?php while (have_posts()) : the_post(); ?>
+<li>
+<a target="_blank" href="<?php the_permalink(); ?>" class="title" title="<?php the_title();
+?>"><?php echo cut_str($post->post_title,34); ?></a>  //这里是标题截断，cut_str函数要自己设置，如果不想设置，就把这句改成the_title(); 就可以了，缺点就是会显示标题所有文字，显得不美观。
+</li>
+<?php endwhile; ?>
+</ul>
+这样就实现了侧边栏随机文章的机变功能：如果是首页、标签页或者页面页，就显示所有文章的随机文章；如果是分类页和文章页，就显示该分类随机文章。

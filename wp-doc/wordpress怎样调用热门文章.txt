@@ -1,0 +1,13 @@
+前面的章节我们说了“wordpress怎样调用最新文章”和“wordpress怎样调用随机文章”。本节我们来看看“wordpress怎样调用热门文章”，也就是最受欢迎的文章怎样调用。这里的热门文章可以作为2种理解：1、点击次数最多的文章；2、评论最多的文章。下面，我们就从这2个方面来看“wordpress怎样调用热门文章”。
+通过评论最多来调用热门文章
+这是大多主题所采用的方法，也就是说哪个文章评论多就排在最前面。如下例：
+<?php query_posts('posts_per_page=8&caller_get_posts=1&orderby=comment_count'); ?>
+<?php while (have_posts()) : the_post(); ?>
+<li>
+<a target="_blank" href="<?php the_permalink(); ?>" class="title" title="<?php the_title(); ?>"><?php the_title(); ?></a>
+</li>
+<?php endwhile; ?>
+通过点击次数来调用热门文章
+高时银博客认为，这才是真实意义上的热门文章。也就是说点击次最多的文章排在最前面。在这里，我们要用到一个统计插件，通过它来统计文章的点击次数，这个插件的名字是“wp-postviews"，安装好这个插件并启用。然后在相应的位置上（如侧边栏）添加如下代码：
+<li><a href="%POST_URL%" title="%POST_TITLE%">%POST_TITLE%</a> - %VIEW_COUNT% views</li>
+这里%POST_URL%是文章地址链接，%POST_TITLE%是文章标题，%VIEW_COUNT%是点击的次数。

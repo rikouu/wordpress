@@ -1,0 +1,10 @@
+WordPress 新的自定义菜单是非常好的一个功能。现在我们可以通过添加自定义链接来添加首页的链接，这里展示个技巧，把首页的链接放入 WordPress 后台菜单系统的 Pages wiget 中，让用户直接拖动添加：
+
+将下面代码复制到 functions.php 中即可：
+
+
+function home_page_menu_args( $args ) {
+    $args['show_home'] = true;
+    return $args;
+}
+add_filter( 'wp_page_menu_args', 'home_page_menu_args' );

@@ -1,0 +1,87 @@
+wordpress的后台说简单也简单，说复杂也复杂。。。为了方便，我们可以想办法通过技术手段来对后台的左侧栏进行删除或隐藏，自然是也可以根据不同的用户角色来定义后台侧栏菜单的删减，那么下面就直接说核心教程了！
+function remove_menus() {
+  global $menu;
+  $restricted = array(__('Dashboard'), __('Posts'), __('Media'), __('Links'), __('Pages'), __('Appearance'), __('Tools'), __('Users'), __('Settings'), __('Comments'), __('Plugins'));
+  end ($menu);
+  while (prev($menu)){
+    $value = explode(' ',$menu[key($menu)][0]);
+    if(strpos($value[0], '<') === FALSE) {
+      if(in_array($value[0] != NULL ? $value[0]:"" , $restricted)){
+        unset($menu[key($menu)]);
+      }
+    }
+    else {
+      $value2 = explode('<', $value[0]);
+      if(in_array($value2[0] != NULL ? $value2[0]:"" , $restricted)){
+        unset($menu[key($menu)]);
+      }
+    }
+  }
+}
+if ( is_admin() ) {
+  // 删除左侧菜单
+  add_action('admin_menu', 'remove_menus');
+}
+以上代码核心部分是一个函数remove_menus()，然后通过WordPress的动作接口函数add_action来执行remove_menus函数。在remove_menus函数中，通过$restricted数组来定义需要删除哪些菜单项，以上$restricted数组提供了全部菜单项，也就是说如果你全部将以上代码不做修改地复制到functions.php，那你的WordPress后台就没有任何菜单了，你应该根据实际需要去除菜单，下面讲讲$restricted各个数组项对应的菜单：
+__('Dashboard') ： 控制板菜单
+__('Posts') ： 文章
+__('Media') ： 媒体
+__('Links') ： 链接
+__('Pages') ： 页面
+__('Comments') ： 评论
+__('Appearance') ： 外观
+__('Plugins') ： 插件
+__('Users') ： 用户
+__('Tools') ： 工具
+__('Settings') ： 设置
+例如你只想去除评论和工具菜单，你只需改写以上代码第3行的$restricted数组：
+$restricted = array(__('Comments'), __('Tools'));
+删除不必要的子菜单
+
+WordPress后台的顶级菜单下面还有子菜单，当然有些子菜单是用不到的，我们也可以将其删除，WordPress 3.1以后的版本只需用到一个函数remove_submenu_page( $menu_slug, $submenu_slug )，这里有两个参数，$menu_slug是子菜单所在顶级菜单的缩略名，$submenu_slug为子菜单的缩略名，那如何获得这两个缩略名呢？例如，点击顶级菜单设置，链接地址类似：
+http://example/wp-admin/options-general.php
+那么顶级菜单设置的缩略名为options-general.php，也就是去除http://example/wp-admin/后剩下的东西，依次类推；接着点击顶级菜单设置下面的子菜单隐私，会打开以下网址：
+http://example/wp-admin/options-privacy.php
+那么子菜单隐私的缩略名为options-privacy.php，好了，就这么简单，下面是实现代码，：
+function remove_submenu() {
+    // 删除"设置"下面的子菜单"隐私"
+    remove_submenu_page( 'options-general.php', 'options-privacy.php' );
+    // 删除"外观"下面的子菜单"编辑"
+    remove_submenu_page( 'themes.php', 'theme-editor.php' );
+}
+if ( is_admin() ) {
+    add_action('admin_init','remove_submenu');
+}
+根据用户角色去除菜单
+
+如果你想按用户角色来去除相应的侧边栏菜单，那就再做一下用户等级的判断就可以了，给第11行的add_action添加判断，改写成：
+function remove_menus() {
+    global $menu;
+    // 这里$restricted设置了评论和工具菜单
+    $restricted = array(__('Comments'), __('Tools'));
+    end ($menu);
+    while (prev($menu)){
+        $value = explode(' ',$menu[key($menu)][0]);
+        if(in_array($value[0] != NULL?$value[0]:"" , $restricted)){unset($menu[key($menu)]);}
+    }
+}
+function remove_submenu() {
+    remove_submenu_page( 'options-general.php', 'options-privacy.php' );
+}
+global $current_user;
+get_currentuserinfo();
+//如果当前用户的等级小于3，那么就删除对应的菜单
+if ($current_user->user_level < 3 && is_admin()) {
+    add_action('admin_menu', 'remove_menus');
+    add_action('admin_init','remove_submenu');
+}
+在WordPress后台 – 用户那里，管理员可以查看 / 编辑用户的角色，以下是用户角色和其等级的对应关系：
+0 级对应 订阅者
+1 级对应 投稿者
+2 – 4 级对应 作者
+5 – 7 级对应 编辑
+8 – 10 级对应 管理员
+WordPress 3.0 之后将逐渐弃用用户数字等级，推荐使用户权限，可以用函数current_user_can()来判断用户权限。
+使用超简单的插件
+
+下面推荐一个使用超简单的插件，不需要任何编码，只需拖拖鼠标就可以实现上面所说的大部分功能。插件名称是：Admin Menu Editor，可以点此前往WordPress官方下载，启用后到设置 – Menu Editor，就可以编辑后台的菜单了，还可以添加外链菜单，可以调整菜单顺序等等，剩下的你自己体验吧！

@@ -1,0 +1,33 @@
+有时候，在开发主题时，会想给后台添加几个顶级菜单。这时候，我们就要用到一个函数：add_menu_page(添加顶级菜单) 。下面，一起来了解一下这个函数，看它是怎样给wordpress后添加一个顶级菜单的。
+add_menu_page()函数用法：
+<?php add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $function, $icon_url, $position ); ?>
+add_menu_page()函数参数详解：
+$page_title：(字符串) (必须) 当点击菜单后将内容显示在标题标签上（Title Tag于浏览器上），默认为空。
+$menu_title：(字符串) (必须) 显示的菜单名称，默认为空。
+$capability：(字符串) (必须) 此菜单使用的权限，默认为空，参照capability
+$menu_slug：(字符串) (必须) 显示在URl上面的菜单名称，默认为空。
+$function：返回的方法名称
+$icon_url：(字符串) (可选) 显示的菜单图标，可以使用plugin_dir_url( __FILE__ )，图标宽高为16像素。
+$position：(整数) (可选) 显示菜单的位置。常用位置，4或者59或者99
+实例1：
+<?php
+function add_dinggou_menu() {
+add_menu_page('客户订购', '客户订购', 'administrator', 'baobiao.php','', '', 99);
+// 在这里 my_function_menu 是顶级菜单调用的方法名
+}
+// 添加钩子，执行方法
+add_action('admin_menu', 'add_dinggou_menu'); // admin_menu 这个为加载管理员页面的钩子。
+?>
+这种会直接调用wordpress的wp-admin文件夹下面的文件，只要把baobiao.php这样的文件放进这个文件夹里，就可以调用，这样调用的好处是：地址栏会跟wordpress后台默认菜单一样的url 。比方说你要在后台调用有分页的页面，如客户订购信息之类的，就要用这种方法，用下面的方法，分页就没有办法显示。
+
+实例2：
+<?php
+add_action('admin_menu', 'add_dinggou_menu'); // admin_menu 这个为加载管理员页面的钩子。
+function add_dinggou_menu() {
+add_menu_page('客户订购', '客户订购', 'administrator','baobiao', 'baobiao','', '', 99);
+// 在这里 my_function_menu 是顶级菜单调用的方法名
+}
+// 添加钩子，执行方法
+riquire_once("baobiao.php");
+?>
+这种调用可以调用没有分页的页面。优势是可以调用站内任何地方的文件。

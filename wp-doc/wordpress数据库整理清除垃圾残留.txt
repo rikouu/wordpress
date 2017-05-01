@@ -1,0 +1,13 @@
+1、清理自动保存的文章草稿、历史版本、回收站里面的文章：
+DELETE FROM wp_posts WHERE post_status!='publish' OR post_type='revision';
+2、清理删除了文件，仍然遗留的文章标签
+DELETE FROM wp_postmeta WHERE post_id NOT IN(SELECT ID FROM wp_posts);
+3、清理 wp-commentmeta 表
+TRUNCATE TABLE `wp_commentmeta`
+4、清理 wp_postmeta 表
+DELETE FROM wp_postmeta WHERE meta_key = '_edit_lock';
+DELETE FROM wp_postmeta WHERE meta_key = '_edit_last';
+DELETE FROM wp_postmeta WHERE meta_key = '_revision-control';
+5、清理所有没有被通过的评论
+DELETE FROM wp_comments WHERE comment_approved != '1'
+有洁癖的请收藏好这篇文章，经常清理。当然还可以实用插件优化，不过我的原则是能不装插件的尽量不装，简简单单多好，越复杂的东西就越容易出错。

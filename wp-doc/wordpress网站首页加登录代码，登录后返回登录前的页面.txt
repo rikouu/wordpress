@@ -1,0 +1,24 @@
+怎样实现“wordpress网站首页加登录代码，登录后返回登录前的页面”呢？方法如下：
+登录后显示用户名
+<?php
+global $current_user;
+get_currentuserinfo();
+echo $current_user->display_name ;
+?>
+一般来说。我在安装完wordpress后都不会使用默认小工具的登录，管理功能，而是自己用代码实现。以前都是很简单的直接调用方法，没有使用提供的参数，最近弄一个主题的时候使用了参数功能，感觉很方便。
+代码如下，放到你需要的地方即可，根据主题不同可能需要一些修改
+<ul>
+<?php $url_this = ‘http://’.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];?>
+<?php if ( is_user_logged_in() ) {?>
+<li><a href=”<?php echo home_url().’/wp-admin/’?>” title=”站点管理” target=”_blank”>站点管理</a></li>
+<li><a href=”<?php echo wp_logout_url( $url_this); ?>” title=”Logout”>退出</a></li>
+<?php } else {?>
+<li><a href=”<?php echo home_url().’/wp-login.php?action=register’?>”title=’注册’ target=’_blank’>注册</a></li>
+<li><a href=”<?php echo wp_login_url( $url_this); ?>” title=”登录”>登录</a></li>
+<?php }?>
+</ul>
+效果参考：望星屋http://wangxinwu.com
+简单说明：
+如果是登录用户：1.在新窗口打开管理后台。2.退出登录后返回原来浏览的页面。
+如果是游客：1.在新窗口打开注册页面。2.登录后返回原来浏览的页面。
+很实用的，我是菜鸟，在网上找了好长时间，今天分享大家，希望对需要的朋友有所帮助。

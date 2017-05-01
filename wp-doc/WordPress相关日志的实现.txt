@@ -1,0 +1,50 @@
+相关日志既能提高用户的粘性，又能增强内链，可谓一举多得，下面介绍下怎么用代码实现相关日志，上代码：
+
+<!-- related posts start -->
+<div id="related_posts">
+<h3>您可能还喜欢</h3>
+<ul>
+<?php
+$post_num = 6; // 显示文章数量.
+$exclude_id = $post->ID; // 单独使用
+$posttags = get_the_tags(); $i = 0;//得到文章的tag
+if ( $posttags ) {
+    $tags = ''; 
+    foreach ( $posttags as $tag )
+    $tags .= $tag->term_id . ','; 
+    //设定整体参数
+    $args = array(
+        'post_status' => 'publish',
+        'tag__in' => explode(',', $tags), // 只选择tag内容
+        'post__not_in' => explode(',', $exclude_id), // 排除本文
+        'caller_get_posts' => 1,
+        'orderby' => 'comment_date', // 按照评论日期排序
+        'posts_per_page' => $post_num
+    ); 
+    query_posts($args); //数据库中查询
+    while( have_posts() ) { the_post(); ?>
+        <li><a rel="bookmark" href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></li>
+    <?php
+        $exclude_id .= ',' . $post->ID; $i ++;
+    } wp_reset_query();
+}
+if ( $i < $post_num ) { // 如果tag文章不足再取分类下的文章.
+    $cats = ''; foreach ( get_the_category() as $cat ) $cats .= $cat->cat_ID . ',';
+    $args = array(
+        'category__in' => explode(',', $cats), // 得到 category 内容
+        'post__not_in' => explode(',', $exclude_id),
+        'caller_get_posts' => 1,
+        'orderby' => 'comment_date',
+        'posts_per_page' => $post_num - $i
+    );
+    query_posts($args);
+    while( have_posts() ) { the_post(); ?>
+        <li><a rel="bookmark" href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
+    <?php $i++;
+    } wp_reset_query();
+}
+if ( $i  == 0 )  echo '<li>没有相关文章!</li>';
+?>
+</ul>
+</div>
+<!-- related posts end –>

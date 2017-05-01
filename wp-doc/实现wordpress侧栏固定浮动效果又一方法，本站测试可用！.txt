@@ -1,0 +1,15 @@
+之前小编在wordpress主题下载站给大家介绍过一款可以实现实现wordpress侧栏固定浮动效果的插件，详细可以点击：《给wordpress边栏添加固定悬浮小工具的插件》，但是很多朋友反应插件使用过没效果，那么今天介绍的方法，将是用代码实现的！小白能够听懂的！
+其实大多需要wordpress侧栏固定浮动效果的朋友都是因为觉得wordpress博客网站的侧边栏通常都不是太长，而随着页面往下拉，导致右侧显得很空，及时首页的侧栏高度和网站高度能够一样高的时候，在文章页面里，还是会显得右侧会空下来，因为不一样的文章，高度也不一样，这个时候十分需要一个wordpress侧栏固定浮动效果的功能，好让右侧不那么空，也可以增加用户的点击欲望，对于有广告的用户，将广告加入侧栏固定浮动后，用户点击量会增加，从而增加收入！
+那么我们现在详细的解说下实现wordpress侧栏固定浮动效果的具体方法：
+教程2014/0101更新
+运用到下面的代码（当然是在边栏sidebar.php文件内添加）:
+<div id="float">
+你要悬浮的内容
+</div>
+<script type="text/javascript" src="http://www.***.com/a.js"></script>
+div内可以自由添加要悬浮的div内容，而下面运用的js文件的内容为：
+// 固定层
+function buffer(a,b,c){var d;return function(){if(d)return;d=setTimeout(function(){a.call(this),d=undefined},b)}}(function(){function e(){var d=document.body.scrollTop||document.documentElement.scrollTop;d>b?(a.className="div1 div2",c&&(a.style.top=d-b+"px")):a.className="div1"}var a=document.getElementById("float");if(a==undefined)return!1;var b=0,c,d=a;while(d)b+=d.offsetTop,d=d.offsetParent;c=window.ActiveXObject&&!window.XMLHttpRequest;if(!c||!0)window.onscroll=buffer(e,150,this)})();
+大家可以新建个a.js文件来调用，或者直接将上面的js代码放到你们wordpress已调用的js内！最后，给style.css里添加样式为：
+.div2{top:10px;z-index:999;position:fixed;_position:absolute}
+教程到这，相信基本都会了吧。。。如果还不会的，荒淫进群交流，群号：153526824 更或者：联系小编我收费解决问题。。。哈哈。。。

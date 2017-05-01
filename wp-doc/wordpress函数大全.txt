@@ -1,0 +1,132 @@
+全局调用标签汇总：
+获取博客名字：<?php bloginfo('name'); ?>
+获取主页路径：<?php echo get_option('home'); ?>
+获取主题存放路径：<?php bloginfo('template_directory'); ?>
+调用当前主题：<?php the_permalink() ?>
+调用头部模板：<?php get_header();?>
+调用侧边栏模板：<?php get_sidebar();?>
+调用底部模板：<?php get_footer();?>
+Style.css路径调用：<?php bloginfo( 'stylesheet_url' ); ?>
+调用评论数：<?php comments_number('暂无评论', '1条评论', '% 评论' );?>
+找回密码：<a href="<?php echo get_option('home'); ?>/wp-login.php?action=lostpassword">忘记密码</a>
+Wp注册与登录： <?php if (get_option('users_can_register')) { ?><a href="<?php echo site_url('wp-login.php?action=register', 'login') ?>">注册会员</a><?php }?><?php } else { global $user_identity, $user_level; ?>
+调用登录用户名：<?php if (get_option('users_can_register')) { ?><a href="<?php bloginfo('siteurl');?>/wp-admin/profile.php">[个人中心]</a><?php }?><a href="<?php echo wp_logout_url( get_permalink() ); ?>">[退出]</a>
+首页调用标签汇总：
+网站导航调用页面栏目：<?php wp_list_pages('sort_column=menu_order&title_li=0&depth=1&include='); ?>
+网站导航调用分类栏目：<?php wp_list_categories('title_li=0&orderby=name&show_count=0&depth=3'); ?>
+调用文章的链接地址：<?php the_permalink() ?>
+调用文章的简介和摘要：<?php echo mb_strimwidth(strip_tags(apply_filters('the_content', $post->post_content)), 0, 200,"……"); ?>
+调用文章的标题（可控制字数）：<?php echo mb_strimwidth(get_the_title(), 0, 16, ''); ?>
+缩略图调用：<?php include( TEMPLATEPATH . '/thumbnail.php' ); ?>
+分类目录名字调用：<a href="<?php echo get_category_link($category);?>"><?php single_cat_title(); ?></a>
+调用友情链接：<?php wp_list_bookmarks('title_li=&categorize=0&orderby=rand&limit=24'); ?>
+调用网站后台菜单：<?php wp_nav_menu( array( 'container' => '','menu_class' => 'navigation','menu_id' => "nav_sgBhgn",'depth' => 2, ) ); ?>
+调用双语网站切换按钮：<div class="language"><?php echo qtrans_generateLanguageSelectCode('both'); ?></div>
+循环代码调用：
+<?php if (have_posts()) : ?>
+<?php while (have_posts()) : the_post(); ?>
+<?php endwhile;?>
+<?php endif; ?>
+分类页面标签汇总：
+调用自己分类的标题：<?php wp_title('');?>
+调用分类的描述：<?php echo category_description(); ?>
+调用分类的别名：<?php
+    global $wp_query;
+    $cat_ID = get_query_var('cat');
+$category = get_category($cat_ID);
+echo $category->slug;
+?>
+日期调用：<?php the_date_xml()?>
+分页插件的调用（wp-page-numbers插件）：<?php if(function_exists('wp_page_numbers')) : wp_page_numbers(); endif; ?>
+内容页面标签汇总：
+标题：<?php the_title(); ?>
+内容：<?php the_content(""); ?>
+
+日期调用：<?php the_date_xml()?>
+上一篇文章调用：<?php previous_post_link('« %link'); ?>
+下一篇文章调用：<?php next_post_link('%link »'); ?>
+浏览数标签：（用到插件wp-postviews）查看次数，调用代码：<?php the_views();?>
+分类目录： <?php the_category(', ') ?>
+<?php the_author(); ?> 显示文章的作者
+<?php the_author_description(); ?> 显示文章作者的描述（作者个人资料中的描述）
+<?php the_author_login(); ?> 显示文章作者的登录名
+<?php the_author_firstname(); ?> 显示文章作者的firstname（名）
+<?php the_author_lastname(); ?> 显示文章作者的lastname（姓）
+<?php the_author_nickname(); ?> 显示文章作者的昵称
+<?php the_author_ID(); ?> 显示文章作者的ID号
+<?php the_author_email(); ?> 显示文章作者的电子邮箱
+<?php the_author_url(); ?> 显示文章作者的网站地址
+<?php the_author_link (); ?>(添加于2.1版本) 显示一个以文章作者名为链接名，链接地址为文章作者的网址的链接。
+<?php the_author_icq(); ?> (不推荐使用) 显示文章作者的icq
+<?php the_author_aim(); ?> 显示文章作者的aim
+<?php the_author_yim(); ?> 显示文章作者的yim
+<?php the_author_msn(); ?> (不推荐使用) 显示文章作者的msn
+<?php the_author_posts(); ?> 显示文章作者已发表文章的篇数
+<?php the_author_posts_link(); ?> 显示一个链接到文章作者已发表文章列表的链接
+<?php list_authors(); ?> (不推荐使用) 显示blog所有作者和他们的相关信息。完整函数如下：
+参数：
+optioncount：是否显示各作者已发表文章的篇数，可选值为：TRUE 和 FALSE（默认值）
+exclude_admin：是否不列出管理员，可选值为：TRUE（默认值） 和 FALSE
+show_fullname ：是否显示各作者的全名，可选值为：TRUE 和 FALSE（默认值）
+hide_empty：是否不显示发表文章数为0的作者，可选值为：TRUE（默认值） 和 FALSE
+feed：链接到各个作者发表文章的RSS供稿种子链接名，默认为空，不显示RSS供稿种子
+feed_image：供稿种子的图片地址，如果提供此项，则覆盖上面的feed，默认为空
+<?php wp_list_authors(); ?> 显示blog作者列表，如果作者发表过文章，则他的名字将链接到他发表的文章列表中。可定义是否显示其他信息。
+参数：
+optioncount：是否显示各个作者发表文章数，可选值：true 和 false（默认值）
+exclude_admin：是否不显示”admin”用户，可选值：true（默认值） 和 false
+show_fullname：是否显示各个作者的全名，如果不显示，将显示昵称。可选值：true 和 false（默认值）
+hide_empty：是否不显示发表文章数为0的作者，可选值：true（默认值） 和 false
+feed：链接到各个作者发表文章的RSS供稿种子链接名，默认为空，不显示RSS供稿种子
+feed_image：供稿种子的图片地址，如果提供此项，则覆盖上面的feed，默认为空。
+调用某个分类下热门文章【评论数】
+<?php $rand_posts = get_posts('numberposts=5&category=2&orderby=comment_count');foreach($rand_posts as $post) : ?>
+<li><a href="<?php the_permalink(); ?>"><?php echo mb_strimwidth(get_the_title(), 0, 34, ''); ?></a></li>
+<?php endforeach;?>
+调用置顶文章：
+<?php
+$sticky = get_option('sticky_posts');
+rsort( $sticky );//对数组逆向排序，即大ID在前
+$sticky = array_slice( $sticky, 0, 8);//输出置顶文章数，请修改10，0不要动，如果需要全部置顶文章输出，可以把这句注释掉
+query_posts( array( 'post__in' => $sticky, 'caller_get_posts' => 1 ) );
+if (have_posts()) :while (have_posts()) : the_post();
+?>
+<li class="li1"><a href="<?php the_permalink() ?>">
+<img src="<?php echo get_first_image(); ?>" width="197px" height="145px" /><span><?php the_title(); ?></span></a></li>
+<?php    endwhile; endif; ?>
+调用某个分类下的置顶文章
+<?php
+wp_reset_query();  //重置搜索
+$category = get_the_category();  //读取当前页面分类信息
+query_posts('cat=4&showposts=7' );  //查询指定分类文章
+if (have_posts()) : ?>
+<?php while (have_posts()) : the_post();
+if (is_sticky()):
+//输出置顶文章
+?>
+<?php else:
+//非置顶文章
+?>
+<?php endif; ?>
+<?php endwhile; ?>
+<?php else: ?>
+<?php endif; ?>
+调用分类的名称不带链接：
+<?php foreach((get_the_category()) as $category){echo $category->cat_name;}?>
+单独调用所属分类的链接：
+<?php echo get_category_link($category);?>
+文章页面调用所属分类的ID:
+<?php foreach((get_the_category()) as $category){echo $category->cat_ID;}?>
+文章页面调用所属分类的描述:
+<?php foreach((get_the_category()) as $category){echo $category->category_description;}?>
+文章页面调用所属分类的名字
+<?php foreach((get_the_category()) as $category){echo $category->cat_name;}?>
+统计某个分类的文章总数：
+<?php
+global $wp_query;
+$cat_ID = get_query_var('cat');
+$category = get_category($cat_ID);
+echo $category->count;
+?>
+调用某个分类下的子分类
+<?php wp_list_cats('sort_column=name&optioncount=0&hierarchical=1&hide_empty=0&child_of=117'); ?>

@@ -1,0 +1,51 @@
+让wordpress博客自动为每篇文章自动关键字及网页描述。每篇文章的内容不同，我们该如何让wordpress自动添加文章描述和关键词呢？办法很简单，我们只需要在模板头部添加如下一段PHP代码。
+今天桃子empress在博客留言板中说：“怎么在sinaapp engine 应用的的wordpress添加关键词 和描述！”其实笔者之前接触过sinaapp，但是没深入过，既然是wordpress博客，应该是一样的办法！
+sinaapp好像不支持FTP。那没关系，你直接在后台管理中找到主题--编辑--header.php。
+打开你的模板文件header.php，在最前面添加如下PHP代码： （也可以不用在最前面，懂PHP代码可以随意摆放合适的位置，不懂的话就先按照这样做吧！）
+
+<?php
+//判断是否为首页
+ if ( is_home ( ) )
+{
+$description = "这里填写博客首页的描述，最多220字符";
+$keywords = "这里填写首页关键词，用英文逗号隔开";
+ //判断是否为文章页
+ }
+else if ( is_single () )
+{
+if ( $post->post_excerpt)
+{
+$description = $post->post_excerpt;
+} else {
+$description = mb_strimwidth(strip_tags(apply_filters(‘the_content’,$post->post_content)
+),0,220);
+}
+$keywords = "";
+$tags = wp_get_post_tags($post->ID);
+foreach ($tags as $tag ) {
+$keywords = $keywords.$tag->name.","; }
+ //判断是否为分类页
+ } else if ( is_category() ) {
+$description = category_description();
+}
+?>
+
+添加完上面的代码，然后查找标签： </title>
+在后面加入:
+
+<meta name = "keywords" content="<?php echo $keywords; ?>” />
+<meta name= "description" content=" <?php echo $description; ?> ” / >
+
+这两句代码位置也非绝对的，如果你不了解的话，就放在</title>标签后边就可以了！
+
+
+好了，然后去刷新你的首页和其他文章页面吧，查看源代码。是不是就和上图一样了呢！
+这样就为wordpress所有的文章加上关键字和网页描述了。如果你之前没有为文章添加标签的话，关键字是没有的哦！
+
+
+
+
+
+
+
+

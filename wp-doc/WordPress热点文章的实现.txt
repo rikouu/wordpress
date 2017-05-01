@@ -1,0 +1,18 @@
+<?php 
+//从发表文章数据库中查询评论数量，id及文章标题，倒序排列。
+$result = $wpdb->get_results("SELECT comment_count,ID,post_title FROM $wpdb->posts ORDER BY comment_count DESC LIMIT 0 , 4");
+//遍历数组
+foreach ($result as $post) {
+//声明变量至全局，可以看成一个小的主循环
+setup_postdata($post);
+$postid = $post->ID;
+$title = $post->post_title;
+$commentcount = $post->comment_count;
+//如果评论数量不为零
+if ($commentcount != 0) { 
+?>
+ 
+<li><a href="<?php echo get_permalink($postid); ?>" title="<?php echo $title ?>">
+<?php echo $title ?></a> {<?php echo $c
+
+注释大概介绍了下，其实很简单，其中setup_postdata()这个函数挺重要，就是相当于把我们查询到post对象放到主循环里了，于是它就可以循环输出。

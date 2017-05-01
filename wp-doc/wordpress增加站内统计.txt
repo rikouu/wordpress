@@ -1,0 +1,22 @@
+在论坛闲逛，看到了一个帖子提问wordpress增加站内统计用的什么插件，其实不需要插件，只需要调用代码就可以了。
+
+<div class="side_box" id="tj">
+<ul> <h3>站点统计</h3></ul>
+<li>文章数量：<?php $count_posts = wp_count_posts();
+echo $published_posts = $count_posts->publish; ?></li>
+<li>评论数量：<?php $total_comments = get_comment_count();
+echo $total_comments['approved'];?></li>
+<li>分类数量：<?php echo $count_categories = wp_count_terms('category'); ?></li>
+<li>页面数量：<?php $count_pages = wp_count_posts('page');
+echo $page_posts = $count_pages->publish; ?></li>
+<li>链接数量：<?php $link = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->links
+WHERE link_visible = 'Y'"); echo $link; ?></li>
+<li>标签数量：<?php echo $count_tags = wp_count_terms('post_tag'); ?></li>
+<li>站点成立：2011年11月20日</li>
+<li>迄今运行：<?php echo floor((time()-strtotime("2011-11-20"))/86400); ?>天</li>
+<li>最后更新：<?php $last = $wpdb->get_results("SELECT MAX(post_modified)
+AS MAX_m FROM $wpdb->posts WHERE (post_type = 'post' OR post_type
+= 'page') AND (post_status = 'publish' OR post_status = 'private')");
+$last = date('Y年n月j日', strtotime($last[0]->MAX_m));echo $last; ?></li>
+
+将上面的内容复制到sidebar.php相应的位置就欧克了。

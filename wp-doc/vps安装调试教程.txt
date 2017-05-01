@@ -1,0 +1,20 @@
+===============================================================================
+apache:
+service httpd start
+service httpd restart
+service httpd stop
+===============================================================================
+mysql:
+service mysqld start
+service mysqld stop
+service mysqld restart
+service mysqld reload
+service mysqld status
+===============================================================================
+chown -R www.www /data/wwwroot
+chmod -R 700 /data/wwwroot
+chown -R mysql:mysql /data/mysql
+chmod -R 700 /data/mysql
+
+
+

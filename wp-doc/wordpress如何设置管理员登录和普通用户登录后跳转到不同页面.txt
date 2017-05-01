@@ -1,0 +1,17 @@
+wordpress如何设置管理员登录和普通用户登录后跳转到不同页面呢？wordpress默认的是管理员登录地址和普通注册用户后台登录地址都是跳转到后台同一个界面，怎么设置呢？把下面代码粘贴到当前wordpress主题的function.php文件内即可实现wordpress根据不同的用户页跳转不同的页面。
+
+function my_login_redirect($redirect_to, $request, $user){
+if( is_array( $user->roles ) ) {
+// 检查用户的角色
+if( in_array( "administrator", $user->roles ) ) {
+// 跳转到管理员用户界面
+return $redirect_to;
+} else {
+// 跳转到其他用户界面
+return home_url();
+}
+}
+}
+add_filter("login_redirect", "my_login_redirect", 10, 3);
+
+喜欢的伙伴们可以试一试，这样也可以避免一些垃圾评论哦！如果你的主题本身就自带有就不用了哈！

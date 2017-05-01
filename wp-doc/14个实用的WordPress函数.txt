@@ -1,0 +1,114 @@
+这篇文章介绍了14个实用的WordPress函数，使用或者开发Wordpress的朋友可以学习一下。
+
+1、WordPress临时API
+
+set_transient(), get_transient(), delete_transient()
+
+这个函数类似于用于存储检索选项数据库表单的get_options()以及update_options()函数。 他们的主要区别在于，你可以给这个临时API函数传递一个时间参数，作为数据库输入的过期日。当参数显示的时间到达之后，输入会被移除。如果你需要缓存数据或查询某个短期时间内的结果，这会是个相当有用的函数。
+
+set_transient的参数：
+
+set_transient($transient, $value, $expiration);
+
+将某个值保留在数据库中一小时：
+
+set_transient('the_name', $special_query_results, 60*60);
+
+结果值：
+
+$value = get_transient('the_name');
+
+2、WordPress “定时任务”函数
+
+wp_schedule_event(time(), 'hourly', 'my_schedule_hook');
+
+如果你需要定时执行某段代码，像是检查RSS订阅、数据库备份或是重设数据库值等，就可以用到这个函数。这里有一个关于这个函数的英文教程。
+
+3、WordPress HTTP API
+
+wp_remote_get( $url, $args = array() );
+
+这是个用于检索网页内容的简单函数。函数把检索结果存储在一个数组里。你不仅可以得到网页的结果内容，还可以获取网页的页头信息和相应代码。
+
+4、轻松获取RSS 订阅
+
+$feed = fetch_feed( $uri );
+
+fetch_feed是一个用来获取订阅内容的简单WordPress函数。这个函数可以检索、分析并自动缓存订阅内容。
+
+5、WordPress邮件函数
+
+wp_mail()  wp_mail( $to, $subject, $message, $headers, $attachments );
+
+示例：
+
+Example:
+$to = 'kriesi@gmail.com';
+$subject = 'Hello Kriesi!';
+$message = 'This message was sent by wordpress'
+$mail = wp_mail($to, $subject, $message);
+if($mail) echo 'Mail delivered';
+
+相当简单实用的函数，利用这个函数你可以发送页头信息和附件、普通文本、HTML信息以及其他各种选项。
+
+6、计时函数
+
+human_time_diff( $from, $to )
+
+这个函数显示出的时间效果不是普通的时间格式，而是“XXX发布于XXX小时前”这样。
+
+7、WordPress get_comments函数
+
+get_comments()
+
+在评论循环外检索评论内容。
+
+8、字符串验证
+
+wp_kses($string, $allowed_html, $allowed_protocols);
+
+如果你需要过滤不受信任的用户输入内容，wp_kses会是个很实用的函数。这个函数确保$string中只出现经许可的HTML元素名称、属性和属性值以及正常的HTML实体。
+
+9、WordPress文本转换
+
+wptexturize()
+
+这个函数把常用的字符串转换成印刷时采用的正确符号，比如破折号、省略号等，有时也会为某些段落加上排版引号。
+
+wpautop()
+
+给字符串添加<p>标签
+
+10、WordPress短码API
+
+add_shortcode(), do_shortcode()
+
+add_shortcode()可以快速为你的日志内容创建宏。假设你希望把日志里的某些内容包围在一个div块里，并且加上若干类和id，让你可以创建多个内容栏。你可以用HTML编辑器进行编辑，然后输入下面的内容：
+
+<div class='one_third'>内容</div>
+
+11、用PHP函数生成WordPress日志
+
+wp_insert_post()
+
+这个函数在数据库中插入文章页面和自定义文章类型。它会过滤变量并执行检查，补充日期/时间等缺失变量。如果用户可以通过你的网站前台提交内容，这个函数会相当有帮助。
+
+12、用PHP函数生成WordPress评论
+
+wp_insert_comment()
+
+和wp_insert_posts类似，不过wp_insert_comment插入的是评论。
+
+13、WordPress对象缓存
+
+wp_cache_add(),  wp_cache_set(),  wp_cache_get(),  wp_cache_delete, wp_cache_replace(), wp_cache_flush
+
+WP_Object_Cache是WordPress中用以缓存数据的类。
+
+14、禁止执行WordPress任务
+
+wp_die()
+
+wp_die终止WordPress运行，显示HTML错误信息。
+
+这个函数与PHP函数die()互为补充。HTML信息显示给用户。推荐仅在进程不能再继续时才使用该函数。

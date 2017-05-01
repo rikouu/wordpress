@@ -1,0 +1,22 @@
+在制作wordpress主题期间，有的时候会用到【已经运行了2天，共发表了12篇原创文章，共收到了5 条有效评论】等wordpress站点信息，那么下面将罗列经常使用到的一些函数！
+1、日志总数：
+<?php $count_posts = wp_count_posts(); echo $published_posts = $count_posts->publish;?>  
+2、草稿数目：
+<?php $count_posts = wp_count_posts(); echo $draft_posts = $count_posts->draft; ?>  
+3、评论总数：
+<?php echo $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->comments");?>  
+4、建站天数：
+<?php echo floor((time()-strtotime("2012-11-22"))/86400); ?>  
+记得修改 2012-11-22 为你的建站日期
+5、标签总数：
+<?php echo $count_tags = wp_count_terms('post_tag'); ?>  
+6、页面总数：
+<?php $count_pages = wp_count_posts('page'); echo $page_posts = $count_pages->publish; ?>  
+7、分类总数：
+<?php echo $count_categories = wp_count_terms('category'); ?>  
+8、链接总数：
+<?php $link = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->links WHERE link_visible = 'Y'"); echo $link; ?>  
+9、用户总数：
+<?php $users = $wpdb->get_var("SELECT COUNT(ID) FROM $wpdb->users"); echo $users; ?>  
+10、最后更新：
+<?php $last = $wpdb->get_results("SELECT MAX(post_modified) AS MAX_m FROM $wpdb->posts WHERE (post_type = 'post' OR post_type = 'page') AND (post_status = 'publish' OR post_status = 'private')");$last = date('Y-n-j', strtotime($last[0]->MAX_m));echo $last; ?>  

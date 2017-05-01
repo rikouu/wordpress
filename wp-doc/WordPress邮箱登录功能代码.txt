@@ -1,0 +1,18 @@
+WordPress默认情况下是只允许用户使用用户名登录网站的，但现在很多流行的是通过会员邮箱登录，这样可以提高用户体验，毕竟用户有可能会不记得自己注册的用户名时，可以通过尝试邮箱登录。当然，这也并不麻烦，WordPress也为我们提供了相应的扩展函数钩子。
+将下面的代码添加到您网站当前使用的主题的 functions.php 文件中就可以实现了：
+//WordPress支持用户名/邮箱登录
+function wpyou_email_login_authenticate( $user, $username, $password ) {
+if ( is_a( $user, 'WP_User' ) )
+return $user;
+
+if ( !empty( $username ) ) {
+$username = str_replace( '&', '&', stripslashes( $username ) );
+$user = get_user_by( 'email', $username );
+if ( isset( $user, $user->user_login, $user->user_status ) && 0 == (int) $user->user_status )
+$username = $user->user_login;
+}
+
+return wp_authenticate_username_password( null, $username, $password );
+}
+remove_filter( 'authenticate', 'wp_authenticate_username_password', 20, 3 );
+add_filter( 'authenticate', 'wpyou_email_login_authenticate', 20, 3 );

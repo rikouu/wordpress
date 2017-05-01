@@ -1,0 +1,3 @@
+打开主题目录下的“single.php”，找到” <!--p the_content();-->”代码所在的地方。
+ 1. 在WordPress日志内容顶部加广告： 在”<!--p the_content();-->”上面加上广告代码即可，示例： <blockquote> <div style="”padding: 0px;">AD</div> <!--p the_content();--></blockquote>
+2.在WordPress日志内容底部加广告 方法类似于在日志顶部加广告，不同的是广告代码要加在“ <!--p the_content();-->”下面，示例： <!--p the_content()--> <div style="”padding: 0px;">AD</div> 3.在WordPress日志左侧（右侧）加广告 <div style="”float: left(right);">AD</div> <!--p the_content();-->

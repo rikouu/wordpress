@@ -1,0 +1,43 @@
+之前百度官方出了一款Baidusubmit – 百度官方WordPress结构化数据插件，该款插件的作用是向百度提交结构化数据的 XML，帮助站点保证百度蜘蛛对站点的抓取频率，但是推送页面不保证收录（http://zhanzhang.baidu.com/schema/index），并且百度官方没有推出 Sitemap 的实时推送插件。
+
+　　换句话来说，只有拥有 Sitemap 实时推送功能的网站才能最大几率的保证站点的页面被抓取并且被收录，不过大多数站点并没有开通Sitemap 权限，以下是引用百度官方对实时推送的介绍：http://zhanzhang.baidu.com/wiki/215
+
+将代码加入至 Functions.php：
+
+function PushBaiDu($post_id,$post){
+//百度推送接口地址
+    $Push = '百度推送接口地址';
+    $PushUrl = get_permalink($post_id);
+    $PushDate = $post->post_data;
+//构造推送xml数据
+    $PushXml = '<?xml version="1.0" encoding="UTF-8"?>
+    <urlset>
+        <url>
+            <loc><![CDATA['.$PushUrl.']]></loc>
+            <lastmod>'.$PushDate.'</lastmod>
+            <changefreq>daily</changefreq>
+            <priority>0.9</priority>
+        </url>
+    </urlset>';
+//创建http请求对象
+    $wp_http_obj = new WP_Http();
+//发送http post请求提交xml数据
+    return $wp_http_obj->post($Push, array('body' => $PushXml, 'headers' => array('Content-Type' => 'text/xml')));
+}
+add_action('publish_post', 'PushBaiDu');
+
+将$Push 变量的值替换为你们的百度 Sitemap 实时推送接口调用地址，如果您的站点没有开通百度 Sitemap 权限则此代码不可用。Sitemap实时推送接口获取地址：http://zhanzhang.baidu.com/sitemap/pingadd
+
+
+
+
+
+
+
+
+
+
+
+
+
+

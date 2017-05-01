@@ -1,0 +1,50 @@
+最近在制作一款新的wordperss主题，前台制作的工作已经做得差不多了，还缺的是后台设置。这里记录一下学习的过程。
+add_theme_page函数：这个函数会在后台“外观”菜单项下面新建一个菜单项，参数functions是一般是显示内容的函数。
+
+<?php
+add_theme_page( $page_title, $menu_title, $capability, $menu_slug, $function);
+//page_titile-title标签的内容
+//menu_title-显示在后台左边菜单的标题
+//capability-访问这个页面需要的权限
+//menu_slug-别名，需要独一无二哦
+//function-执行的函数
+?>
+
+add_menu_page()函数：往后台添加顶级菜单先，也就是和“外观”、“插件”等一样的顶级菜单。
+
+<?php
+add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $function, $icon_url, $position );
+//page_title页面title标签信息
+//$menu_title 菜单标题
+//capability  权限
+//menu_slug  别名
+//function  执行函数
+//icon_url  菜单图标url地址
+//position  此菜单项在菜单中的位置，警告：如果两个菜单项的位置属性相同，其中一个可能要被覆盖
+?>
+
+add_submenu_page函数：添加子级菜单。
+<?php
+add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function );
+//parent_slug-父级菜单项的别名
+//page_title--页面的title信息
+//menu_title-菜单标题
+//capability-权限
+//menu_slug-别名
+//function-执行的函数
+?>
+
+动作钩子：
+add_action('admin_menu', 'test_function');
+
+
+update_option()函数：
+
+<?php
+update_option( $option, $newvalue );
+//$option为选项名称
+//newvalue为选项的值
+?>
+
+
+
