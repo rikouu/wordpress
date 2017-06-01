@@ -1,0 +1,222 @@
+/******************************************
+* Theme Name: Hawkcms
+* Theme URI: http://www.woyard.com
+* Version: 0.01
+* Author: 沃园
+* Author URI: http://www.woyard.com
+* Description:Hawkblog Themes为沃园首次出品的wordpress博客主题,主题简洁实用,适宜个人博客使用。
+* Tags:two-columns,custom-header
+*******************************************/
+
+*html{display:none}
+
+
+body{margin:0;padding:0;font:13px Tahoma,Helvetica,Arial,sans-serif}
+
+blockquote{border:1px dashed #e6e6e6;
+background:#fafafa;
+padding:10px 10px 0;
+margin:10px}
+
+ol,ul{margin:0;padding:0;list-style:none}
+
+
+a{text-decoration:none;color:#04a}
+a:hover{background:#303536;color:#fff;border:none}
+
+h1 a{color:#666}
+h1 a:hover{color:#000;text-decoration:none;background:none}
+h1{margin:0;padding:0;font-size:18px;font-family:"微软雅黑";float:left;text-shadow:0 1px 0 #fff}
+
+h2{margin:0 0 10px 0;padding:0;font-size:18px;font-family:"微软雅黑"}
+h3{margin:0;padding:0;font-size:14px;text-align:right}
+
+
+dl,dt,dd,li,button{margin:0;padding:0}
+
+
+
+
+#wrap{width:970px;margin-left:auto;margin-right:auto;overflow:auto;zoom:1}
+#main{width:692px;float:left}
+
+
+#header{background:#f6f6f6}
+#header{overflow:auto;zoom:1}
+#header{border-bottom:1px solid #e6e6e6;border-top:1px solid #fff}
+.header-title{line-height:70px;font-size:48px;font-weight:bold;position:relative;float:left}
+
+
+#sidebar{width:252px;background:#fafafa;float:right}
+#sidebar a{display:block}
+#sidebar li{margin-bottom:5px;padding-bottom:2px;border-bottom:1px dashed #ddd}
+#sidebar ol li{list-style:decimal inside}
+#sidebar ul{margin:10px}
+
+#sidebar h2{
+line-height:26px;
+margin-bottom:5px;
+border-bottom:dotted 1px #d6d6d6;
+font-size:14px;
+text-shadow:0 1px 0 #fff
+}
+
+#nav{
+     background:#f6f6f6;
+     line-height:34px;
+     margin-bottom:20px;
+     border-bottom:1px solid #e6e6e6;
+     border-top:1px solid #fff
+    }
+#nav li a{padding-left:10px;padding-right:10px;display:block;text-shadow:0 1px 0 #fff}
+#nav li a:hover{color:#000;text-decoration:none;background:#e6e6e6}
+#nav li{margin-right:5px;padding-bottom:1px;line-height:33px;color:#000;float:left}
+#nav ul{float:left}
+#nav li ul{display:none}
+#nav a{color:#666}
+
+#respond{margin-top:10px;overflow:auto;zoom:1}
+#respond h3{width:75px;text-align:right;padding-right:10px;float:left}
+
+
+#page_content{width:880px;line-height:20px;float:right}
+#page_content dd{padding-left:20px}
+#page_content dt{margin-bottom:10px}
+#page_content dl{margin-bottom:10px}
+
+
+#post_comment{margin-top:16px}
+#cancel_comment_reply{line-height:20px;margin-left:90px}
+
+
+#commentform{margin-left:90px}
+#commentform p{margin-left:0}
+
+
+
+.comment_list{margin-bottom:10px}
+.comment_list li{border-bottom:1px solid #ccc;padding-top:10px;overflow:auto;zoom:1}
+.comment_list li li{border-bottom:none;border-top:1px dashed #ccc;padding-top:10px;margin-top:10px}
+.comment_list li p{margin-bottom:5px}
+
+
+.navigation{margin-bottom:10px;overflow:auto;zoom:1}
+
+#search{float:right;margin-top:12px;position:relative}
+.form-search{margin:10px 0 20px 0}
+.btn{width:36px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+
+input{margin:0;padding:0}
+textarea{margin:0;padding:0;padding:3px;width:80%;line-height:25px}
+
+
+.tags{font-family:"微软雅黑"}
+.tags a{padding-left:2px;padding-right:2px}
+
+
+ .media,.media-body{overflow:hidden;*overflow:visible;zoom:1}
+
+
+p ul{line-height:20px}
+p ol{margin-bottom:15px}
+
+
+.content{float:right}
+.content li{line-height:20px}
+.content ul{margin-bottom:15px;list-style-position:inside;margin-left:20px;list-style-type:disc}
+.content ol{list-style-type:decimal;list-style-position:inside;margin-left:20px;margin-bottom:15px}
+.content a{color:#666}
+
+
+.post_nav{padding-bottom:10px;border-bottom:1px dashed #ccc;margin-bottom:10px;overflow:auto;zoom:1}
+.post-meta{line-height:25px;border-bottom:solid 1px #eee;padding-top:8px}
+
+
+.alignleft{float:left}
+.alignright{float:right}
+.media{padding-bottom:10px;border-bottom:1px dashed #ccc}
+.media-heading{margin-top:18px}
+.media-body{overflow:hidden;*overflow:visible;zoom:1}
+
+
+.badge{margin:10px;float:right}
+.tag-a{float:left;display:inline}
+
+
+.spantags{
+width:202px;
+line-height:20px;
+margin:0;
+font-weight:bold;
+font-size:14px;
+color:#888;
+border:solid 1px #d6d6d6;
+border-radius:1px;
+box-shadow:0 1px 1px #eee;
+padding:2px;
+display:inline;
+border-color:#d6d6d6 #ccc #ccc #d6d6d6
+}
+
+.spantags:hover{
+                background:#fbfbfb;
+				border-color:#bbb;
+                color:#444;
+				box-shadow:0 1px 1px #ddd
+				}
+
+.vl{
+    line-height:2px;
+    border-bottom:solid 1px #eee;
+    padding-bottom:10px;
+    padding-top:10px;
+    margin-bottom:15px	
+}
+
+
+
+
+.nav-previous a:before {
+	content: '\2190\00a0';
+}
+.attachment .entry-content .nav-next a:after {
+	content: '\00a0\2192';
+}
+
+.nav-previous {
+    margin-top:10px;
+	float: left;
+	width: 50%;
+}
+
+.nav-next {
+     margin-top:10px;
+	float: right;
+	text-align: right;
+	width: 50%;
+}
+
+.nav-previous,.nav-next {
+	float: none;
+	width: auto;
+}
+.nav-next {
+	padding-left:5px;
+}
+
+
+
+
+
+#footer{
+        text-align:center;
+        padding-top:8px;
+		padding-bottom:8px;
+        margin-top:20px;
+		border-top:1px solid #e5e5e5;
+        background-color:#f5f5f5;
+		line-height:20px
+		}
+
+.footer p{margin-bottom:0;color:#777}
